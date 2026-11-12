@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>WAR MEMENOEL 3D — Arcade Edition</title>
+  <title>WAR MEMENOEL 3D — Direct Play</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
@@ -142,112 +142,74 @@
       border-radius: 11px;
       cursor: pointer;
     }
-    .screen-overlay {
+
+    /* PAINEL QUE APARECE APENAS AO PASSAR DE FASE OU MORRER */
+    .modal-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at center, rgba(10, 14, 32, 0.5) 0%, rgba(2, 4, 10, 0.88) 100%);
-      backdrop-filter: blur(4px);
+      background: rgba(3, 5, 14, 0.85);
+      backdrop-filter: blur(6px);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 16px;
+      padding: 20px;
       z-index: 99;
     }
-    .menu-card {
-      background: rgba(12, 18, 38, 0.88);
-      border: 1px solid rgba(0, 243, 255, 0.5);
-      border-radius: 24px;
+    .modal-card {
+      background: rgba(12, 18, 38, 0.92);
+      border: 2px solid #00f3ff;
+      border-radius: 22px;
       padding: 24px 20px;
       width: 100%;
-      max-width: 400px;
-      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85);
+      max-width: 390px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
     }
-    h1 {
-      font-size: 34px;
+    .modal-card h2 {
+      font-size: 28px;
       font-weight: 900;
-      letter-spacing: 1.5px;
-      line-height: 1.1;
+      color: #ffcc00;
       text-transform: uppercase;
-      background: linear-gradient(90deg, #ff0055, #ffcc00, #00f3ff, #ff0055);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradientFlow 3s linear infinite;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 15px rgba(255, 0, 85, 0.7);
     }
-    @keyframes gradientFlow { to { background-position: 200% center; } }
-    .subtitle {
+    .modal-card p {
+      font-size: 13.5px;
       color: #c2d1eb;
-      font-size: 13px;
-      line-height: 1.45;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      line-height: 1.4;
     }
     input[type="text"] {
       user-select: text;
-      background: rgba(5, 8, 18, 0.95);
+      background: #060916;
       border: 2px solid #00f3ff;
       color: #fff;
-      padding: 14px 16px;
-      border-radius: 14px;
-      font-size: 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 15px;
       font-weight: 800;
       text-align: center;
       margin-bottom: 12px;
       outline: none;
       width: 100%;
-      box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
     }
-    .enter-hint {
-      font-size: 14px;
+    .modal-btn {
+      background: linear-gradient(135deg, #ff0055, #ff6600);
+      border: none;
+      padding: 14px 20px;
+      color: #fff;
+      font-size: 15px;
       font-weight: 900;
-      color: #ffcc00;
-      letter-spacing: 1px;
-      margin-bottom: 14px;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 10px;
-      background: rgba(255, 204, 0, 0.12);
-      border: 1px solid rgba(255, 204, 0, 0.4);
-    }
-    .controls-pills {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-    .pill {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      padding: 4px 8px;
-      border-radius: 8px;
-      font-size: 10.5px;
-      color: #00f3ff;
-      font-weight: 700;
-    }
-    #leaderboard-box {
-      background: rgba(5, 8, 18, 0.75);
-      border: 1px solid rgba(255, 204, 0, 0.35);
       border-radius: 12px;
-      padding: 8px 12px;
-      margin-top: 14px;
+      cursor: pointer;
       width: 100%;
+      letter-spacing: 1px;
     }
-    #leaderboard-box h3 {
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      color: #ffcc00;
-      margin-bottom: 4px;
-      text-transform: uppercase;
-    }
-    .lb-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12.5px;
-      font-weight: 800;
+    .record-tag {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #00ff88;
+      font-weight: 700;
     }
     .hidden { display: none !important; }
   </style>
@@ -279,42 +241,18 @@
 
       <div class="hud-bottom">
         <div id="combo-badge">COMBO x1</div>
-        <button id="btn-ult" type="button" class="hidden">⚡ DISPARAR SUPER LASER</button>
+        <button id="btn-ult" type="button" class="hidden">⚡ SUPER LASER (ESPAÇO)</button>
       </div>
     </div>
 
-    <!-- TELA INICIAL -->
-    <div id="start-screen" class="screen-overlay">
-      <div class="menu-card">
-        <h1>WAR MEMENOEL 3D</h1>
-        <p class="subtitle">Digite seu nome de piloto e aperte <strong>ENTER</strong> para decolar!</p>
-
-        <input type="text" id="player-name" placeholder="Digite seu nome aqui..." maxlength="14" autofocus autocomplete="off">
-        <div id="start-trigger" class="enter-hint">⏎ APERTE ENTER (OU CLIQUE AQUI)</div>
-
-        <div id="continue-hint" class="hidden" style="font-size: 12px; color: #00ff88; margin-bottom: 8px; font-weight: bold;">
-          Shift + Enter: Continuar Fase <span id="saved-lvl">1</span>
-        </div>
-
-        <div class="controls-pills">
-          <span class="pill">⌨️ Setas / WASD</span>
-          <span class="pill">🖱️ Arraste na Tela</span>
-          <span class="pill">⚡ Espaço: Super Laser</span>
-        </div>
-
-        <div id="leaderboard-box">
-          <h3>🏆 Melhor Marca do Piloto</h3>
-          <div id="leaderboard-list"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TELA DE FIM DE JOGO -->
-    <div id="end-screen" class="screen-overlay hidden">
-      <div class="menu-card">
-        <h1 id="end-title">FIM DE JOGO</h1>
-        <p class="subtitle" id="end-desc">O Memenoel levou a melhor desta vez.</p>
-        <div id="restart-trigger" class="enter-hint">⏎ APERTE ENTER PARA JOGAR NOVAMENTE</div>
+    <!-- PAINEL DE NOME (SÓ APARECE AO PASSAR DE NÍVEL OU MORRER) -->
+    <div id="status-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <h2 id="modal-title">SETOR CONCLUÍDO!</h2>
+        <p id="modal-desc">Digite seu apelido de piloto para salvar seu progresso e continuar.</p>
+        <input type="text" id="player-name" placeholder="Seu apelido de piloto" maxlength="14" autocomplete="off">
+        <button id="modal-action-btn" type="button" class="modal-btn">SALVAR E CONTINUAR (ENTER)</button>
+        <div id="record-display" class="record-tag"></div>
       </div>
     </div>
   </div>
@@ -323,9 +261,10 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    let gameState = 'START';
+    // JOGO INICIA DIRETO NO MODO PLAYING
+    let gameState = 'PLAYING';
+    let modalMode = 'NEXT_LEVEL'; // 'NEXT_LEVEL' ou 'RESTART'
     let level = 1;
-    let savedMaxLevel = 1;
     let score = 0;
     let combo = 1;
     let comboTimer = 0;
@@ -341,7 +280,7 @@
     const player = {
       x: 300, y: 650, speed: 6.8, hp: 100, maxHp: 100,
       shootTimer: 0, weaponLevel: 1, tilt: 0,
-      ultCharge: 0, ultActiveTimer: 0, invulnTimer: 0
+      ultCharge: 0, ultActiveTimer: 0, invulnTimer: 60
     };
 
     let bullets = [];
@@ -352,3 +291,48 @@
     let floatingTexts = [];
     let boss = null;
     const keys = {};
+    let isPointerDown = false;
+
+    const sectorThemes = [
+      { bg1: '#05091c', bg2: '#170729', grid: 'rgba(0, 243, 255, 0.14)', laser: '#00f3ff', enemy: '#ff0055' },
+      { bg1: '#041a14', bg2: '#150624', grid: 'rgba(0, 255, 136, 0.14)', laser: '#00ff88', enemy: '#ffaa00' },
+      { bg1: '#1c0514', bg2: '#070a21', grid: 'rgba(255, 0, 128, 0.16)', laser: '#ffcc00', enemy: '#00e1ff' },
+      { bg1: '#120524', bg2: '#041421', grid: 'rgba(170, 0, 255, 0.16)', laser: '#ff33cc', enemy: '#33ff57' },
+      { bg1: '#1f0e03', bg2: '#0d041a', grid: 'rgba(255, 136, 0, 0.15)', laser: '#00ffff', enemy: '#ff2244' }
+    ];
+
+    const stars3D = [];
+    for (let i = 0; i < 160; i++) {
+      stars3D.push({
+        x: (Math.random() - 0.5) * 1400,
+        y: (Math.random() - 0.5) * 1400,
+        z: Math.random() * 1000 + 10
+      });
+    }
+
+    function getTheme() {
+      const idx = (level - 1) % sectorThemes.length;
+      let c = 0;
+      for (const s of sectorThemes) {
+        if (c === idx) return s;
+        c++;
+      }
+      return { bg1: '#05091c', bg2: '#170729', grid: 'rgba(0, 243, 255, 0.14)', laser: '#00f3ff', enemy: '#ff0055' };
+    }
+
+    // Áudio ativa automaticamente no primeiro movimento ou clique
+    function unlockAudio() {
+      try {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) audioCtx = new AudioContextClass();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        if (!bgmTimer) {
+          const notes = [110, 110, 130.8, 146.8, 110, 110, 164.8, 146.8];
+          bgmTimer = setInterval(() => {
+            if (isMuted || !audioCtx || gameState !== 'PLAYING') return;
+            try {
+              const t = audioCtx.currentTime;
+              const osc = audioCtx.createOscillator();
+              const gain = audioCtx.createGain();
