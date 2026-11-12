@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>War Memenoel — Arcade Edition</title>
+  <title>WAR MEMENOEL — Ultra Graphics Edition</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
-      background: radial-gradient(circle at top, #121629 0%, #050508 100%);
+      background: radial-gradient(circle at center, #0c1024 0%, #020306 100%);
       color: #fff;
       font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       display: flex;
@@ -21,12 +21,12 @@
       width: 100%;
       max-width: 600px;
       height: 100%;
-      max-height: 750px;
-      border: 2px solid rgba(0, 243, 255, 0.6);
-      border-radius: 18px;
+      max-height: 760px;
+      border: 2px solid rgba(0, 243, 255, 0.75);
+      border-radius: 20px;
       overflow: hidden;
-      background: #070810;
-      box-shadow: 0 0 60px rgba(0, 243, 255, 0.25), 0 0 100px rgba(255, 0, 85, 0.15);
+      background: #04050a;
+      box-shadow: 0 0 80px rgba(0, 243, 255, 0.35), 0 0 140px rgba(255, 0, 85, 0.25);
     }
     canvas {
       display: block;
@@ -36,91 +36,137 @@
     }
     #ui-layer {
       position: absolute;
-      top: 0; left: 0; width: 100%;
-      padding: 16px;
+      top: 0; left: 0; width: 100%; height: 100%;
+      padding: 14px;
       pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       z-index: 5;
     }
     .hud-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
-      font-weight: 800;
+      font-size: 12px;
+      font-weight: 900;
       letter-spacing: 0.8px;
-      background: rgba(12, 18, 36, 0.75);
-      backdrop-filter: blur(8px);
-      padding: 10px 16px;
-      border-radius: 24px;
-      border: 1px solid rgba(0, 243, 255, 0.35);
+      background: rgba(8, 13, 28, 0.78);
+      backdrop-filter: blur(12px);
+      padding: 10px 14px;
+      border-radius: 22px;
+      border: 1px solid rgba(0, 243, 255, 0.45);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
     }
-    .hp-bar-container {
-      width: 85px;
-      height: 10px;
+    .bar-wrap {
+      width: 75px;
+      height: 9px;
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
+      border-radius: 5px;
       overflow: hidden;
-      border: 1px solid rgba(0, 243, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       display: inline-block;
       vertical-align: middle;
-      margin-left: 6px;
+      margin-left: 5px;
     }
     #hud-hp-fill {
       width: 100%;
       height: 100%;
       background: linear-gradient(90deg, #ff0055, #00ff88);
-      transition: width 0.2s ease;
+      box-shadow: 0 0 10px #00ff88;
+      transition: width 0.15s ease;
+    }
+    #hud-ult-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff8800, #ffee00);
+      box-shadow: 0 0 10px #ffee00;
+      transition: width 0.15s ease;
+    }
+    .hud-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+    #combo-badge {
+      background: linear-gradient(135deg, #ff0055, #ff7700);
+      padding: 6px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 900;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 20px rgba(255, 0, 85, 0.7);
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    #btn-ult {
+      pointer-events: auto;
+      background: linear-gradient(135deg, #ffaa00, #ff0055);
+      border: 2px solid #fff;
+      color: #fff;
+      font-weight: 900;
+      font-size: 12px;
+      padding: 9px 16px;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(255, 204, 0, 0.9);
+      animation: pulseUlt 0.9s infinite;
+    }
+    @keyframes pulseUlt {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
     }
     #btn-mute {
       pointer-events: auto;
-      background: rgba(0, 243, 255, 0.15);
-      border: 1px solid rgba(0, 243, 255, 0.5);
+      background: rgba(0, 243, 255, 0.18);
+      border: 1px solid rgba(0, 243, 255, 0.55);
       color: #fff;
       padding: 5px 10px;
-      border-radius: 12px;
+      border-radius: 11px;
       cursor: pointer;
     }
     .screen-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at center, rgba(13, 17, 38, 0.65) 0%, rgba(5, 7, 15, 0.88) 100%);
+      background: radial-gradient(circle at center, rgba(12, 16, 36, 0.55) 0%, rgba(3, 5, 12, 0.9) 100%);
       backdrop-filter: blur(4px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 24px;
+      padding: 20px;
       z-index: 99;
     }
     .menu-card {
-      background: rgba(15, 22, 44, 0.78);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(0, 243, 255, 0.35);
-      border-radius: 24px;
+      background: rgba(12, 18, 38, 0.82);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(0, 243, 255, 0.45);
+      border-radius: 26px;
       padding: 28px 24px;
       width: 100%;
       max-width: 420px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.75), inset 0 0 35px rgba(0, 243, 255, 0.12);
     }
     .badge-edition {
       display: inline-block;
-      background: rgba(255, 0, 85, 0.2);
+      background: rgba(255, 0, 85, 0.25);
       border: 1px solid #ff0055;
-      color: #ff6699;
-      font-size: 11px;
-      font-weight: 800;
+      color: #ff80b3;
+      font-size: 10px;
+      font-weight: 900;
       letter-spacing: 2px;
-      padding: 4px 12px;
+      padding: 4px 14px;
       border-radius: 20px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       text-transform: uppercase;
     }
     .hero-emblem {
-      width: 76px;
-      height: 76px;
-      margin: 0 auto 10px auto;
-      filter: drop-shadow(0 0 15px rgba(255, 0, 85, 0.6));
+      width: 78px;
+      height: 78px;
+      margin: 0 auto 8px auto;
+      filter: drop-shadow(0 0 20px rgba(255, 0, 85, 0.8));
     }
     h1 {
       font-size: 38px;
@@ -132,42 +178,42 @@
       background-size: 200% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: gradientFlow 3.5s linear infinite;
-      margin-bottom: 10px;
+      animation: gradientFlow 3s linear infinite;
+      margin-bottom: 8px;
     }
     @keyframes gradientFlow { to { background-position: 200% center; } }
     .subtitle {
-      color: #b8c7e0;
-      font-size: 13.5px;
+      color: #c2d1eb;
+      font-size: 13px;
       line-height: 1.5;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
     .controls-pills {
       display: flex;
       justify-content: center;
-      gap: 8px;
-      margin-bottom: 18px;
+      gap: 6px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
     }
     .pill {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       padding: 5px 10px;
       border-radius: 10px;
-      font-size: 11.5px;
+      font-size: 11px;
       color: #00f3ff;
-      font-weight: 600;
+      font-weight: 700;
     }
     input[type="text"] {
-      background: rgba(7, 10, 22, 0.85);
-      border: 1px solid rgba(0, 243, 255, 0.45);
+      background: rgba(5, 8, 18, 0.9);
+      border: 1px solid rgba(0, 243, 255, 0.55);
       color: #fff;
-      padding: 12px 18px;
+      padding: 12px 16px;
       border-radius: 14px;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 700;
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       outline: none;
       width: 100%;
     }
@@ -180,43 +226,43 @@
     button.action-btn {
       background: linear-gradient(135deg, #ff0055 0%, #ff5500 100%);
       border: none;
-      padding: 15px 24px;
+      padding: 15px 22px;
       color: white;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 900;
       letter-spacing: 1.5px;
       border-radius: 14px;
       cursor: pointer;
       width: 100%;
-      box-shadow: 0 8px 25px rgba(255, 0, 85, 0.45);
+      box-shadow: 0 8px 28px rgba(255, 0, 85, 0.55);
     }
     button.action-btn:active { transform: scale(0.97); }
     button.secondary {
       background: linear-gradient(135deg, #0066ff 0%, #00d4ff 100%);
-      box-shadow: 0 8px 25px rgba(0, 212, 255, 0.35);
+      box-shadow: 0 8px 28px rgba(0, 212, 255, 0.45);
     }
     #leaderboard-box {
-      background: rgba(7, 10, 22, 0.65);
-      border: 1px solid rgba(255, 204, 0, 0.3);
+      background: rgba(5, 8, 18, 0.75);
+      border: 1px solid rgba(255, 204, 0, 0.35);
       border-radius: 14px;
-      padding: 12px 14px;
-      margin-top: 18px;
+      padding: 10px 14px;
+      margin-top: 16px;
       width: 100%;
     }
     #leaderboard-box h3 {
-      font-size: 11px;
+      font-size: 10px;
       letter-spacing: 1.5px;
       color: #ffcc00;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       text-transform: uppercase;
     }
     .lb-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13.5px;
-      font-weight: 700;
-      padding: 4px 0;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 3px 0;
     }
     .hidden { display: none !important; }
   </style>
@@ -224,28 +270,45 @@
 <body>
 
   <div id="game-container">
-    <canvas id="gameCanvas" width="600" height="750"></canvas>
+    <canvas id="gameCanvas" width="600" height="760"></canvas>
     
     <div id="ui-layer">
       <div class="hud-top">
         <div>FASE <span id="hud-level" style="color:#ffcc00;">1</span>/20</div>
         <div>SCORE <span id="hud-score" style="color:#00f3ff;">0</span></div>
         <div>
-          ESCUDO
-          <div class="hp-bar-container"><div id="hud-hp-fill"></div></div>
+          HP<div class="bar-wrap"><div id="hud-hp-fill"></div></div>
+        </div>
+        <div>
+          ULT<div class="bar-wrap"><div id="hud-ult-fill"></div></div>
         </div>
         <button id="btn-mute" type="button">🔊</button>
+      </div>
+
+      <div class="hud-bottom">
+        <div id="combo-badge">COMBO x1</div>
+        <button id="btn-ult" type="button" class="hidden">⚡ DISPARAR SUPER LASER (ESPAÇO)</button>
       </div>
     </div>
 
     <div id="start-screen" class="screen-overlay">
       <div class="menu-card">
-        <div class="badge-edition">20 Níveis • Boss Rush</div>
+        <div class="badge-edition">Ultra Graphics • 20 Setores</div>
         
         <svg class="hero-emblem" viewBox="0 0 100 100">
-          <circle cx="50" cy="56" r="32" fill="#ffffff"/>
-          <circle cx="50" cy="46" r="24" fill="#ffccaa"/>
-          <path d="M26 34 L74 34 L60 6 Z" fill="#ff0044"/>
+          <defs>
+            <linearGradient id="hatG" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ff1a40"/>
+              <stop offset="100%" stop-color="#99001a"/>
+            </linearGradient>
+            <radialGradient id="faceG" cx="40%" cy="35%" r="60%">
+              <stop offset="0%" stop-color="#ffe5d4"/>
+              <stop offset="100%" stop-color="#e09a75"/>
+            </radialGradient>
+          </defs>
+          <circle cx="50" cy="56" r="32" fill="#f1f5f9"/>
+          <circle cx="50" cy="46" r="24" fill="url(#faceG)"/>
+          <path d="M26 34 L74 34 L60 6 Z" fill="url(#hatG)"/>
           <rect x="24" y="30" width="52" height="9" rx="4" fill="#ffffff"/>
           <circle cx="62" cy="7" r="7" fill="#ffffff"/>
           <rect x="30" y="39" width="17" height="9" fill="#090a0f"/>
@@ -257,72 +320,7 @@
         </svg>
 
         <h1>WAR MEMENOEL</h1>
-        <p class="subtitle">Atravesse 20 galáxias neon e derrote o temível Memenoel ao final de cada setor.</p>
+        <p class="subtitle">Gráficos estelares em alta definição, 4 classes de naves inimigas e o temível Memenoel em 20 fases.</p>
         
         <div class="controls-pills">
           <span class="pill">⌨️ Setas / WASD</span>
-          <span class="pill">📱 Arraste na Tela</span>
-          <span class="pill">⚡ Tiro Automático</span>
-        </div>
-
-        <input type="text" id="player-name" placeholder="Digite seu apelido de piloto" maxlength="14">
-        
-        <div class="btn-group">
-          <button id="btn-start" type="button" class="action-btn">🚀 INICIAR MISSÃO</button>
-          <button id="btn-continue" type="button" class="action-btn secondary hidden">⚡ CONTINUAR FASE <span id="saved-lvl">1</span></button>
-        </div>
-
-        <div id="leaderboard-box">
-          <h3>🏆 Melhor Marca do Piloto</h3>
-          <div id="leaderboard-list"></div>
-        </div>
-      </div>
-    </div>
-
-    <div id="end-screen" class="screen-overlay hidden">
-      <div class="menu-card">
-        <div class="badge-edition" id="end-badge">Relatório de Batalha</div>
-        <h1 id="end-title">FIM DE JOGO</h1>
-        <p class="subtitle" id="end-desc">O Memenoel levou a melhor desta vez.</p>
-        <div class="btn-group">
-          <button id="btn-restart" type="button" class="action-btn">🔄 TENTAR NOVAMENTE</button>
-          <button id="btn-menu" type="button" class="action-btn secondary">🏠 TELA INICIAL</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    let gameState = 'START';
-    let level = 1;
-    let savedMaxLevel = 1;
-    let score = 0;
-    let frameCount = 0;
-    let enemiesKilledInLevel = 0;
-    let bossActive = false;
-    let screenShake = 0;
-    let isMuted = false;
-    let audioCtx = null;
-    let bgmTimer = null;
-    let bgmStep = 0;
-
-    const player = {
-      x: 300, y: 650, speed: 6.5, hp: 100, maxHp: 100,
-      shootTimer: 0, weaponLevel: 1
-    };
-
-    let bullets = [];
-    let enemyBullets = [];
-    let enemies = [];
-    let powerups = [];
-    let particles = [];
-    let floatingTexts = [];
-    let boss = null;
-    const keys = {};
-    let isPointerDown = false;
-
-    const galaxyThemes = [
-      { bg1: '#0a0f29', bg2: '#1a0b2e', laser: '#00f3ff', enemy: '#ff0055' },
-      { bg1: '#091f1c', bg2: '#1d0b2b', laser: '#00ff88', enemy: '#ffaa00' },
