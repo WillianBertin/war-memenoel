@@ -47,7 +47,7 @@
       align-items: center;
       font-size: 14px;
       font-weight: bold;
-      background: rgba(10, 15, 30, 0.8);
+      background: rgba(10, 15, 30, 0.85);
       padding: 10px 14px;
       border-radius: 20px;
       border: 1px solid #00f3ff;
@@ -80,7 +80,7 @@
     .screen-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(7, 9, 19, 0.94);
+      background: rgba(7, 9, 19, 0.95);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -155,7 +155,6 @@
       </div>
     </div>
 
-    <!-- Tela Inicial -->
     <div id="start-screen" class="screen-overlay">
       <h1>WAR MEMENOEL</h1>
       <p>Use Setas/WASD ou arraste o dedo/mouse na tela para pilotar e derrotar o Memenoel!</p>
@@ -173,7 +172,6 @@
       </div>
     </div>
 
-    <!-- Tela de Game Over / Vitória -->
     <div id="end-screen" class="screen-overlay hidden">
       <h1 id="end-title">FIM DE JOGO</h1>
       <p id="end-desc">O Memenoel levou a melhor desta vez.</p>
@@ -231,6 +229,38 @@
       });
     }
 
+    function iniciarJogo(faseInicial) {
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('end-screen').classList.add('hidden');
+
+      initAudio();
+      level = faseInicial || 1;
+      score = 0;
+      player.hp = 100;
+      player.x = 300;
+      player.y = 650;
+      player.weaponLevel = Math.min(3, Math.ceil(level / 5));
+
+      prepararFase();
+      gameState = 'PLAYING';
+      requestAnimationFrame(loopPrincipal);
+    }
+
+    function continuarJogo() {
+      iniciarJogo(savedMaxLevel);
+    }
+
+    function reiniciarFase() {
+      iniciarJogo(level);
+    }
+
+    function voltarMenu() {
+      gameState = 'START';
+      document.getElementById('end-screen').classList.add('hidden');
+      document.getElementById('start-screen').classList.remove('hidden');
+      carregarRecorde();
+    }
+
     function initAudio() {
       try {
         if (!audioCtx) {
@@ -283,23 +313,3 @@
         osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.2);
         gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-      } catch (e) {}
-    }
-
-    function alternarSom() {
-      isMuted = !isMuted;
-      document.getElementById('btn-mute').textContent = isMuted ? '🔇' : '🔊';
-    }
-
-    function carregarRecorde() {
-      try {
-        var nick = localStorage.getItem('warMemenoelNick') || '';
-        document.getElementById('player-name').value = nick;
-        var data = JSON.parse(localStorage.getItem('warMemenoelSave') || '{"maxLevel":1,"highScore":0}');
-        savedMaxLevel = data.maxLevel || 1;
-        if (savedMaxLevel > 1) {
-          document.getElementById('saved-lvl').textContent = savedMaxLevel;
-          document.getElementById('btn-continue').classList.remove('hidden');
-        }
