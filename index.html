@@ -6,330 +6,257 @@
   <title>War Memenoel</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    body {
-      background-color: #05060c;
-      color: #ffffff;
-      font-family: Arial, Helvetica, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-    #game-box {
-      position: relative;
-      width: 100%;
-      max-width: 600px;
-      height: 100%;
-      max-height: 760px;
-      border: 2px solid #00f3ff;
-      border-radius: 16px;
-      overflow: hidden;
-      background-color: #080b1a;
-      box-shadow: 0 0 50px rgba(0, 243, 255, 0.3);
-    }
-    canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-      touch-action: none;
-    }
-    #hud {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      right: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(10, 15, 30, 0.85);
-      border: 1px solid #00f3ff;
-      border-radius: 20px;
-      padding: 10px 14px;
-      font-size: 13px;
-      font-weight: bold;
-      pointer-events: none;
-      z-index: 10;
-    }
-    .hp-bg {
-      display: inline-block;
-      width: 80px;
-      height: 10px;
-      background: #222;
-      border-radius: 5px;
-      overflow: hidden;
-      vertical-align: middle;
-      margin-left: 5px;
-    }
-    #hp-bar {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #ff0055, #00ff88);
-    }
-    #btn-sound {
-      pointer-events: auto;
-      background: #112233;
-      border: 1px solid #00f3ff;
-      color: #fff;
-      padding: 4px 10px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    #modal {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(5, 8, 18, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 50;
-    }
-    .card {
-      background: #0d1428;
-      border: 2px solid #00f3ff;
-      border-radius: 20px;
-      padding: 24px;
-      width: 100%;
-      max-width: 380px;
-      text-align: center;
-    }
-    .card h2 {
-      color: #ffcc00;
-      font-size: 26px;
-      margin-bottom: 10px;
-    }
-    .card p {
-      color: #ccd6f6;
-      font-size: 14px;
-      margin-bottom: 16px;
-      line-height: 1.4;
-    }
-    input[type="text"] {
-      user-select: text;
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 2px solid #00f3ff;
-      background: #050814;
-      color: #fff;
-      font-size: 16px;
-      text-align: center;
-      margin-bottom: 14px;
-      outline: none;
-    }
-    .btn-save {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(90deg, #ff0055, #ff6600);
-      color: #fff;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #record-info {
-      margin-top: 12px;
-      font-size: 12px;
-      color: #00ff88;
-    }
+    body { background: #05060c; color: #fff; font-family: Arial, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+    #box { position: relative; width: 100%; max-width: 600px; height: 100%; max-height: 760px; border: 2px solid #00f3ff; border-radius: 16px; overflow: hidden; background: #080b1a; }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+    #hud { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; justify-content: space-between; align-items: center; background: rgba(10, 15, 30, 0.85); border: 1px solid #00f3ff; border-radius: 20px; padding: 10px 14px; font-size: 13px; font-weight: bold; pointer-events: none; z-index: 10; }
+    .hp-bg { display: inline-block; width: 80px; height: 10px; background: #222; border-radius: 5px; overflow: hidden; vertical-align: middle; margin-left: 5px; }
+    #hp-bar { display: block; width: 100%; height: 100%; background: linear-gradient(90deg, #ff0055, #00ff88); }
+    #btn-som { pointer-events: auto; background: #112233; border: 1px solid #00f3ff; color: #fff; padding: 4px 10px; border-radius: 10px; cursor: pointer; }
+    #modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 8, 18, 0.92); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
+    .card { background: #0d1428; border: 2px solid #00f3ff; border-radius: 20px; padding: 24px; width: 100%; max-width: 380px; text-align: center; }
+    .card h2 { color: #ffcc00; font-size: 24px; margin-bottom: 10px; }
+    .card p { color: #ccd6f6; font-size: 14px; margin-bottom: 14px; }
+    input { user-select: text; width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #00f3ff; background: #050814; color: #fff; font-size: 16px; text-align: center; margin-bottom: 14px; outline: none; }
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: linear-gradient(90deg, #ff0055, #ff6600); color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; }
+    #rec { margin-top: 12px; font-size: 12px; color: #00ff88; }
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
-
-  <div id="game-box">
-    <canvas id="canvas" width="600" height="760"></canvas>
-
+  <div id="box">
+    <canvas id="c" width="600" height="760"></canvas>
     <div id="hud">
-      <div>FASE <span id="txt-lvl" style="color:#ffcc00;">1</span>/20</div>
-      <div>PTS <span id="txt-pts" style="color:#00f3ff;">0</span></div>
-      <div>HP <span class="hp-bg"><span id="hp-bar" style="display:block;"></span></span></div>
-      <button id="btn-sound" type="button">SOM</button>
+      <div>FASE <span id="lvl" style="color:#ffcc00;">1</span>/20</div>
+      <div>PTS <span id="pts" style="color:#00f3ff;">0</span></div>
+      <div>HP <span class="hp-bg"><span id="hp-bar"></span></span></div>
+      <button id="btn-som" type="button">SOM</button>
     </div>
-
     <div id="modal" class="hidden">
       <div class="card">
-        <h2 id="m-title">FASE CONCLUIDA!</h2>
-        <p id="m-desc">Digite seu apelido de piloto para salvar:</p>
-        <input type="text" id="inp-name" placeholder="Seu nome aqui" maxlength="14">
-        <button id="btn-next" type="button" class="btn-save">SALVAR E CONTINUAR</button>
-        <div id="record-info"></div>
+        <h2 id="m-tit">FASE VENCIDA!</h2>
+        <p id="m-desc">Digite seu apelido de piloto:</p>
+        <input type="text" id="nome" placeholder="Seu nome" maxlength="14">
+        <button id="btn-ok" type="button" class="btn">SALVAR E CONTINUAR</button>
+        <div id="rec"></div>
       </div>
     </div>
   </div>
-
   <script>
-    var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext('2d');
-
-    var estado = 'JOGANDO';
-    var modoModal = 'PROXIMA';
-    var fase = 1;
-    var pontos = 0;
-    var quadro = 0;
-    var abatidos = 0;
-    var chefeAtivo = false;
-    var tremor = 0;
-    var mudo = false;
-    var audioCtx = null;
-
-    var nave = { x: 300, y: 650, vel: 6.5, hp: 100, tiroTimer: 0, arma: 1 };
-    var tiros = [];
-    var tirosChefe = [];
-    var inimigos = [];
-    var itens = [];
-    var particulas = [];
-    var textos = [];
-    var chefe = null;
-    var teclas = {};
-    var tocando = false;
-
+    var c = document.getElementById('c'), ctx = c.getContext('2d');
+    var estado = 'JOGANDO', modo = 'PROX', fase = 1, pontos = 0, q = 0, abates = 0, chefeOn = false, mudo = false, ac = null;
+    var nave = { x: 300, y: 650, hp: 100, t: 0, arma: 1 };
+    var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], chefe = null, teclas = {}, drag = false;
     var estrelas = [];
-    for (var i = 0; i < 90; i++) {
-      estrelas.push({
-        x: Math.random() * 600,
-        y: Math.random() * 760,
-        tam: Math.random() * 2.5 + 0.5,
-        vel: Math.random() * 3 + 1
-      });
-    }
-
-    function iniciarSom() {
+    for (var i = 0; i < 70; i++) estrelas.push({ x: Math.random() * 600, y: Math.random() * 760, v: Math.random() * 3 + 1 });
+    function som(f1, f2, tipo, d) {
+      if (mudo) return;
       try {
-        if (!audioCtx) {
-          var AC = window.AudioContext || window.webkitAudioContext;
-          if (AC) audioCtx = new AC();
-        }
-        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        if (!ac) { var A = window.AudioContext || window.webkitAudioContext; if (A) ac = new A(); }
+        if (ac.state === 'suspended') ac.resume();
+        var o = ac.createOscillator(), g = ac.createGain();
+        o.type = tipo; o.frequency.setValueAtTime(f1, ac.currentTime);
+        o.frequency.exponentialRampToValueAtTime(f2, ac.currentTime + d);
+        g.gain.setValueAtTime(0.05, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + d);
+        o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime + d);
       } catch (e) {}
     }
 
-    function somTiro() {
-      if (mudo || !audioCtx || audioCtx.state !== 'running') return;
+    function salvar() {
       try {
-        var o = audioCtx.createOscillator();
-        var g = audioCtx.createGain();
-        o.type = 'sawtooth';
-        o.frequency.setValueAtTime(850, audioCtx.currentTime);
-        o.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.08);
-        g.gain.setValueAtTime(0.04, audioCtx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-        o.connect(g); g.connect(audioCtx.destination);
-        o.start(); o.stop(audioCtx.currentTime + 0.08);
+        var n = document.getElementById('nome').value.trim() || localStorage.getItem('wm_n') || 'Piloto';
+        localStorage.setItem('wm_n', n);
+        var r = JSON.parse(localStorage.getItem('wm_r') || '{"f":1,"p":0}');
+        var mf = Math.max(r.f || 1, fase), mp = Math.max(r.p || 0, pontos);
+        localStorage.setItem('wm_r', JSON.stringify({ f: mf, p: mp }));
+        document.getElementById('rec').textContent = 'Recorde de ' + n + ': Fase ' + mf + ' | ' + mp + ' pts';
       } catch (e) {}
     }
 
-    function somExplosao() {
-      if (mudo || !audioCtx || audioCtx.state !== 'running') return;
-      try {
-        var o = audioCtx.createOscillator();
-        var g = audioCtx.createGain();
-        o.type = 'square';
-        o.frequency.setValueAtTime(160, audioCtx.currentTime);
-        o.frequency.exponentialRampToValueAtTime(25, audioCtx.currentTime + 0.2);
-        g.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-        o.connect(g); g.connect(audioCtx.destination);
-        o.start(); o.stop(audioCtx.currentTime + 0.2);
-      } catch (e) {}
-    }
-
-    function salvarDados() {
-      try {
-        var inp = document.getElementById('inp-name');
-        var nome = inp.value.trim() || localStorage.getItem('wm_nome') || 'Piloto';
-        localStorage.setItem('wm_nome', nome);
-        var rec = JSON.parse(localStorage.getItem('wm_rec') || '{"f":1,"p":0}');
-        var maxF = Math.max(rec.f || 1, fase);
-        var maxP = Math.max(rec.p || 0, pontos);
-        localStorage.setItem('wm_rec', JSON.stringify({ f: maxF, p: maxP }));
-        document.getElementById('record-info').textContent = 'Recorde de ' + nome + ': Fase ' + maxF + ' - ' + maxP + ' pts';
-      } catch (e) {}
-    }
-
-    function abrirModal(modo, titulo, desc, btnTexto) {
-      estado = 'PAUSA';
-      modoModal = modo;
-      document.getElementById('m-title').textContent = titulo;
+    function abrirModal(m, tit, desc, btxt) {
+      estado = 'PAUSA'; modo = m;
+      document.getElementById('m-tit').textContent = tit;
       document.getElementById('m-desc').textContent = desc;
-      document.getElementById('btn-next').textContent = btnTexto;
-      try {
-        document.getElementById('inp-name').value = localStorage.getItem('wm_nome') || '';
-      } catch (e) {}
-      salvarDados();
+      document.getElementById('btn-ok').textContent = btxt;
+      try { document.getElementById('nome').value = localStorage.getItem('wm_n') || ''; } catch (e) {}
+      salvar();
       document.getElementById('modal').classList.remove('hidden');
-      setTimeout(function() { document.getElementById('inp-name').focus(); }, 50);
+      setTimeout(function() { document.getElementById('nome').focus(); }, 50);
     }
 
-    function confirmarModal() {
-      salvarDados();
+    function fecharModal() {
+      salvar();
       document.getElementById('modal').classList.add('hidden');
-      if (modoModal === 'PROXIMA') {
-        fase++;
-        nave.hp = Math.min(100, nave.hp + 40);
-      } else {
-        fase = 1;
-        pontos = 0;
-        nave.hp = 100;
-        nave.x = 300;
-        nave.y = 650;
-        nave.arma = 1;
-      }
-      prepararFase();
-      estado = 'JOGANDO';
+      if (modo === 'PROX') { fase++; nave.hp = Math.min(100, nave.hp + 40); }
+      else { fase = 1; pontos = 0; nave.hp = 100; nave.x = 300; nave.y = 650; nave.arma = 1; }
+      tiros = []; tChefe = []; inimigos = []; itens = []; abates = 0; chefeOn = false; chefe = null;
+      atualizarHUD(); estado = 'JOGANDO';
     }
 
-    function prepararFase() {
-      tiros = [];
-      tirosChefe = [];
-      inimigos = [];
-      itens = [];
-      abatidos = 0;
-      chefeAtivo = false;
-      chefe = null;
-      textos.push({ x: 300, y: 360, txt: 'FASE ' + fase + ' / 20', cor: '#ffcc00', vida: 1.0 });
-      atualizarHUD();
-    }
-
-    function explodir(x, y, cor, qtd) {
-      for (var i = 0; i < qtd; i++) {
-        var a = Math.random() * Math.PI * 2;
-        var v = Math.random() * 5 + 1;
-        particulas.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, vida: 1.0, cor: cor });
-      }
-    }
-
-    function criarChefe() {
-      chefeAtivo = true;
-      tremor = 12;
-      var vidaMax = 180 + (fase * 90);
-      chefe = { x: 300, y: -100, alvoY: 150, hp: vidaMax, maxHp: vidaMax, dir: 1, vel: 2 + fase * 0.2, timer: 0 };
-      textos.push({ x: 300, y: 230, txt: 'MEMENOEL CHEGANDO!', cor: '#ff0055', vida: 1.0 });
-    }
-
-    document.getElementById('btn-next').addEventListener('click', confirmarModal);
-    document.getElementById('inp-name').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.keyCode === 13) {
-        e.preventDefault();
-        confirmarModal();
-      }
-    });
-    document.getElementById('btn-sound').addEventListener('click', function() {
-      mudo = !mudo;
-      this.textContent = mudo ? 'MUDO' : 'SOM';
-    });
-
-    window.addEventListener('keydown', function(e) {
-      iniciarSom();
-      teclas[e.code] = true;
-    });
-    window.addEventListener('keyup', function(e) { teclas[e.code] = false; });
+    document.getElementById('btn-ok').onclick = fecharModal;
+    document.getElementById('nome').onkeydown = function(e) { if (e.key === 'Enter') { e.preventDefault(); fecharModal(); } };
+    document.getElementById('btn-som').onclick = function() { mudo = !mudo; this.textContent = mudo ? 'MUDO' : 'SOM'; };
+    window.onkeydown = function(e) { teclas[e.code] = true; };
+    window.onkeyup = function(e) { teclas[e.code] = false; };
 
     function mover(cx, cy) {
-      iniciarSom();
       if (estado !== 'JOGANDO') return;
-      var r = canvas.getBoundingClientRect();
-      var nx = ((cx - r.left) / r.width) * 600;
-      var ny = ((cy - r.top) / r.height) * 760 - 30;
+      var r = c.getBoundingClientRect();
+      nave.x = Math.max(30, Math.min(570, ((cx - r.left) / r.width) * 600));
+      nave.y = Math.max(60, Math.min(720, ((cy - r.top) / r.height) * 760 - 30));
+    }
+    c.onmousedown = function(e) { drag = true; mover(e.clientX, e.clientY); };
+    window.onmouseup = function() { drag = false; };
+    c.onmousemove = function(e) { if (drag) mover(e.clientX, e.clientY); };
+    c.ontouchstart = function(e) { for (var t of e.touches) { mover(t.clientX, t.clientY); break; } };
+    c.ontouchmove = function(e) { for (var t of e.touches) { mover(t.clientX, t.clientY); break; } };
+
+    function atualizarHUD() {
+      document.getElementById('lvl').textContent = fase;
+      document.getElementById('pts').textContent = pontos;
+      document.getElementById('hp-bar').style.width = Math.max(0, nave.hp) + '%';
+    }
+
+    function loop() {
+      q++;
+      for (var s of estrelas) { s.y += s.v; if (s.y > 760) { s.y = 0; s.x = Math.random() * 600; } }
+
+      if (estado === 'JOGANDO') {
+        if ((teclas.ArrowLeft || teclas.KeyA) && nave.x > 30) nave.x -= 6.5;
+        if ((teclas.ArrowRight || teclas.KeyD) && nave.x < 570) nave.x += 6.5;
+        if ((teclas.ArrowUp || teclas.KeyW) && nave.y > 60) nave.y -= 6.5;
+        if ((teclas.ArrowDown || teclas.KeyS) && nave.y < 720) nave.y += 6.5;
+
+        nave.t++;
+        if (nave.t >= 11) {
+          nave.t = 0; som(850, 120, 'sawtooth', 0.08);
+          if (nave.arma === 1) tiros.push({ x: nave.x, y: nave.y - 25, vx: 0, vy: -12, v: 1 });
+          else {
+            tiros.push({ x: nave.x - 14, y: nave.y - 18, vx: 0, vy: -12, v: 1 });
+            tiros.push({ x: nave.x + 14, y: nave.y - 18, vx: 0, vy: -12, v: 1 });
+          }
+        }
+
+        for (var b of tiros) { b.x += b.vx; b.y += b.vy; if (b.y < -20) b.v = 0; }
+
+        if (!chefeOn && abates < 8 + fase * 2) {
+          if (q % Math.max(22, 58 - fase * 2) === 0) {
+            inimigos.push({ x: Math.random() * 520 + 40, y: -30, hp: 1 + Math.floor(fase / 4), vy: 2.5 + fase * 0.15, v: 1 });
+          }
+        } else if (!chefeOn && inimigos.length === 0) {
+          chefeOn = true;
+          var vm = 160 + fase * 80;
+          chefe = { x: 300, y: -90, hp: vm, max: vm, dir: 1, t: 0 };
+        }
+
+        for (var en of inimigos) {
+          en.y += en.vy;
+          for (var b of tiros) {
+            if (b.v && Math.hypot(b.x - en.x, b.y - en.y) < 25) {
+              en.hp--; b.v = 0;
+              if (en.hp <= 0) {
+                som(160, 25, 'square', 0.2);
+                for (var p = 0; p < 10; p++) parts.push({ x: en.x, y: en.y, vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8, vida: 1 });
+                if (Math.random() < 0.25) itens.push({ x: en.x, y: en.y, tipo: Math.random() < 0.5 ? 'HP' : 'ARMA', v: 1 });
+                en.v = 0; abates++; pontos += 50 * fase; atualizarHUD(); break;
+              }
+            }
+          }
+          if (en.v && Math.hypot(nave.x - en.x, nave.y - en.y) < 32) {
+            som(160, 25, 'square', 0.2); nave.hp -= 20; en.v = 0; atualizarHUD();
+          }
+          if (en.y > 780) en.v = 0;
+        }
+
+        for (var it of itens) {
+          it.y += 2.5;
+          if (Math.hypot(nave.x - it.x, nave.y - it.y) < 35) {
+            if (it.tipo === 'HP') nave.hp = Math.min(100, nave.hp + 35);
+            else nave.arma = 2;
+            atualizarHUD(); it.v = 0;
+          }
+          if (it.y > 780) it.v = 0;
+        }
+
+        if (chefeOn && chefe) {
+          if (chefe.y < 150) chefe.y += 2;
+          else { chefe.x += (2 + fase * 0.2) * chefe.dir; if (chefe.x > 520 || chefe.x < 80) chefe.dir *= -1; }
+          chefe.t++;
+          if (chefe.t >= Math.max(25, 55 - fase * 2)) {
+            chefe.t = 0;
+            for (var k = -1; k <= 1; k++) tChefe.push({ x: chefe.x, y: chefe.y + 35, vx: k * 1.6, vy: 4.5 + fase * 0.15, v: 1 });
+          }
+          for (var b of tiros) {
+            if (b.v && Math.hypot(b.x - chefe.x, b.y - chefe.y) < 60) { chefe.hp -= 10; b.v = 0; }
+          }
+          if (chefe.hp <= 0) {
+            som(140, 20, 'square', 0.35); pontos += 1000 * fase; chefeOn = false; chefe = null; atualizarHUD();
+            if (fase < 20) abrirModal('PROX', 'FASE ' + fase + ' CONCLUIDA!', 'Pontos: ' + pontos, 'IR PARA FASE ' + (fase + 1));
+            else abrirModal('REIN', 'VOCE VENCEU AS 20 FASES!', 'Pontuacao Final: ' + pontos, 'JOGAR NOVAMENTE');
+          }
+        }
+
+        for (var tc of tChefe) {
+          tc.x += tc.vx; tc.y += tc.vy;
+          if (Math.hypot(tc.x - nave.x, tc.y - nave.y) < 18) { som(160, 25, 'square', 0.2); nave.hp -= 12; tc.v = 0; atualizarHUD(); }
+          if (tc.y > 780) tc.v = 0;
+        }
+
+        for (var p of parts) { p.x += p.vx; p.y += p.vy; p.vida -= 0.04; }
+        tiros = tiros.filter(function(x) { return x.v; });
+        inimigos = inimigos.filter(function(x) { return x.v; });
+        tChefe = tChefe.filter(function(x) { return x.v; });
+        itens = itens.filter(function(x) { return x.v; });
+        parts = parts.filter(function(x) { return x.vida > 0; });
+
+        if (nave.hp <= 0) {
+          som(140, 20, 'square', 0.35);
+          abrirModal('REIN', 'NAVE DESTRUIDA!', 'Voce chegou na Fase ' + fase + ' com ' + pontos + ' pts.', 'SALVAR E RECOMECAR');
+        }
+      }
+
+      // DESENHO
+      ctx.fillStyle = '#070b19'; ctx.fillRect(0, 0, 600, 760);
+      ctx.fillStyle = '#fff';
+      for (var s of estrelas) ctx.fillRect(s.x, s.y, 2, 2);
+
+      for (var it of itens) {
+        ctx.fillStyle = it.tipo === 'HP' ? '#00ff88' : '#ffcc00';
+        ctx.beginPath(); ctx.arc(it.x, it.y, 13, 0, Math.PI * 2); ctx.fill();
+      }
+
+      if (nave.hp > 0) {
+        ctx.fillStyle = '#00f3ff';
+        ctx.beginPath(); ctx.moveTo(nave.x, nave.y - 28); ctx.lineTo(nave.x + 25, nave.y + 18); ctx.lineTo(nave.x, nave.y + 10); ctx.lineTo(nave.x - 25, nave.y + 18); ctx.closePath(); ctx.fill();
+      }
+
+      ctx.fillStyle = '#00f3ff';
+      for (var b of tiros) ctx.fillRect(b.x - 3, b.y - 10, 6, 18);
+
+      ctx.fillStyle = '#ff0055';
+      for (var en of inimigos) ctx.fillRect(en.x - 14, en.y - 14, 28, 28);
+
+      if (chefeOn && chefe) {
+        ctx.save(); ctx.translate(chefe.x, chefe.y);
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 12, 54, 0, Math.PI, false); ctx.fill();
+        ctx.fillStyle = '#ffccaa'; ctx.beginPath(); ctx.arc(0, -6, 40, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#000'; ctx.fillRect(-32, -16, 26, 12); ctx.fillRect(6, -16, 26, 12);
+        ctx.fillStyle = '#e60026'; ctx.beginPath(); ctx.moveTo(-40, -24); ctx.lineTo(40, -24); ctx.lineTo(16, -78); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.fillRect(-42, -30, 84, 12);
+        ctx.fillStyle = '#333'; ctx.fillRect(-55, -100, 110, 8);
+        ctx.fillStyle = '#ff0055'; ctx.fillRect(-55, -100, Math.max(0, 110 * (chefe.hp / chefe.max)), 8);
+        ctx.restore();
+      }
+
+      ctx.fillStyle = '#ffcc00';
+      for (var tc of tChefe) ctx.fillRect(tc.x - 6, tc.y - 6, 12, 12);
+
+      ctx.fillStyle = '#ff6600';
+      for (var p of parts) ctx.fillRect(p.x, p.y, 4, 4);
+
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
