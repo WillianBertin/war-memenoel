@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>WAR MEMENOEL 3D — WebGL Edition</title>
-  <script src="https://cloudflare.com"></script>
+  <title>WAR MEMENOEL 3D — Arcade Edition</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
@@ -29,7 +28,7 @@
       background: #03040a;
       box-shadow: 0 0 80px rgba(0, 243, 255, 0.35), 0 0 140px rgba(255, 0, 85, 0.25);
     }
-    #webgl-mount {
+    canvas {
       width: 100%;
       height: 100%;
       display: block;
@@ -52,8 +51,8 @@
       font-size: 12px;
       font-weight: 900;
       letter-spacing: 0.8px;
-      background: rgba(8, 13, 28, 0.75);
-      backdrop-filter: blur(12px);
+      background: rgba(8, 13, 28, 0.78);
+      backdrop-filter: blur(10px);
       padding: 10px 14px;
       border-radius: 22px;
       border: 1px solid rgba(0, 243, 255, 0.45);
@@ -143,27 +142,11 @@
       border-radius: 11px;
       cursor: pointer;
     }
-    #banner-msg {
-      position: absolute;
-      top: 42%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 26px;
-      font-weight: 900;
-      text-align: center;
-      color: #ffcc00;
-      text-shadow: 0 0 20px #ff0055, 0 0 40px #000;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s;
-      z-index: 20;
-      width: 90%;
-    }
     .screen-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at center, rgba(10, 14, 32, 0.4) 0%, rgba(2, 4, 10, 0.85) 100%);
-      backdrop-filter: blur(3px);
+      background: radial-gradient(circle at center, rgba(10, 14, 32, 0.5) 0%, rgba(2, 4, 10, 0.88) 100%);
+      backdrop-filter: blur(4px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -173,14 +156,13 @@
       z-index: 99;
     }
     .menu-card {
-      background: rgba(12, 18, 38, 0.86);
-      backdrop-filter: blur(18px);
+      background: rgba(12, 18, 38, 0.88);
       border: 1px solid rgba(0, 243, 255, 0.5);
       border-radius: 24px;
       padding: 24px 20px;
       width: 100%;
       max-width: 400px;
-      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85), inset 0 0 30px rgba(0, 243, 255, 0.12);
+      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85);
     }
     h1 {
       font-size: 34px;
@@ -212,26 +194,22 @@
       font-size: 16px;
       font-weight: 800;
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       outline: none;
       width: 100%;
       box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
     }
-    input[type="text"]:focus {
-      border-color: #ffcc00;
-      box-shadow: 0 0 25px rgba(255, 204, 0, 0.5);
-    }
     .enter-hint {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 900;
       color: #ffcc00;
       letter-spacing: 1px;
       margin-bottom: 14px;
-      animation: blinkHint 1.2s infinite;
-    }
-    @keyframes blinkHint {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.45; }
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 10px;
+      background: rgba(255, 204, 0, 0.12);
+      border: 1px solid rgba(255, 204, 0, 0.4);
     }
     .controls-pills {
       display: flex;
@@ -277,8 +255,7 @@
 <body>
 
   <div id="game-container">
-    <div id="webgl-mount"></div>
-    <div id="banner-msg">SETOR 1</div>
+    <canvas id="gameCanvas" width="600" height="760"></canvas>
     
     <div id="ui-layer">
       <div>
@@ -302,23 +279,21 @@
 
       <div class="hud-bottom">
         <div id="combo-badge">COMBO x1</div>
-        <button id="btn-ult" type="button" class="hidden">⚡ DISPARAR SUPER LASER 3D</button>
+        <button id="btn-ult" type="button" class="hidden">⚡ DISPARAR SUPER LASER</button>
       </div>
     </div>
 
-    <!-- TELA INICIAL DIRETA (SEM BOTÃO, APERTE ENTER) -->
+    <!-- TELA INICIAL -->
     <div id="start-screen" class="screen-overlay">
       <div class="menu-card">
         <h1>WAR MEMENOEL 3D</h1>
-        <p class="subtitle">Digite seu nome de piloto abaixo e pressione <strong>ENTER</strong> para decolar!</p>
+        <p class="subtitle">Digite seu nome de piloto e aperte <strong>ENTER</strong> para decolar!</p>
 
-        <form id="start-form">
-          <input type="text" id="player-name" placeholder="Digite seu nome aqui..." maxlength="14" autofocus autocomplete="off">
-          <div class="enter-hint">⏎ PRESSIONE ENTER PARA JOGAR</div>
-        </form>
+        <input type="text" id="player-name" placeholder="Digite seu nome aqui..." maxlength="14" autofocus autocomplete="off">
+        <div id="start-trigger" class="enter-hint">⏎ APERTE ENTER (OU CLIQUE AQUI)</div>
 
         <div id="continue-hint" class="hidden" style="font-size: 12px; color: #00ff88; margin-bottom: 8px; font-weight: bold;">
-          Pressione Shift + Enter para continuar da Fase <span id="saved-lvl">1</span>
+          Shift + Enter: Continuar Fase <span id="saved-lvl">1</span>
         </div>
 
         <div class="controls-pills">
@@ -338,11 +313,42 @@
     <div id="end-screen" class="screen-overlay hidden">
       <div class="menu-card">
         <h1 id="end-title">FIM DE JOGO</h1>
-        <p class="subtitle" id="end-desc">O Memenoel 3D levou a melhor desta vez.</p>
-        <div class="enter-hint">⏎ PRESSIONE ENTER PARA JOGAR NOVAMENTE</div>
+        <p class="subtitle" id="end-desc">O Memenoel levou a melhor desta vez.</p>
+        <div id="restart-trigger" class="enter-hint">⏎ APERTE ENTER PARA JOGAR NOVAMENTE</div>
       </div>
     </div>
   </div>
 
   <script>
-    const mount = document.getElementById('webgl-mount');
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let gameState = 'START';
+    let level = 1;
+    let savedMaxLevel = 1;
+    let score = 0;
+    let combo = 1;
+    let comboTimer = 0;
+    let frameCount = 0;
+    let enemiesKilled = 0;
+    let bossActive = false;
+    let screenShake = 0;
+    let isMuted = false;
+    let audioCtx = null;
+    let bgmTimer = null;
+    let bgmStep = 0;
+
+    const player = {
+      x: 300, y: 650, speed: 6.8, hp: 100, maxHp: 100,
+      shootTimer: 0, weaponLevel: 1, tilt: 0,
+      ultCharge: 0, ultActiveTimer: 0, invulnTimer: 0
+    };
+
+    let bullets = [];
+    let enemyBullets = [];
+    let enemies = [];
+    let powerups = [];
+    let particles = [];
+    let floatingTexts = [];
+    let boss = null;
+    const keys = {};
