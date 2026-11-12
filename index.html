@@ -3,336 +3,339 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>WAR MEMENOEL 3D — Direct Play</title>
+  <title>War Memenoel</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
-      background: #020308;
-      color: #fff;
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #05060c;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
       overflow: hidden;
     }
-    #game-container {
+    #game-box {
       position: relative;
       width: 100%;
-      max-width: 650px;
+      max-width: 600px;
       height: 100%;
-      max-height: 800px;
-      border: 2px solid rgba(0, 243, 255, 0.75);
-      border-radius: 20px;
+      max-height: 760px;
+      border: 2px solid #00f3ff;
+      border-radius: 16px;
       overflow: hidden;
-      background: #03040a;
-      box-shadow: 0 0 80px rgba(0, 243, 255, 0.35), 0 0 140px rgba(255, 0, 85, 0.25);
+      background-color: #080b1a;
+      box-shadow: 0 0 50px rgba(0, 243, 255, 0.3);
     }
     canvas {
+      display: block;
       width: 100%;
       height: 100%;
-      display: block;
       touch-action: none;
     }
-    #ui-layer {
+    #hud {
       position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      padding: 14px;
-      pointer-events: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      z-index: 5;
-    }
-    .hud-top {
+      top: 12px;
+      left: 12px;
+      right: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 0.8px;
-      background: rgba(8, 13, 28, 0.78);
-      backdrop-filter: blur(10px);
+      background: rgba(10, 15, 30, 0.85);
+      border: 1px solid #00f3ff;
+      border-radius: 20px;
       padding: 10px 14px;
-      border-radius: 22px;
-      border: 1px solid rgba(0, 243, 255, 0.45);
+      font-size: 13px;
+      font-weight: bold;
+      pointer-events: none;
+      z-index: 10;
     }
-    .bar-wrap {
-      width: 72px;
-      height: 9px;
-      background: rgba(255, 255, 255, 0.12);
+    .hp-bg {
+      display: inline-block;
+      width: 80px;
+      height: 10px;
+      background: #222;
       border-radius: 5px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      display: inline-block;
       vertical-align: middle;
       margin-left: 5px;
     }
-    #hud-hp-fill {
+    #hp-bar {
       width: 100%;
       height: 100%;
       background: linear-gradient(90deg, #ff0055, #00ff88);
-      transition: width 0.15s ease;
     }
-    #hud-ult-fill {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #ff8800, #ffee00);
-      transition: width 0.15s ease;
-    }
-    #boss-hud {
-      margin-top: 10px;
-      background: rgba(20, 5, 15, 0.85);
-      border: 1px solid #ff0055;
-      border-radius: 14px;
-      padding: 8px 14px;
-      text-align: center;
-    }
-    #boss-name {
-      font-size: 12px;
-      font-weight: 900;
-      color: #ffcc00;
-      letter-spacing: 1.5px;
-      margin-bottom: 5px;
-    }
-    .boss-bar-bg {
-      width: 100%;
-      height: 10px;
-      background: #1a0510;
-      border-radius: 5px;
-      overflow: hidden;
-    }
-    #boss-hp-fill {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #ff0055, #ffaa00);
-      transition: width 0.1s linear;
-    }
-    .hud-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    #combo-badge {
-      background: linear-gradient(135deg, #ff0055, #ff7700);
-      padding: 6px 14px;
-      border-radius: 14px;
-      font-size: 13px;
-      font-weight: 900;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    #btn-ult {
+    #btn-sound {
       pointer-events: auto;
-      background: linear-gradient(135deg, #ffaa00, #ff0055);
-      border: 2px solid #fff;
+      background: #112233;
+      border: 1px solid #00f3ff;
       color: #fff;
-      font-weight: 900;
-      font-size: 12px;
-      padding: 9px 16px;
-      border-radius: 16px;
+      padding: 4px 10px;
+      border-radius: 10px;
       cursor: pointer;
     }
-    #btn-mute {
-      pointer-events: auto;
-      background: rgba(0, 243, 255, 0.18);
-      border: 1px solid rgba(0, 243, 255, 0.55);
-      color: #fff;
-      padding: 5px 10px;
-      border-radius: 11px;
-      cursor: pointer;
-    }
-
-    /* PAINEL QUE APARECE APENAS AO PASSAR DE FASE OU MORRER */
-    .modal-overlay {
+    #modal {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(3, 5, 14, 0.85);
-      backdrop-filter: blur(6px);
+      background: rgba(5, 8, 18, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
       padding: 20px;
-      z-index: 99;
+      z-index: 50;
     }
-    .modal-card {
-      background: rgba(12, 18, 38, 0.92);
+    .card {
+      background: #0d1428;
       border: 2px solid #00f3ff;
-      border-radius: 22px;
-      padding: 24px 20px;
+      border-radius: 20px;
+      padding: 24px;
       width: 100%;
-      max-width: 390px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+      max-width: 380px;
+      text-align: center;
     }
-    .modal-card h2 {
-      font-size: 28px;
-      font-weight: 900;
+    .card h2 {
       color: #ffcc00;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      text-shadow: 0 0 15px rgba(255, 0, 85, 0.7);
+      font-size: 26px;
+      margin-bottom: 10px;
     }
-    .modal-card p {
-      font-size: 13.5px;
-      color: #c2d1eb;
-      margin-bottom: 14px;
+    .card p {
+      color: #ccd6f6;
+      font-size: 14px;
+      margin-bottom: 16px;
       line-height: 1.4;
     }
     input[type="text"] {
       user-select: text;
-      background: #060916;
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
       border: 2px solid #00f3ff;
+      background: #050814;
       color: #fff;
-      padding: 12px 14px;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 800;
+      font-size: 16px;
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       outline: none;
-      width: 100%;
     }
-    .modal-btn {
-      background: linear-gradient(135deg, #ff0055, #ff6600);
+    .btn-save {
+      width: 100%;
+      padding: 14px;
       border: none;
-      padding: 14px 20px;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 900;
       border-radius: 12px;
+      background: linear-gradient(90deg, #ff0055, #ff6600);
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
-      width: 100%;
-      letter-spacing: 1px;
     }
-    .record-tag {
+    #record-info {
       margin-top: 12px;
       font-size: 12px;
       color: #00ff88;
-      font-weight: 700;
+    }
+    #error-box {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      background: #cc0022;
+      color: #fff;
+      padding: 8px;
+      font-size: 12px;
+      border-radius: 8px;
+      display: none;
+      z-index: 100;
     }
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-  <div id="game-container">
-    <canvas id="gameCanvas" width="600" height="760"></canvas>
-    
-    <div id="ui-layer">
-      <div>
-        <div class="hud-top">
-          <div>FASE <span id="hud-level" style="color:#ffcc00;">1</span>/20</div>
-          <div>SCORE <span id="hud-score" style="color:#00f3ff;">0</span></div>
-          <div>
-            HP<div class="bar-wrap"><div id="hud-hp-fill"></div></div>
-          </div>
-          <div>
-            ULT<div class="bar-wrap"><div id="hud-ult-fill"></div></div>
-          </div>
-          <button id="btn-mute" type="button">🔊</button>
-        </div>
+  <div id="game-box">
+    <canvas id="canvas" width="600" height="760"></canvas>
 
-        <div id="boss-hud" class="hidden">
-          <div id="boss-name">👑 MEMENOEL 3D — NÍVEL 1</div>
-          <div class="boss-bar-bg"><div id="boss-hp-fill"></div></div>
-        </div>
-      </div>
+    <div id="hud">
+      <div>FASE <span id="txt-lvl" style="color:#ffcc00;">1</span>/20</div>
+      <div>PTS <span id="txt-pts" style="color:#00f3ff;">0</span></div>
+      <div>HP <span class="hp-bg"><span id="hp-bar" style="display:block;"></span></span></div>
+      <button id="btn-sound" type="button">SOM</button>
+    </div>
 
-      <div class="hud-bottom">
-        <div id="combo-badge">COMBO x1</div>
-        <button id="btn-ult" type="button" class="hidden">⚡ SUPER LASER (ESPAÇO)</button>
+    <div id="modal" class="hidden">
+      <div class="card">
+        <h2 id="m-title">FASE CONCLUIDA!</h2>
+        <p id="m-desc">Digite seu apelido de piloto para salvar:</p>
+        <input type="text" id="inp-name" placeholder="Seu nome aqui" maxlength="14">
+        <button id="btn-next" type="button" class="btn-save">SALVAR E CONTINUAR</button>
+        <div id="record-info"></div>
       </div>
     </div>
 
-    <!-- PAINEL DE NOME (SÓ APARECE AO PASSAR DE NÍVEL OU MORRER) -->
-    <div id="status-modal" class="modal-overlay hidden">
-      <div class="modal-card">
-        <h2 id="modal-title">SETOR CONCLUÍDO!</h2>
-        <p id="modal-desc">Digite seu apelido de piloto para salvar seu progresso e continuar.</p>
-        <input type="text" id="player-name" placeholder="Seu apelido de piloto" maxlength="14" autocomplete="off">
-        <button id="modal-action-btn" type="button" class="modal-btn">SALVAR E CONTINUAR (ENTER)</button>
-        <div id="record-display" class="record-tag"></div>
-      </div>
-    </div>
+    <div id="error-box"></div>
   </div>
 
   <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-
-    // JOGO INICIA DIRETO NO MODO PLAYING
-    let gameState = 'PLAYING';
-    let modalMode = 'NEXT_LEVEL'; // 'NEXT_LEVEL' ou 'RESTART'
-    let level = 1;
-    let score = 0;
-    let combo = 1;
-    let comboTimer = 0;
-    let frameCount = 0;
-    let enemiesKilled = 0;
-    let bossActive = false;
-    let screenShake = 0;
-    let isMuted = false;
-    let audioCtx = null;
-    let bgmTimer = null;
-    let bgmStep = 0;
-
-    const player = {
-      x: 300, y: 650, speed: 6.8, hp: 100, maxHp: 100,
-      shootTimer: 0, weaponLevel: 1, tilt: 0,
-      ultCharge: 0, ultActiveTimer: 0, invulnTimer: 60
+    window.onerror = function(msg, url, line) {
+      var eb = document.getElementById('error-box');
+      eb.style.display = 'block';
+      eb.textContent = 'Erro linha ' + line + ': ' + msg;
     };
 
-    let bullets = [];
-    let enemyBullets = [];
-    let enemies = [];
-    let powerups = [];
-    let particles = [];
-    let floatingTexts = [];
-    let boss = null;
-    const keys = {};
-    let isPointerDown = false;
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
 
-    const sectorThemes = [
-      { bg1: '#05091c', bg2: '#170729', grid: 'rgba(0, 243, 255, 0.14)', laser: '#00f3ff', enemy: '#ff0055' },
-      { bg1: '#041a14', bg2: '#150624', grid: 'rgba(0, 255, 136, 0.14)', laser: '#00ff88', enemy: '#ffaa00' },
-      { bg1: '#1c0514', bg2: '#070a21', grid: 'rgba(255, 0, 128, 0.16)', laser: '#ffcc00', enemy: '#00e1ff' },
-      { bg1: '#120524', bg2: '#041421', grid: 'rgba(170, 0, 255, 0.16)', laser: '#ff33cc', enemy: '#33ff57' },
-      { bg1: '#1f0e03', bg2: '#0d041a', grid: 'rgba(255, 136, 0, 0.15)', laser: '#00ffff', enemy: '#ff2244' }
-    ];
+    var estado = 'JOGANDO';
+    var modoModal = 'PROXIMA';
+    var fase = 1;
+    var pontos = 0;
+    var quadro = 0;
+    var abatidos = 0;
+    var chefeAtivo = false;
+    var tremor = 0;
+    var mudo = false;
+    var audioCtx = null;
 
-    const stars3D = [];
-    for (let i = 0; i < 160; i++) {
-      stars3D.push({
-        x: (Math.random() - 0.5) * 1400,
-        y: (Math.random() - 0.5) * 1400,
-        z: Math.random() * 1000 + 10
+    var nave = { x: 300, y: 650, vel: 6.5, hp: 100, tiroTimer: 0, arma: 1 };
+    var tiros = [];
+    var tirosChefe = [];
+    var inimigos = [];
+    var itens = [];
+    var particulas = [];
+    var textos = [];
+    var chefe = null;
+    var teclas = {};
+    var tocando = false;
+
+    var estrelas = [];
+    for (var i = 0; i < 90; i++) {
+      estrelas.push({
+        x: Math.random() * 600,
+        y: Math.random() * 760,
+        tam: Math.random() * 2.5 + 0.5,
+        vel: Math.random() * 3 + 1
       });
     }
 
-    function getTheme() {
-      const idx = (level - 1) % sectorThemes.length;
-      let c = 0;
-      for (const s of sectorThemes) {
-        if (c === idx) return s;
-        c++;
-      }
-      return { bg1: '#05091c', bg2: '#170729', grid: 'rgba(0, 243, 255, 0.14)', laser: '#00f3ff', enemy: '#ff0055' };
-    }
-
-    // Áudio ativa automaticamente no primeiro movimento ou clique
-    function unlockAudio() {
+    function iniciarSom() {
       try {
         if (!audioCtx) {
-          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          if (AudioContextClass) audioCtx = new AudioContextClass();
+          var AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) audioCtx = new AC();
         }
         if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-        if (!bgmTimer) {
-          const notes = [110, 110, 130.8, 146.8, 110, 110, 164.8, 146.8];
-          bgmTimer = setInterval(() => {
-            if (isMuted || !audioCtx || gameState !== 'PLAYING') return;
-            try {
-              const t = audioCtx.currentTime;
-              const osc = audioCtx.createOscillator();
-              const gain = audioCtx.createGain();
+      } catch (e) {}
+    }
+
+    function somTiro() {
+      if (mudo || !audioCtx || audioCtx.state !== 'running') return;
+      try {
+        var o = audioCtx.createOscillator();
+        var g = audioCtx.createGain();
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(850, audioCtx.currentTime);
+        o.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.08);
+        g.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(); o.stop(audioCtx.currentTime + 0.08);
+      } catch (e) {}
+    }
+
+    function somExplosao() {
+      if (mudo || !audioCtx || audioCtx.state !== 'running') return;
+      try {
+        var o = audioCtx.createOscillator();
+        var g = audioCtx.createGain();
+        o.type = 'square';
+        o.frequency.setValueAtTime(160, audioCtx.currentTime);
+        o.frequency.exponentialRampToValueAtTime(25, audioCtx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(); o.stop(audioCtx.currentTime + 0.2);
+      } catch (e) {}
+    }
+
+    function salvarDados() {
+      try {
+        var inp = document.getElementById('inp-name');
+        var nome = inp.value.trim() || localStorage.getItem('wm_nome') || 'Piloto';
+        localStorage.setItem('wm_nome', nome);
+        var rec = JSON.parse(localStorage.getItem('wm_rec') || '{"f":1,"p":0}');
+        var maxF = Math.max(rec.f || 1, fase);
+        var maxP = Math.max(rec.p || 0, pontos);
+        localStorage.setItem('wm_rec', JSON.stringify({ f: maxF, p: maxP }));
+        document.getElementById('record-info').textContent = 'Recorde de ' + nome + ': Fase ' + maxF + ' - ' + maxP + ' pts';
+      } catch (e) {}
+    }
+
+    function abrirModal(modo, titulo, desc, btnTexto) {
+      estado = 'PAUSA';
+      modoModal = modo;
+      document.getElementById('m-title').textContent = titulo;
+      document.getElementById('m-desc').textContent = desc;
+      document.getElementById('btn-next').textContent = btnTexto;
+      try {
+        document.getElementById('inp-name').value = localStorage.getItem('wm_nome') || '';
+      } catch (e) {}
+      salvarDados();
+      document.getElementById('modal').classList.remove('hidden');
+      setTimeout(function() { document.getElementById('inp-name').focus(); }, 50);
+    }
+
+    function confirmarModal() {
+      salvarDados();
+      document.getElementById('modal').classList.add('hidden');
+      if (modoModal === 'PROXIMA') {
+        fase++;
+        nave.hp = Math.min(100, nave.hp + 40);
+      } else {
+        fase = 1;
+        pontos = 0;
+        nave.hp = 100;
+        nave.x = 300;
+        nave.y = 650;
+        nave.arma = 1;
+      }
+      prepararFase();
+      estado = 'JOGANDO';
+    }
+
+    function prepararFase() {
+      tiros = [];
+      tirosChefe = [];
+      inimigos = [];
+      itens = [];
+      abatidos = 0;
+      chefeAtivo = false;
+      chefe = null;
+      textos.push({ x: 300, y: 360, txt: 'FASE ' + fase + ' / 20', cor: '#ffcc00', vida: 1.0 });
+      atualizarHUD();
+    }
+
+    function explodir(x, y, cor, qtd) {
+      for (var i = 0; i < qtd; i++) {
+        var a = Math.random() * Math.PI * 2;
+        var v = Math.random() * 5 + 1;
+        particulas.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, vida: 1.0, cor: cor });
+      }
+    }
+
+    function criarChefe() {
+      chefeAtivo = true;
+      tremor = 12;
+      var vidaMax = 180 + (fase * 90);
+      chefe = { x: 300, y: -100, alvoY: 150, hp: vidaMax, maxHp: vidaMax, dir: 1, vel: 2 + fase * 0.2, timer: 0 };
+      textos.push({ x: 300, y: 230, txt: 'MEMENOEL CHEGANDO!', cor: '#ff0055', vida: 1.0 });
+    }
+
+    document.getElementById('btn-next').addEventListener('click', confirmarModal);
+    document.getElementById('inp-name').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        e.preventDefault();
+        confirmarModal();
+      }
+    });
+    document.getElementById('btn-sound').addEventListener('click', function() {
+      mudo = !mudo;
