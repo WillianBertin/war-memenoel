@@ -276,7 +276,7 @@
               var osc = audioCtx.createOscillator();
               var gain = audioCtx.createGain();
               osc.type = 'triangle';
-              osc.frequency.setValueAtTime(notes[bgmStep % notes.length], audioCtx.currentTime);
+              osc.frequency.setValueAtTime(notes.at(bgmStep % notes.length), audioCtx.currentTime);
               gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
               gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
               osc.connect(gain); gain.connect(audioCtx.destination);
