@@ -2,10 +2,10 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>War Memenoel: Edição Definitiva</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
       background-color: #050508;
       color: #fff;
@@ -19,6 +19,10 @@
     }
     #game-container {
       position: relative;
+      width: 100%;
+      max-width: 600px;
+      height: 100%;
+      max-height: 750px;
       box-shadow: 0 0 50px rgba(0, 243, 255, 0.4), inset 0 0 20px rgba(255, 0, 85, 0.3);
       border: 2px solid #00f3ff;
       border-radius: 12px;
@@ -26,7 +30,10 @@
     }
     canvas {
       display: block;
+      width: 100%;
+      height: 100%;
       background: #070810;
+      touch-action: none;
     }
     #ui-layer {
       position: absolute;
@@ -36,12 +43,13 @@
       flex-direction: column;
       justify-content: space-between;
       padding: 16px;
+      z-index: 5;
     }
     .hud-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       letter-spacing: 1px;
       background: rgba(10, 15, 30, 0.75);
@@ -52,7 +60,7 @@
       text-shadow: 0 0 8px #00f3ff;
     }
     .hp-bar-container {
-      width: 95px;
+      width: 85px;
       height: 12px;
       background: #1a1a2e;
       border-radius: 6px;
@@ -77,14 +85,11 @@
       border-radius: 12px;
       font-size: 14px;
       cursor: pointer;
-      margin: 0;
-      box-shadow: none;
     }
     .screen-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at center, rgba(16, 20, 40, 0.88) 0%, rgba(5, 6, 12, 0.96) 100%);
-      backdrop-filter: blur(5px);
+      background: radial-gradient(circle at center, rgba(16, 20, 40, 0.90) 0%, rgba(5, 6, 12, 0.97) 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -92,11 +97,12 @@
       text-align: center;
       pointer-events: auto;
       padding: 20px;
+      z-index: 10;
     }
     h1 {
-      font-size: 42px;
+      font-size: 38px;
       font-weight: 900;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       text-transform: uppercase;
       background: linear-gradient(90deg, #ff0055, #ffcc00, #00f3ff, #ff0055);
       background-size: 200% auto;
@@ -104,12 +110,11 @@
       -webkit-text-fill-color: transparent;
       animation: shine 3s linear infinite;
       margin-bottom: 8px;
-      filter: drop-shadow(0 0 15px rgba(255, 0, 85, 0.5));
     }
     @keyframes shine { to { background-position: 200% center; } }
     p { margin-bottom: 14px; color: #d0d8e8; max-width: 440px; line-height: 1.5; font-size: 14px; }
     input[type="text"] {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.12);
       border: 1px solid #00f3ff;
       color: #fff;
       padding: 10px 16px;
@@ -120,11 +125,10 @@
       outline: none;
       width: 240px;
     }
-    input[type="text"]::placeholder { color: #8899aa; }
     button.action-btn {
       background: linear-gradient(45deg, #ff0055, #ff6600);
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 12px 28px;
+      border: 1px solid rgba(255,255,255,0.4);
+      padding: 14px 30px;
       color: white;
       font-size: 16px;
       font-weight: 800;
@@ -132,28 +136,24 @@
       border-radius: 30px;
       cursor: pointer;
       box-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
-      transition: all 0.2s;
+      transition: transform 0.15s;
       margin: 5px;
     }
-    button.action-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 0, 85, 0.9); }
+    button.action-btn:hover { transform: scale(1.05); }
     button.secondary {
       background: linear-gradient(45deg, #0066ff, #00f3ff);
       box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
     }
     #leaderboard-box {
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.55);
       border: 1px solid rgba(0, 243, 255, 0.3);
       border-radius: 12px;
-      padding: 12px 18px;
-      width: 340px;
+      padding: 12px 16px;
+      width: 90%;
+      max-width: 340px;
       margin-top: 14px;
     }
-    #leaderboard-box h3 {
-      font-size: 14px;
-      color: #ffcc00;
-      margin-bottom: 8px;
-      letter-spacing: 1px;
-    }
+    #leaderboard-box h3 { font-size: 13px; color: #ffcc00; margin-bottom: 8px; }
     .lb-row {
       display: flex;
       justify-content: space-between;
@@ -161,7 +161,6 @@
       padding: 4px 0;
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
-    .lb-row:last-child { border-bottom: none; }
     #cloud-status {
       position: absolute;
       bottom: 10px;
@@ -188,28 +187,26 @@
           ESCUDO
           <div class="hp-bar-container"><div id="hud-hp-fill"></div></div>
         </div>
-        <button id="btn-mute" title="Alternar Som">🔊</button>
+        <button id="btn-mute" type="button">🔊</button>
       </div>
-      <div id="cloud-status">☁️ Nuvem: Modo Local (Configure o Firebase)</div>
+      <div id="cloud-status">💾 Save Local Ativo</div>
     </div>
 
     <!-- Tela Inicial -->
     <div id="start-screen" class="screen-overlay">
       <h1>WAR MEMENOEL</h1>
-      <p>Enfrente 20 galáxias, colete power-ups e derrote o Memenoel!</p>
+      <p>Use Setas/WASD ou arraste o dedo/mouse na tela para pilotar!</p>
       
       <input type="text" id="player-name" placeholder="Seu apelido de piloto" maxlength="14">
       
       <div>
-        <button id="btn-start" class="action-btn">INICIAR MISSÃO</button>
-        <button id="btn-continue" class="action-btn secondary hidden">FASE <span id="saved-lvl">1</span></button>
+        <button id="btn-start" type="button" class="action-btn">INICIAR MISSÃO</button>
+        <button id="btn-continue" type="button" class="action-btn secondary hidden">FASE <span id="saved-lvl">1</span></button>
       </div>
 
       <div id="leaderboard-box">
-        <h3>🏆 RANKING GLOBAL (TOP 5)</h3>
-        <div id="leaderboard-list">
-          <div class="lb-row"><span>Carregando placar...</span></div>
-        </div>
+        <h3>🏆 SEU RECORDE</h3>
+        <div id="leaderboard-list"></div>
       </div>
     </div>
 
@@ -217,85 +214,83 @@
     <div id="end-screen" class="screen-overlay hidden">
       <h1 id="end-title">FIM DE JOGO</h1>
       <p id="end-desc">O Memenoel levou a melhor desta vez.</p>
-      <button id="btn-restart" class="action-btn">JOGAR NOVAMENTE</button>
-      <button id="btn-menu" class="action-btn secondary">VER RANKING</button>
+      <button id="btn-restart" type="button" class="action-btn">JOGAR NOVAMENTE</button>
+      <button id="btn-menu" type="button" class="action-btn secondary">TELA INICIAL</button>
     </div>
   </div>
 
-  <!-- ===================================================================== -->
-  <!-- MÓDULO FIREBASE, ÁUDIO RETRÔ E ENGINE DO WAR MEMENOEL                 -->
-  <!-- ===================================================================== -->
-  <script type="module">
-    import { initializeApp } from "https://gstatic.com";
-    import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, getDocs } from "https://gstatic.com";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://gstatic.com";
-
-    // COLE SUAS CREDENCIAIS DO FIREBASE AQUI:
-    const firebaseConfig = {
-      apiKey: "SUA_API_KEY_AQUI",
-      authDomain: "SEU_://firebaseapp.com",
-      projectId: "SEU_PROJECT_ID",
-      storageBucket: "SEU_://appspot.com",
-      messagingSenderId: "SEU_SENDER_ID",
-      appId: "SEU_APP_ID"
-    };
-
-    let db = null;
-    let userId = null;
-    let useCloud = false;
-    const statusEl = document.getElementById('cloud-status');
-    const nameInput = document.getElementById('player-name');
-
-    // Recupera apelido salvo anteriormente
-    nameInput.value = localStorage.getItem('warMemenoelNick') || '';
-
-    if (firebaseConfig.apiKey !== "SUA_API_KEY_AQUI") {
-      try {
-        const app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-        const auth = getAuth(app);
-        signInAnonymously(auth).catch((err) => console.error("Erro Auth:", err));
-        onAuthStateChanged(auth, async (user) => {
-          if (user) {
-            userId = user.uid;
-            useCloud = true;
-            statusEl.textContent = "☁️ War Memenoel Cloud: Conectado";
-            await loadProgress();
-            await loadLeaderboard();
-          }
-        });
-      } catch (e) {
-        statusEl.textContent = "⚠️ Erro no Firebase (Modo Local)";
-        loadLocalProgress();
-        renderLocalLeaderboard();
+  <script>
+    // =====================================================================
+    // SISTEMA DE ÁUDIO RETRÔ (BLINDADO)
+    // =====================================================================
+    class RetroAudio {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.bgmInterval = null;
+        this.step = 0;
       }
-    } else {
-      loadLocalProgress();
-      renderLocalLeaderboard();
-    }
-
-    async function saveProgress(levelToSave, currentScore) {
-      const nick = (nameInput.value.trim() || "Piloto Anônimo");
-      localStorage.setItem('warMemenoelNick', nick);
-
-      const localData = JSON.parse(localStorage.getItem('warMemenoelSave') || '{"maxLevel":1, "highScore":0}');
-      const newMaxLevel = Math.max(localData.maxLevel, levelToSave);
-      const newHighScore = Math.max(localData.highScore, currentScore);
-      localStorage.setItem('warMemenoelSave', JSON.stringify({ maxLevel: newMaxLevel, highScore: newHighScore }));
-
-      if (useCloud && db && userId) {
-        statusEl.textContent = "☁️ Salvando recorde...";
+      init() {
         try {
-          await setDoc(doc(db, "jogadores_memenoel", userId), {
-            nickname: nick,
-            maxLevel: newMaxLevel,
-            highScore: newHighScore,
-            updatedAt: new Date().toISOString()
-          }, { merge: true });
-          statusEl.textContent = "☁️ Salvo na nuvem!";
-          await loadLeaderboard();
-        } catch (error) {
-          statusEl.textContent = "⚠️ Erro ao salvar na nuvem";
-        }
-      } else {
-        renderLocalLeaderboard();
+          if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (AudioCtx) this.ctx = new AudioCtx();
+          }
+          if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+        } catch (e) {}
+      }
+      playLaser() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(880, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(110, this.ctx.currentTime + 0.12);
+          gain.gain.setValueAtTime(0.07, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.12);
+          osc.connect(gain); gain.connect(this.ctx.destination);
+          osc.start(); osc.stop(this.ctx.currentTime + 0.12);
+        } catch (e) {}
+      }
+      playExplosion(big = false) {
+        if (this.muted || !this.ctx) return;
+        try {
+          const duration = big ? 0.45 : 0.18;
+          const bufferSize = this.ctx.sampleRate * duration;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(big ? 400 : 800, this.ctx.currentTime);
+          filter.frequency.exponentialRampToValueAtTime(50, this.ctx.currentTime + duration);
+
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(big ? 0.22 : 0.1, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+          noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination);
+          noise.start();
+        } catch (e) {}
+      }
+      playPowerup() {
+        if (this.muted || !this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+          osc.frequency.setValueAtTime(660, this.ctx.currentTime + 0.08);
+          osc.frequency.setValueAtTime(880, this.ctx.currentTime + 0.16);
+          gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.28);
+          osc.connect(gain); gain.connect(this.ctx.destination);
+          osc.start(); osc.stop(this.ctx.currentTime + 0.28);
+        } catch (e) {}
+      }
+      startBGM() {
+        if (this.bgmInterval) clearInterval(this.bgmInterval);
