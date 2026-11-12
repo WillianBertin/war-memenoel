@@ -162,42 +162,28 @@
     .screen-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at center, rgba(10, 14, 32, 0.45) 0%, rgba(2, 4, 10, 0.88) 100%);
-      backdrop-filter: blur(4px);
+      background: radial-gradient(circle at center, rgba(10, 14, 32, 0.4) 0%, rgba(2, 4, 10, 0.85) 100%);
+      backdrop-filter: blur(3px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: 16px;
-      overflow-y: auto;
       z-index: 99;
     }
     .menu-card {
       background: rgba(12, 18, 38, 0.86);
       backdrop-filter: blur(18px);
-      border: 1px solid rgba(0, 243, 255, 0.45);
+      border: 1px solid rgba(0, 243, 255, 0.5);
       border-radius: 24px;
-      padding: 20px;
+      padding: 24px 20px;
       width: 100%;
       max-width: 400px;
-      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.8);
-    }
-    .badge-edition {
-      display: inline-block;
-      background: rgba(0, 243, 255, 0.2);
-      border: 1px solid #00f3ff;
-      color: #80f9ff;
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: 2px;
-      padding: 4px 12px;
-      border-radius: 20px;
-      margin-bottom: 8px;
-      text-transform: uppercase;
+      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85), inset 0 0 30px rgba(0, 243, 255, 0.12);
     }
     h1 {
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 900;
       letter-spacing: 1.5px;
       line-height: 1.1;
@@ -207,57 +193,51 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: gradientFlow 3s linear infinite;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     @keyframes gradientFlow { to { background-position: 200% center; } }
     .subtitle {
       color: #c2d1eb;
-      font-size: 12.5px;
-      line-height: 1.4;
-      margin-bottom: 12px;
+      font-size: 13px;
+      line-height: 1.45;
+      margin-bottom: 16px;
     }
     input[type="text"] {
-      background: rgba(5, 8, 18, 0.9);
-      border: 1px solid rgba(0, 243, 255, 0.55);
+      user-select: text;
+      background: rgba(5, 8, 18, 0.95);
+      border: 2px solid #00f3ff;
       color: #fff;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       outline: none;
       width: 100%;
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
     }
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      width: 100%;
+    input[type="text"]:focus {
+      border-color: #ffcc00;
+      box-shadow: 0 0 25px rgba(255, 204, 0, 0.5);
     }
-    button.action-btn {
-      background: linear-gradient(135deg, #ff0055 0%, #ff5500 100%);
-      border: 2px solid rgba(255,255,255,0.4);
-      padding: 14px 20px;
-      color: white;
-      font-size: 16px;
+    .enter-hint {
+      font-size: 13px;
       font-weight: 900;
-      letter-spacing: 1.5px;
-      border-radius: 14px;
-      cursor: pointer;
-      width: 100%;
-      box-shadow: 0 8px 28px rgba(255, 0, 85, 0.6);
+      color: #ffcc00;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      animation: blinkHint 1.2s infinite;
     }
-    button.action-btn:active { transform: scale(0.97); }
-    button.secondary {
-      background: linear-gradient(135deg, #0066ff 0%, #00d4ff 100%);
-      box-shadow: 0 8px 28px rgba(0, 212, 255, 0.45);
+    @keyframes blinkHint {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
     }
     .controls-pills {
       display: flex;
       justify-content: center;
       gap: 6px;
-      margin-top: 12px;
+      margin-top: 10px;
       flex-wrap: wrap;
     }
     .pill {
@@ -274,7 +254,7 @@
       border: 1px solid rgba(255, 204, 0, 0.35);
       border-radius: 12px;
       padding: 8px 12px;
-      margin-top: 12px;
+      margin-top: 14px;
       width: 100%;
     }
     #leaderboard-box h3 {
@@ -326,25 +306,43 @@
       </div>
     </div>
 
+    <!-- TELA INICIAL DIRETA (SEM BOTÃO, APERTE ENTER) -->
     <div id="start-screen" class="screen-overlay">
       <div class="menu-card">
-        <div class="badge-edition">3D WebGL Engine • 20 Níveis</div>
         <h1>WAR MEMENOEL 3D</h1>
-        <p class="subtitle">Batalha espacial 3D com naves articuladas e o gigante Memenoel ao final de cada setor.</p>
+        <p class="subtitle">Digite seu nome de piloto abaixo e pressione <strong>ENTER</strong> para decolar!</p>
 
-        <input type="text" id="player-name" placeholder="Seu apelido de piloto" maxlength="14">
+        <form id="start-form">
+          <input type="text" id="player-name" placeholder="Digite seu nome aqui..." maxlength="14" autofocus autocomplete="off">
+          <div class="enter-hint">⏎ PRESSIONE ENTER PARA JOGAR</div>
+        </form>
 
-        <div class="btn-group">
-          <button id="btn-start" type="button" class="action-btn">🚀 INICIAR MISSÃO 3D</button>
-          <button id="btn-continue" type="button" class="action-btn secondary hidden">⚡ CONTINUAR FASE <span id="saved-lvl">1</span></button>
+        <div id="continue-hint" class="hidden" style="font-size: 12px; color: #00ff88; margin-bottom: 8px; font-weight: bold;">
+          Pressione Shift + Enter para continuar da Fase <span id="saved-lvl">1</span>
         </div>
 
         <div class="controls-pills">
           <span class="pill">⌨️ Setas / WASD</span>
-          <span class="pill">📱 Arraste na Tela</span>
+          <span class="pill">🖱️ Arraste na Tela</span>
           <span class="pill">⚡ Espaço: Super Laser</span>
         </div>
 
         <div id="leaderboard-box">
           <h3>🏆 Melhor Marca do Piloto</h3>
           <div id="leaderboard-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA DE FIM DE JOGO -->
+    <div id="end-screen" class="screen-overlay hidden">
+      <div class="menu-card">
+        <h1 id="end-title">FIM DE JOGO</h1>
+        <p class="subtitle" id="end-desc">O Memenoel 3D levou a melhor desta vez.</p>
+        <div class="enter-hint">⏎ PRESSIONE ENTER PARA JOGAR NOVAMENTE</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const mount = document.getElementById('webgl-mount');
