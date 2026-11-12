@@ -183,7 +183,6 @@
   </div>
 
   <script>
-    // Variáveis Globais
     var canvas = document.getElementById('gameCanvas');
     var ctx = canvas.getContext('2d');
     var gameState = 'START';
@@ -201,7 +200,7 @@
 
     var player = {
       x: 300, y: 650, speed: 6.5, hp: 100, maxHp: 100,
-      shootTimer: 0, weaponLevel: 1, tilt: 0, magnetTimer: 0
+      shootTimer: 0, weaponLevel: 1
     };
 
     var bullets = [];
@@ -232,7 +231,6 @@
       });
     }
 
-    // Funções de Áudio Seguras
     function initAudio() {
       try {
         if (!audioCtx) {
@@ -295,7 +293,6 @@
       document.getElementById('btn-mute').textContent = isMuted ? '🔇' : '🔊';
     }
 
-    // Save Seguro
     function carregarRecorde() {
       try {
         var nick = localStorage.getItem('warMemenoelNick') || '';
@@ -304,3 +301,5 @@
         savedMaxLevel = data.maxLevel || 1;
         if (savedMaxLevel > 1) {
           document.getElementById('saved-lvl').textContent = savedMaxLevel;
+          document.getElementById('btn-continue').classList.remove('hidden');
+        }
