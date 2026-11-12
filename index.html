@@ -134,19 +134,6 @@
       font-size: 12px;
       color: #00ff88;
     }
-    #error-box {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      right: 10px;
-      background: #cc0022;
-      color: #fff;
-      padding: 8px;
-      font-size: 12px;
-      border-radius: 8px;
-      display: none;
-      z-index: 100;
-    }
     .hidden { display: none !important; }
   </style>
 </head>
@@ -171,17 +158,9 @@
         <div id="record-info"></div>
       </div>
     </div>
-
-    <div id="error-box"></div>
   </div>
 
   <script>
-    window.onerror = function(msg, url, line) {
-      var eb = document.getElementById('error-box');
-      eb.style.display = 'block';
-      eb.textContent = 'Erro linha ' + line + ': ' + msg;
-    };
-
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
@@ -339,3 +318,18 @@
     });
     document.getElementById('btn-sound').addEventListener('click', function() {
       mudo = !mudo;
+      this.textContent = mudo ? 'MUDO' : 'SOM';
+    });
+
+    window.addEventListener('keydown', function(e) {
+      iniciarSom();
+      teclas[e.code] = true;
+    });
+    window.addEventListener('keyup', function(e) { teclas[e.code] = false; });
+
+    function mover(cx, cy) {
+      iniciarSom();
+      if (estado !== 'JOGANDO') return;
+      var r = canvas.getBoundingClientRect();
+      var nx = ((cx - r.left) / r.width) * 600;
+      var ny = ((cy - r.top) / r.height) * 760 - 30;
