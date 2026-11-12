@@ -53,7 +53,6 @@
       padding: 10px 16px;
       border-radius: 24px;
       border: 1px solid rgba(0, 243, 255, 0.35);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
     .hp-bar-container {
       width: 85px;
@@ -95,19 +94,14 @@
       z-index: 99;
     }
     .menu-card {
-      background: rgba(15, 22, 44, 0.75);
+      background: rgba(15, 22, 44, 0.78);
       backdrop-filter: blur(14px);
       border: 1px solid rgba(0, 243, 255, 0.35);
       border-radius: 24px;
       padding: 28px 24px;
       width: 100%;
       max-width: 420px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 25px rgba(0, 243, 255, 0.08);
-      animation: floatCard 4s ease-in-out infinite;
-    }
-    @keyframes floatCard {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-6px); }
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
     }
     .badge-edition {
       display: inline-block;
@@ -142,7 +136,6 @@
       margin-bottom: 10px;
     }
     @keyframes gradientFlow { to { background-position: 200% center; } }
-
     .subtitle {
       color: #b8c7e0;
       font-size: 13.5px;
@@ -196,7 +189,6 @@
       cursor: pointer;
       width: 100%;
       box-shadow: 0 8px 25px rgba(255, 0, 85, 0.45);
-      transition: transform 0.15s;
     }
     button.action-btn:active { transform: scale(0.97); }
     button.secondary {
@@ -246,7 +238,6 @@
       </div>
     </div>
 
-    <!-- TELA INICIAL MODERNA -->
     <div id="start-screen" class="screen-overlay">
       <div class="menu-card">
         <div class="badge-edition">20 Níveis • Boss Rush</div>
@@ -288,7 +279,6 @@
       </div>
     </div>
 
-    <!-- TELA DE FIM DE JOGO -->
     <div id="end-screen" class="screen-overlay hidden">
       <div class="menu-card">
         <div class="badge-edition" id="end-badge">Relatório de Batalha</div>
@@ -303,22 +293,36 @@
   </div>
 
   <script>
-    (function() {
-      var canvas = document.getElementById('gameCanvas');
-      var ctx = canvas.getContext('2d');
-      var gameState = 'START';
-      var level = 1;
-      var savedMaxLevel = 1;
-      var score = 0;
-      var frameCount = 0;
-      var enemiesKilledInLevel = 0;
-      var bossActive = false;
-      var screenShake = 0;
-      var isMuted = false;
-      var audioCtx = null;
-      var bgmTimer = null;
-      var bgmStep = 0;
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    let gameState = 'START';
+    let level = 1;
+    let savedMaxLevel = 1;
+    let score = 0;
+    let frameCount = 0;
+    let enemiesKilledInLevel = 0;
+    let bossActive = false;
+    let screenShake = 0;
+    let isMuted = false;
+    let audioCtx = null;
+    let bgmTimer = null;
+    let bgmStep = 0;
 
-      var player = {
-        x: 300, y: 650, speed: 6.5, hp: 100, maxHp: 100,
-        shootTimer: 0, weaponLevel: 1
+    const player = {
+      x: 300, y: 650, speed: 6.5, hp: 100, maxHp: 100,
+      shootTimer: 0, weaponLevel: 1
+    };
+
+    let bullets = [];
+    let enemyBullets = [];
+    let enemies = [];
+    let powerups = [];
+    let particles = [];
+    let floatingTexts = [];
+    let boss = null;
+    const keys = {};
+    let isPointerDown = false;
+
+    const galaxyThemes = [
+      { bg1: '#0a0f29', bg2: '#1a0b2e', laser: '#00f3ff', enemy: '#ff0055' },
+      { bg1: '#091f1c', bg2: '#1d0b2b', laser: '#00ff88', enemy: '#ffaa00' },
