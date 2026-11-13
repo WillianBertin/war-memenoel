@@ -56,6 +56,14 @@
       from { transform: scale(1); box-shadow: 0 0 10px #ffaa00; }
       to { transform: scale(1.07); box-shadow: 0 0 24px #ff0055; }
     }
+    #toast-conquista {
+      position: absolute; top: 58px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(90deg, rgba(255, 170, 0, 0.95), rgba(255, 0, 85, 0.95));
+      border: 1px solid #fff; color: #fff; padding: 6px 14px; border-radius: 14px;
+      font-size: 11.5px; font-weight: bold; z-index: 30; pointer-events: none;
+      opacity: 0; transition: opacity 0.3s; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+      white-space: nowrap;
+    }
     .overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(circle at center, rgba(10, 15, 34, 0.65) 0%, rgba(3, 5, 12, 0.94) 100%);
@@ -107,6 +115,16 @@
       display: flex; justify-content: space-between; align-items: center; font-size: 11px;
       padding: 3px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
+    .conq-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 4px;
+    }
+    .conq-item {
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px; padding: 5px 6px; font-size: 10px; color: #7e8da8;
+    }
+    .conq-item.ativa {
+      border-color: #00ff88; background: rgba(0, 255, 136, 0.12); color: #fff;
+    }
     .hidden { display: none !important; }
   </style>
 </head>
@@ -122,6 +140,7 @@
       <button id="btn-pause" class="hud-btn" type="button">PAUSAR</button>
       <button id="btn-som" class="hud-btn" type="button">SOM</button>
     </div>
+    <div id="toast-conquista">🏆 CONQUISTA DESBLOQUEADA!</div>
     <div id="hud-bot">
       <div id="combo-tag">COMBO x1</div>
       <button id="btn-ult" type="button" class="hidden">SUPER LASER (ESPACO)</button>
@@ -129,9 +148,22 @@
 
     <div id="start-screen" class="overlay">
       <div class="card">
-        <div class="badge">Ultra Graphics • Chefão em Todo Setor</div>
+        <div class="badge">Ultra Graphics • Chefe em Todos os 20 Setores</div>
+        <svg width="58" height="58" viewBox="0 0 100 100" style="margin-bottom:2px;">
+          <circle cx="50" cy="56" r="32" fill="#f1f5f9"/>
+          <circle cx="50" cy="46" r="24" fill="#ffcca8"/>
+          <path d="M26 34 L74 34 L60 6 Z" fill="#e60026"/>
+          <rect x="24" y="30" width="52" height="9" rx="4" fill="#ffffff"/>
+          <circle cx="62" cy="7" r="7" fill="#ffffff"/>
+          <rect x="30" y="39" width="17" height="9" fill="#090a0f"/>
+          <rect x="53" y="39" width="17" height="9" fill="#090a0f"/>
+          <rect x="47" y="41" width="6" height="3" fill="#090a0f"/>
+          <rect x="33" y="41" width="4" height="2" fill="#00f3ff"/>
+          <rect x="56" y="41" width="4" height="2" fill="#00f3ff"/>
+          <circle cx="50" cy="51" r="5" fill="#ff1a40"/>
+        </svg>
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Todo andar tem um chefão! Sobreviva à brutalidade extrema dos Setores 19 e 20!</p>
+        <p class="sub">Derrote o Chefão no final de cada setor! Sobreviva aos setores 19 e 20 de dificuldade extrema!</p>
         <input type="text" id="nome-inicio" placeholder="Seu apelido de piloto" maxlength="14">
         <button id="btn-play" type="button" class="btn">DECOLAR AGORA</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">CONTINUAR FASE <span id="max-lvl">1</span></button>
@@ -139,15 +171,20 @@
           <h4>Top 5 Melhores Pilotos</h4>
           <div id="rank-inicio"></div>
         </div>
+        <div class="rank-box">
+          <h4>Conquistas (<span id="conq-count">0</span>/6)</h4>
+          <div id="conq-lista" class="conq-grid"></div>
+        </div>
       </div>
     </div>
 
     <div id="pause-screen" class="overlay hidden">
       <div class="card">
-        <div class="badge">Jogo Pausado</div>
-        <h2 style="color:#ffcc00; margin-bottom:8px;">EM ESPERA</h2>
-        <button id="btn-resume" type="button" class="btn">CONTINUAR</button>
-        <button id="btn-pause-menu" type="button" class="btn btn-sec">MENU PRINCIPAL</button>
+        <div class="badge">Sistema em Espera</div>
+        <h2 style="color:#ffcc00; margin-bottom:8px; font-size:24px;">JOGO PAUSADO</h2>
+        <p class="sub">Respire fundo, piloto. A galáxia aguarda o seu retorno!</p>
+        <button id="btn-resume" type="button" class="btn">CONTINUAR MISSÃO</button>
+        <button id="btn-pause-menu" type="button" class="btn btn-sec">SAIR PARA O MENU</button>
       </div>
     </div>
 
@@ -160,38 +197,80 @@
         <button id="btn-menu" type="button" class="btn btn-sec">TELA INICIAL</button>
         <div class="rank-box">
           <h4>Top 5 Melhores Pilotos</h4>
-          <div id="rank-modal"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script>
     var c = document.getElementById('c'), ctx = c.getContext('2d');
     var estado = 'INICIO', modo = 'PROX', fase = 1, maxFaseSalva = 1, pontos = 0, combo = 1, comboT = 0;
-    var q = 0, abates = 0, metaAbates = 12, chefeOn = false, tremor = 0, mudo = false, ac = null;
+    var q = 0, abates = 0, metaAbates = 15, chefeOn = false, tremor = 0, mudo = false, ac = null;
+    var alertaChefeT = 0, bgmTimer = null, bgmPasso = 0;
     var nave = { x: 300, y: 650, hp: 100, t: 0, arma: 1, ult: 0, laserT: 0, escudoT: 0, tilt: 0 };
     var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], ondas = [], estrelas = [];
     var chefe = null, teclas = {}, alvoX = 300, alvoY = 650, tocando = false;
 
+    var CONQUISTAS_DEF = [
+      { id: 'sangue', nome: '🩸 Primeiro Sangue' },
+      { id: 'chefe', nome: '👑 Caça-Chefes' },
+      { id: 'arma', nome: '⚡ Arsenal Nv.6' },
+      { id: 'combo', nome: '🔥 Combo x10' },
+      { id: 'inferno', nome: '💀 Sobreviveu F19' },
+      { id: 'lenda', nome: '🏆 Lenda Galáctica' }
+    ];
+    var conquistasSalvas = {};
+    try { conquistasSalvas = JSON.parse(localStorage.getItem('wm_conq') || '{}'); } catch (e) {}
+
+    function desbloquearConquista(id) {
+      if (conquistasSalvas[id]) return;
+      conquistasSalvas[id] = true;
+      try { localStorage.setItem('wm_conq', JSON.stringify(conquistasSalvas)); } catch (e) {}
+      var info = CONQUISTAS_DEF.find(function(item) { return item.id === id; });
+      if (info) {
+        var toast = document.getElementById('toast-conquista');
+        toast.textContent = 'CONQUISTA: ' + info.nome;
+        toast.style.opacity = '1';
+        som(980, 'sine', 0.35, 0.12);
+        setTimeout(function() { toast.style.opacity = '0'; }, 2800);
+      }
+      renderizarConquistas();
+    }
+
+    function renderizarConquistas() {
+      var el = document.getElementById('conq-lista');
+      var countEl = document.getElementById('conq-count');
+      if (!el) return;
+      var html = '', total = 0;
+      for (var i = 0; i < CONQUISTAS_DEF.length; i++) {
+        var cItem = CONQUISTAS_DEF[i];
+        var ativa = !!conquistasSalvas[cItem.id];
+        if (ativa) total++;
+        html += '<div class="conq-item' + (ativa ? ' ativa' : '') + '">' + cItem.nome + '</div>';
+      }
+      el.innerHTML = html;
+      if (countEl) countEl.textContent = total;
+    }
+
     for (var i = 0; i < 85; i++) {
       var camada = (i % 3) + 1;
       estrelas.push({
-        x: Math.random() * 600, y: Math.random() * 760,
-        v: camada * 1.1, r: camada * 0.75,
+        x: Math.random() * 600,
+        y: Math.random() * 760,
+        v: camada * 1.1,
+        r: camada * 0.75,
         cor: camada === 3 ? '#00f3ff' : (camada === 2 ? '#c2d1eb' : '#64748b')
       });
     }
 
-    function som(freq, tipo, dur, vol) {
+    function iniciarAudioContext() {
+      if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+      if (ac.state === 'suspended') ac.resume();
+    }
+
+    function som(freq, tipo, dur, vol, freqFim) {
       if (mudo) return;
       try {
-        if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
-        if (ac.state === 'suspended') ac.resume();
+        iniciarAudioContext();
         var osc = ac.createOscillator(), gain = ac.createGain();
         osc.type = tipo || 'sine';
         osc.frequency.setValueAtTime(freq, ac.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(Math.max(30, freq * 0.35), ac.currentTime + dur);
+        osc.frequency.exponentialRampToValueAtTime(Math.max(25, freqFim || (freq * 0.35)), ac.currentTime + dur);
         gain.gain.setValueAtTime(vol || 0.08, ac.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + dur);
         osc.connect(gain); gain.connect(ac.destination);
@@ -199,12 +278,51 @@
       } catch (e) {}
     }
 
+    function tocarBatidaMusica() {
+      if (mudo || estado !== 'JOGANDO') return;
+      try {
+        iniciarAudioContext();
+        var notasNormais = [110, 110, 146.83, 130.81, 164.81, 146.83, 196, 164.81];
+        var notasChefe = [98, 103.83, 98, 116.54, 98, 130.81, 116.54, 103.83];
+        var escala = (chefeOn || fase >= 19) ? notasChefe : notasNormais;
+        var freq = escala[bgmPasso % escala.length];
+        bgmPasso++;
+
+        var osc = ac.createOscillator(), gain = ac.createGain();
+        osc.type = (chefeOn || fase >= 19) ? 'sawtooth' : 'triangle';
+        osc.frequency.setValueAtTime(freq, ac.currentTime);
+        gain.gain.setValueAtTime(0.032, ac.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.18);
+        osc.connect(gain); gain.connect(ac.destination);
+        osc.start(); osc.stop(ac.currentTime + 0.19);
+      } catch (e) {}
+    }
+
+    function iniciarMusica() {
+      if (bgmTimer) clearInterval(bgmTimer);
+      bgmTimer = setInterval(tocarBatidaMusica, 210);
+    }
+
     function criarParticulas(x, y, cor, qtd, ondaChoque) {
       for (var i = 0; i < qtd; i++) {
         var ang = Math.random() * Math.PI * 2, vel = 1.2 + Math.random() * 5;
         parts.push({ x: x, y: y, vx: Math.cos(ang) * vel, vy: Math.sin(ang) * vel, vida: 22 + Math.random() * 18, cor: cor, r: 2 + Math.random() * 2.5 });
       }
-      if (ondaChoque) ondas.push({ x: x, y: y, r: 8, maxR: 65, cor: cor, alpha: 1 });
+      if (ondaChoque) {
+        ondas.push({ x: x, y: y, r: 8, maxR: 65, cor: cor, alpha: 1 });
+      }
+    }
+
+    function alternarPausa() {
+      if (estado === 'JOGANDO') {
+        estado = 'PAUSADO';
+        document.getElementById('pause-screen').classList.remove('hidden');
+        document.getElementById('btn-pause').textContent = 'VOLTAR';
+      } else if (estado === 'PAUSADO') {
+        estado = 'JOGANDO';
+        document.getElementById('pause-screen').classList.add('hidden');
+        document.getElementById('btn-pause').textContent = 'PAUSAR';
+      }
     }
 
     function iniciarFase(numFase) {
@@ -216,23 +334,30 @@
       tChefe = [];
       inimigos = [];
       itens = [];
-      metaAbates = (fase >= 19) ? 24 : (10 + fase * 2);
+      metaAbates = fase >= 19 ? (26 + fase) : (12 + fase * 2);
       document.getElementById('lvl').textContent = fase;
-      atualizarHUD();
+      document.getElementById('pause-screen').classList.add('hidden');
+      document.getElementById('btn-pause').textContent = 'PAUSAR';
+      iniciarMusica();
     }
 
     function invocarChefe() {
+      if (chefeOn) return;
       chefeOn = true;
-      var isFinal = (fase === 20);
+      alertaChefeT = 130;
       var isInferno = (fase >= 19);
-      var vidaMax = isFinal ? 6500 : (isInferno ? 4800 : (400 + fase * 95));
+      var isSuper = (fase % 5 === 0);
+      var vidaMax = isInferno ? (fase === 20 ? 11500 : 8800) : (isSuper ? (750 + fase * 130) : (420 + fase * 85));
+      var velBase = isInferno ? 4.4 : (2.2 + fase * 0.14);
+
       chefe = {
-        x: 300, y: -100, alvoY: 140, vx: (isInferno ? 3.5 : 2.2) + (fase * 0.08),
-        hp: vidaMax, maxHp: vidaMax, t: 0, final: isFinal, inferno: isInferno,
-        modoCor: 'FOGO', corAura: isInferno ? '#ff0000' : '#ff0055', angEspiral: 0
+        x: 300, y: -100, alvoY: 138, vx: velBase,
+        hp: vidaMax, maxHp: vidaMax, t: 0,
+        final: (fase === 20), inferno: isInferno, superChefe: isSuper,
+        modoCor: 'FOGO', corAura: '#ff0055', angEspiral: 0
       };
-      tremor = 25;
-      som(80, 'sawtooth', 0.8, 0.2);
+      tremor = isInferno ? 28 : 18;
+      som(140, 'sawtooth', 0.75, 0.16, 45);
     }
 
     function atualizarHUD() {
@@ -241,44 +366,54 @@
       document.getElementById('hp-bar').style.width = Math.max(0, nave.hp) + '%';
       document.getElementById('ult-bar').style.width = Math.min(100, nave.ult) + '%';
       var tag = document.getElementById('combo-tag');
-      if (combo > 1) { tag.textContent = 'COMBO x' + combo; tag.style.opacity = '1'; } else { tag.style.opacity = '0'; }
+      if (combo > 1) {
+        tag.textContent = 'COMBO x' + combo;
+        tag.style.opacity = '1';
+      } else {
+        tag.style.opacity = '0';
+      }
       var btnUlt = document.getElementById('btn-ult');
-      if (nave.ult >= 100) btnUlt.classList.remove('hidden'); else btnUlt.classList.add('hidden');
+      if (nave.ult >= 100) btnUlt.classList.remove('hidden');
+      else btnUlt.classList.add('hidden');
     }
 
     function ativarSuperLaser() {
       if (nave.ult < 100 || estado !== 'JOGANDO') return;
-      nave.ult = 0; nave.laserT = 135; tremor = 16;
-      som(220, 'sawtooth', 0.85, 0.16);
+      nave.ult = 0;
+      nave.laserT = 135;
+      tremor = 16;
+      som(260, 'sawtooth', 0.85, 0.16, 65);
       atualizarHUD();
     }
 
     function sofrerDano(dano) {
       if (nave.escudoT > 0) return;
-      nave.hp -= (fase >= 19 ? dano * 1.5 : dano);
-      combo = 1; tremor = 14;
+      nave.hp -= dano;
+      combo = 1;
+      tremor = 14;
       criarParticulas(nave.x, nave.y, '#ff0055', 16, true);
-      som(90, 'square', 0.28, 0.14);
+      som(90, 'square', 0.28, 0.14, 30);
       if (nave.hp <= 0) {
-        nave.hp = 0; atualizarHUD();
-        encerrarPartida('DERROTA!', 'Sua nave foi destruída no setor ' + fase + '.', 'REINICIAR');
+        nave.hp = 0;
+        atualizarHUD();
+        encerrarPartida('DERROTA!', 'Sua nave foi destruída no setor ' + fase + '. Salve seu recorde:', 'REINICIAR');
       }
     }
 
     function buscarAlvoMaisProximo(x, y) {
-      if (chefeOn && chefe) return chefe;
       var alvo = null, menorDist = 9999;
+      if (chefeOn && chefe) return chefe;
       for (var i = 0; i < inimigos.length; i++) {
         var d = Math.hypot(inimigos[i].x - x, inimigos[i].y - y);
         if (d < menorDist) { menorDist = d; alvo = inimigos[i]; }
       }
       return alvo;
     }
-
     function atualizarJogo() {
       if (estado !== 'JOGANDO') return;
       q++;
       if (tremor > 0) tremor--;
+      if (alertaChefeT > 0) alertaChefeT--;
       if (nave.escudoT > 0) nave.escudoT--;
       if (nave.laserT > 0) nave.laserT--;
       if (comboT > 0) { comboT--; if (comboT === 0) combo = 1; }
@@ -299,7 +434,7 @@
       nave.t++;
       var cadencia = Math.max(6, 14 - nave.arma);
       if (nave.t % cadencia === 0) {
-        som(680 + nave.arma * 40, 'triangle', 0.07, 0.04);
+        som(680 + nave.arma * 40, 'triangle', 0.07, 0.035);
         if (nave.arma === 1) {
           tiros.push({ x: nave.x, y: nave.y - 22, vx: 0, vy: -13, d: 20, cor: '#00f3ff', tipo: 'LASER' });
         } else if (nave.arma === 2) {
@@ -312,8 +447,19 @@
         } else if (nave.arma === 4) {
           tiros.push({ x: nave.x - 8, y: nave.y - 24, vx: 0, vy: -15, d: 24, cor: '#ff0055', tipo: 'PLASMA' });
           tiros.push({ x: nave.x + 8, y: nave.y - 24, vx: 0, vy: -15, d: 24, cor: '#ff0055', tipo: 'PLASMA' });
+          tiros.push({ x: nave.x - 20, y: nave.y - 12, vx: -2.4, vy: -13, d: 20, cor: '#ffcc00', tipo: 'LASER' });
+          tiros.push({ x: nave.x + 20, y: nave.y - 12, vx: 2.4, vy: -13, d: 20, cor: '#ffcc00', tipo: 'LASER' });
+        } else if (nave.arma === 5) {
+          tiros.push({ x: nave.x - 9, y: nave.y - 24, vx: 0, vy: -15, d: 26, cor: '#ff0055', tipo: 'PLASMA' });
+          tiros.push({ x: nave.x + 9, y: nave.y - 24, vx: 0, vy: -15, d: 26, cor: '#ff0055', tipo: 'PLASMA' });
+          if (nave.t % (cadencia * 2) === 0) {
+            tiros.push({ x: nave.x - 24, y: nave.y - 8, vx: -3, vy: -9, d: 34, cor: '#00ff88', tipo: 'MISSIL' });
+            tiros.push({ x: nave.x + 24, y: nave.y - 8, vx: 3, vy: -9, d: 34, cor: '#00ff88', tipo: 'MISSIL' });
+          }
         } else {
           tiros.push({ x: nave.x, y: nave.y - 28, vx: 0, vy: -15, d: 35, cor: '#d946ef', tipo: 'ONDA' });
+          tiros.push({ x: nave.x - 16, y: nave.y - 18, vx: -1.2, vy: -14, d: 24, cor: '#00f3ff', tipo: 'PLASMA' });
+          tiros.push({ x: nave.x + 16, y: nave.y - 18, vx: 1.2, vy: -14, d: 24, cor: '#00f3ff', tipo: 'PLASMA' });
           if (nave.t % (cadencia * 2) === 0) {
             tiros.push({ x: nave.x - 26, y: nave.y - 6, vx: -3.5, vy: -9, d: 38, cor: '#ffcc00', tipo: 'MISSIL' });
             tiros.push({ x: nave.x + 26, y: nave.y - 6, vx: 3.5, vy: -9, d: 38, cor: '#ffcc00', tipo: 'MISSIL' });
@@ -321,19 +467,30 @@
         }
       }
 
-      if (!chefeOn) {
-        var freqSpawn = fase >= 19 ? 18 : Math.max(16, 42 - fase * 1.5);
-        if (q % freqSpawn === 0) {
-          var sorteio = Math.random();
-          var tipo = sorteio < 0.3 ? 3 : (sorteio < 0.6 ? 2 : 1);
-          inimigos.push({
-            x: 40 + Math.random() * 520, y: -30,
-            vx: (Math.random() - 0.5) * (fase >= 19 ? 4 : 2),
-            vy: (fase >= 19 ? 3.5 : 2.2) + (fase * 0.1),
-            hp: (fase >= 19 ? 80 : 30) + fase * 6,
-            r: 20, tipo: tipo
-          });
-        }
+      var isInferno = (fase >= 19);
+      var freqSpawn = isInferno ? (chefeOn ? 24 : 11) : (chefeOn ? 50 : Math.max(15, 42 - fase * 1.5));
+      if (q % Math.floor(freqSpawn) === 0) {
+        var sorteio = Math.random();
+        var tipo = 1;
+        if (sorteio < 0.16) tipo = 5;
+        else if (sorteio < 0.34) tipo = 4;
+        else if (sorteio < 0.54) tipo = 3;
+        else if (sorteio < 0.76) tipo = 2;
+
+        var multHp = isInferno ? 2.1 : 1;
+        var multVel = isInferno ? 1.55 : 1;
+        var baseHp = tipo === 5 ? 95 : (tipo === 2 ? 62 : (tipo === 4 ? 32 : (tipo === 3 ? 30 : 24)));
+        var baseVy = tipo === 4 ? 4.4 : (tipo === 3 ? 2.5 : (tipo === 5 ? 1.4 : (tipo === 2 ? 1.8 : 2.7)));
+
+        inimigos.push({
+          x: 40 + Math.random() * 520, y: -30,
+          vx: (Math.random() - 0.5) * (tipo === 4 ? 5.2 : (tipo === 3 ? 3.2 : 1.7 + fase * 0.12)) * multVel,
+          vy: (baseVy + fase * 0.09) * multVel,
+          hp: Math.round((baseHp + fase * 5) * multHp),
+          r: tipo === 5 ? 27 : (tipo === 2 ? 23 : (tipo === 3 ? 20 : 17)),
+          tipo: tipo,
+          t: 0
+        });
       }
 
       for (var i = tiros.length - 1; i >= 0; i--) {
@@ -342,7 +499,8 @@
           var alvo = buscarAlvoMaisProximo(t.x, t.y);
           if (alvo) {
             var ang = Math.atan2(alvo.y - t.y, alvo.x - t.x);
-            t.vx += Math.cos(ang) * 0.85; t.vy += Math.sin(ang) * 0.85;
+            t.vx += Math.cos(ang) * 0.85;
+            t.vy += Math.sin(ang) * 0.85;
             var velAtual = Math.hypot(t.vx, t.vy);
             if (velAtual > 12) { t.vx = (t.vx / velAtual) * 12; t.vy = (t.vy / velAtual) * 12; }
           }
@@ -353,25 +511,47 @@
 
       for (var i = inimigos.length - 1; i >= 0; i--) {
         var en = inimigos[i];
-        en.x += en.vx; en.y += en.vy;
-        if (en.x < 25 || en.x > 575) en.vx *= -1;
+        en.t++;
+        if (en.tipo === 4) en.x += Math.sin(en.t * 0.14) * (isInferno ? 6.5 : 4.2);
+        else en.x += en.vx;
+        en.y += en.vy;
+        if (en.x < 25) { en.x = 25; en.vx = Math.abs(en.vx); }
+        if (en.x > 575) { en.x = 575; en.vx = -Math.abs(en.vx); }
 
-        if (nave.laserT > 0 && Math.abs(en.x - nave.x) < 40 && en.y < nave.y) en.hp -= 9;
+        if (en.tipo === 5 && en.t % (isInferno ? 45 : 85) === 0) {
+          var angIn = Math.atan2(nave.y - en.y, nave.x - en.x);
+          var velTiroIn = isInferno ? 5.8 : 4.0;
+          tChefe.push({ x: en.x, y: en.y + 18, vx: Math.cos(angIn) * velTiroIn, vy: Math.sin(angIn) * velTiroIn, cor: '#a855f7', dano: isInferno ? 34 : 20 });
+        }
+
+        if (nave.laserT > 0 && Math.abs(en.x - nave.x) < 40 && en.y < nave.y) {
+          en.hp -= 9;
+        }
 
         for (var j = tiros.length - 1; j >= 0; j--) {
           var tr = tiros[j];
-          if (Math.hypot(en.x - tr.x, en.y - tr.y) < en.r + 8) {
-            en.hp -= tr.d; criarParticulas(tr.x, tr.y, tr.cor, 4, false);
+          var raioAcerto = tr.tipo === 'ONDA' ? en.r + 22 : en.r + 8;
+          if (Math.hypot(en.x - tr.x, en.y - tr.y) < raioAcerto) {
+            en.hp -= tr.d;
+            criarParticulas(tr.x, tr.y, tr.cor, 4, false);
             if (tr.tipo !== 'ONDA') { tiros.splice(j, 1); break; }
           }
         }
 
         if (en.hp <= 0) {
-          pontos += 30 * combo; combo = Math.min(10, combo + 1); comboT = 135;
-          abates++;
-          criarParticulas(en.x, en.y, '#ffaa00', 12, false);
-          if (Math.random() < 0.18) {
-            var tiposItem = ['ARMA', 'HP', 'ESCUDO', 'ULT'];
+          desbloquearConquista('sangue');
+          var ptsBase = en.tipo === 5 ? 65 : (en.tipo === 3 ? 50 : (en.tipo === 4 ? 40 : (en.tipo === 2 ? 35 : 15)));
+          pontos += ptsBase * combo;
+          combo = Math.min(10, combo + 1);
+          if (combo >= 10) desbloquearConquista('combo');
+          comboT = 135;
+          nave.ult = Math.min(100, nave.ult + (en.tipo === 3 ? 12 : 6));
+          if (!chefeOn) abates++;
+          criarParticulas(en.x, en.y, en.tipo === 3 ? '#ffee00' : (en.tipo === 5 ? '#a855f7' : '#ffaa00'), 14, en.tipo !== 1);
+          som(180, 'sawtooth', 0.14, 0.06);
+
+          if (en.tipo === 3 || Math.random() < (isInferno ? 0.12 : 0.18)) {
+            var tiposItem = ['ARMA', 'ARMA', 'HP', 'ESCUDO', 'ULT'];
             itens.push({ x: en.x, y: en.y, vy: 2.6, tipo: tiposItem[Math.floor(Math.random() * tiposItem.length)] });
           }
           inimigos.splice(i, 1);
@@ -381,149 +561,313 @@
           }
           continue;
         }
+
         if (Math.hypot(en.x - nave.x, en.y - nave.y) < en.r + 18) {
-          sofrerDano(22); inimigos.splice(i, 1); continue;
+          sofrerDano(isInferno ? 34 : 22);
+          inimigos.splice(i, 1);
+          continue;
         }
         if (en.y > 790) inimigos.splice(i, 1);
       }
 
       if (chefeOn && chefe) {
-        if (chefe.y < chefe.alvoY) chefe.y += 2;
+        if (chefe.y < chefe.alvoY) chefe.y += 2.2;
         else {
           chefe.x += chefe.vx;
-          if (chefe.x < 80 || chefe.x > 520) chefe.vx *= -1;
+          if (chefe.inferno) chefe.y = chefe.alvoY + Math.sin(chefe.t * 0.06) * 24;
+          if (chefe.x < 78 || chefe.x > 522) chefe.vx *= -1;
         }
         chefe.t++;
 
-        var ciclo = Math.floor(chefe.t / 180) % 3;
-        if (ciclo === 0) { chefe.modoCor = 'FOGO'; chefe.corAura = chefe.inferno ? '#ff0000' : '#ff0055'; }
-        else if (ciclo === 1) { chefe.modoCor = 'RAIO'; chefe.corAura = chefe.inferno ? '#ff8800' : '#00f3ff'; }
+        var durCiclo = chefe.inferno ? 130 : 200;
+        var ciclo = Math.floor(chefe.t / durCiclo) % 3;
+        if (ciclo === 0) { chefe.modoCor = 'FOGO'; chefe.corAura = '#ff0055'; }
+        else if (ciclo === 1) { chefe.modoCor = 'RAIO'; chefe.corAura = '#00f3ff'; }
         else { chefe.modoCor = 'CAOS'; chefe.corAura = '#d946ef'; }
 
-        var cadChefe = chefe.inferno ? 18 : 35;
-        if (chefe.t % cadChefe === 0) {
-          var qtd = chefe.inferno ? 8 : 4;
+        var intFogo = chefe.inferno ? 18 : 40;
+        var intRaio = chefe.inferno ? 11 : 26;
+        var intCaos = chefe.inferno ? 5 : 13;
+
+        if (chefe.modoCor === 'FOGO' && chefe.t % intFogo === 0) {
+          var qtd = chefe.inferno ? 9 : (chefe.superChefe ? 6 : 4);
+          var velF = chefe.inferno ? 6.6 : 4.8;
           for (var k = 0; k < qtd; k++) {
-            var ang = (Math.PI / 2) + ((k - (qtd - 1) / 2) * 0.28);
-            tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * (chefe.inferno ? 7.5 : 5), vy: Math.sin(ang) * (chefe.inferno ? 7.5 : 5), cor: chefe.corAura, dano: chefe.inferno ? 45 : 30 });
+            var ang = (Math.PI / 2) + ((k - (qtd - 1) / 2) * (chefe.inferno ? 0.20 : 0.26));
+            tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * velF, vy: Math.sin(ang) * velF, cor: '#ff0055', dano: chefe.inferno ? 46 : 30 });
           }
-          som(120, 'square', 0.15, 0.1);
-        }
-
-        if (nave.laserT > 0 && Math.abs(chefe.x - nave.x) < 68) chefe.hp -= 6.5;
-
-        for (var j = tiros.length - 1; j >= 0; j--) {
-          var tr = tiros[j];
-          if (Math.hypot(chefe.x - tr.x, chefe.y - tr.y) < 58) {
-            chefe.hp -= tr.d; criarParticulas(tr.x, tr.y, tr.cor, 5, false);
-            if (tr.tipo !== 'ONDA') tiros.splice(j, 1);
+          som(140, 'square', 0.16, 0.08);
+        } else if (chefe.modoCor === 'RAIO' && chefe.t % intRaio === 0) {
+          var angMirado = Math.atan2(nave.y - chefe.y, nave.x - chefe.x);
+          var velR = chefe.inferno ? 8.8 : 6.4;
+          tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: chefe.inferno ? 48 : 32 });
+          if (chefe.inferno) {
+            tChefe.push({ x: chefe.x - 28, y: chefe.y + 38, vx: Math.cos(angMirado - 0.14) * velR, vy: Math.sin(angMirado - 0.14) * velR, cor: '#00f3ff', dano: 42 });
+            tChefe.push({ x: chefe.x + 28, y: chefe.y + 38, vx: Math.cos(angMirado + 0.14) * velR, vy: Math.sin(angMirado + 0.14) * velR, cor: '#00f3ff', dano: 42 });
           }
-        }
-
-        if (chefe.hp <= 0) {
-          pontos += (chefe.inferno ? 5000 : 1000) * combo; tremor = 35;
-          criarParticulas(chefe.x, chefe.y, '#ffcc00', 50, true);
-          chefeOn = false; chefe = null; tChefe = [];
-          if (fase >= 20) {
-            encerrarPartida('VITÓRIA SUPREMA!', 'Você venceu o modo Inferno e zerou o jogo!', 'REINICIAR');
-          } else {
-            encerrarPartida('SETOR ' + fase + ' CONCLUÍDO!', 'Chefe derrotado! Avançar:', 'PROX');
-          }
-          atualizarHUD(); return;
-        }
-      }
-
-      for (var i = tChefe.length - 1; i >= 0; i--) {
-        var tc = tChefe[i];
-        tc.x += tc.vx; tc.y += tc.vy;
-        if (Math.hypot(tc.x - nave.x, tc.y - nave.y) < 22) {
-          sofrerDano(tc.dano || 25); tChefe.splice(i, 1); continue;
-        }
-        if (tc.y > 790 || tc.y < -40 || tc.x < -40 || tc.x > 640) tChefe.splice(i, 1);
-      }
-
-      for (var i = itens.length - 1; i >= 0; i--) {
-        var it = itens[i]; it.y += it.vy;
-        if (Math.hypot(it.x - nave.x, it.y - nave.y) < 32) {
-          som(880, 'sine', 0.18, 0.09);
-          if (it.tipo === 'ARMA') nave.arma = Math.min(5, nave.arma + 1);
-          else if (it.tipo === 'HP') nave.hp = Math.min(100, nave.hp + 30);
-          else if (it.tipo === 'ESCUDO') nave.escudoT = 360;
-          else if (it.tipo === 'ULT') nave.ult = Math.min(100, nave.ult + 40);
-          itens.splice(i, 1); continue;
-        }
-        if (it.y > 790) itens.splice(i, 1);
-      }
-
-      for (var i = parts.length - 1; i >= 0; i--) {
-        var p = parts[i]; p.x += p.vx; p.y += p.vy; p.vida--;
-        if (p.vida <= 0) parts.splice(i, 1);
-      }
-      for (var i = ondas.length - 1; i >= 0; i--) {
-        var od = ondas[i]; od.r += 3.2; od.alpha -= 0.05;
-        if (od.alpha <= 0 || od.r >= od.maxR) ondas.splice(i, 1);
-      }
-      atualizarHUD();
-    }
-
+          som(420, 'sawtooth', 0.12, 0.07);
+        } else if (chefe.modoCor === 'CAOS' && chefe.t % intCaos === 0) {
+          chefe.angEspiral += chefe.inferno ? 0.55 : 0.45;
     function desenharJogo() {
       ctx.save();
       if (tremor > 0) ctx.translate((Math.random() - 0.5) * tremor, (Math.random() - 0.5) * tremor);
-      ctx.fillStyle = fase >= 19 ? '#1a0208' : '#03050c';
+
+      var isInferno = (fase >= 19);
+      var hueSetor = isInferno ? 345 : ((fase * 28) % 360);
+      var bgGrad = ctx.createRadialGradient(300, 320, 40, 300, 380, 520);
+      bgGrad.addColorStop(0, isInferno ? 'rgba(95, 10, 30, 1)' : 'hsla(' + hueSetor + ', 65%, 14%, 1)');
+      bgGrad.addColorStop(0.6, '#050817');
+      bgGrad.addColorStop(1, '#020308');
+      ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, 600, 760);
 
       for (var i = 0; i < estrelas.length; i++) {
-        var st = estrelas[i]; st.y += st.v;
+        var st = estrelas[i];
+        if (estado === 'JOGANDO') st.y += st.v * (isInferno ? 1.8 : 1);
         if (st.y > 760) { st.y = 0; st.x = Math.random() * 600; }
-        ctx.fillStyle = st.cor; ctx.globalAlpha = 0.5;
+        ctx.fillStyle = isInferno ? '#ff6688' : st.cor;
+        ctx.globalAlpha = 0.4 + (st.v / 5);
         ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2); ctx.fill();
       }
       ctx.globalAlpha = 1;
 
-      if (estado === 'JOGANDO') {
-        if (nave.laserT > 0) {
-          ctx.fillStyle = 'rgba(255, 0, 85, 0.8)';
-          ctx.fillRect(nave.x - 20, 0, 40, nave.y);
+      if (estado === 'JOGANDO' || estado === 'PAUSADO') {
+        if (isInferno && q % 60 < 38) {
+          ctx.save();
+          ctx.fillStyle = 'rgba(255, 0, 68, 0.85)';
+          ctx.font = 'bold 11px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText('⚠️ SETOR INFERNAL ' + fase + ' — DIFICULDADE EXTREMA ⚠️', 300, 82);
+          ctx.restore();
         }
+
+        if (alertaChefeT > 0 && alertaChefeT % 20 < 12) {
+          ctx.save();
+          ctx.fillStyle = '#ffcc00';
+          ctx.font = '900 18px Arial';
+          ctx.textAlign = 'center';
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = '#ff0055';
+          ctx.fillText('🚨 CHEFÃO DO SETOR ' + fase + ' SE APROXIMANDO! 🚨', 300, 250);
+          ctx.restore();
+        }
+
+        if (nave.laserT > 0) {
+          ctx.save();
+          ctx.shadowBlur = 25;
+          ctx.shadowColor = '#ffee00';
+          var grad = ctx.createLinearGradient(nave.x - 36, 0, nave.x + 36, 0);
+          grad.addColorStop(0, 'rgba(255, 0, 85, 0)');
+          grad.addColorStop(0.3, 'rgba(255, 0, 85, 0.85)');
+          grad.addColorStop(0.5, 'rgba(255, 255, 255, 1)');
+          grad.addColorStop(0.7, 'rgba(255, 0, 85, 0.85)');
+          grad.addColorStop(1, 'rgba(255, 0, 85, 0)');
+          ctx.fillStyle = grad;
+          ctx.fillRect(nave.x - 36, 0, 72, nave.y);
+          ctx.restore();
+        }
+
         for (var i = 0; i < tiros.length; i++) {
           var tr = tiros[i];
-          ctx.fillStyle = tr.cor; ctx.fillRect(tr.x - 2.5, tr.y - 11, 5, 20);
+          ctx.save();
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = tr.cor;
+          ctx.fillStyle = tr.cor;
+
+          if (tr.tipo === 'ONDA') {
+            ctx.strokeStyle = tr.cor;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(tr.x, tr.y + 10, 24, Math.PI * 1.15, Math.PI * 1.85);
+            ctx.stroke();
+          } else if (tr.tipo === 'MISSIL') {
+            ctx.beginPath();
+            ctx.arc(tr.x, tr.y, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(tr.x - 2, tr.y + 4, 4, 8);
+          } else if (tr.tipo === 'PLASMA') {
+            ctx.fillRect(tr.x - 4, tr.y - 14, 8, 24);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(tr.x - 1.5, tr.y - 10, 3, 16);
+          } else {
+            ctx.fillRect(tr.x - 2.5, tr.y - 11, 5, 20);
+          }
+          ctx.restore();
         }
+
         for (var i = 0; i < itens.length; i++) {
           var it = itens[i];
-          ctx.fillStyle = '#00ff88'; ctx.beginPath(); ctx.arc(it.x, it.y, 14, 0, Math.PI * 2); ctx.fill();
+          var corItem = it.tipo === 'ARMA' ? '#ffcc00' : (it.tipo === 'HP' ? '#00ff88' : (it.tipo === 'ULT' ? '#ff0055' : '#00f3ff'));
+          ctx.save();
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = corItem;
+          ctx.fillStyle = corItem;
+          ctx.beginPath(); ctx.arc(it.x, it.y, 16, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+          ctx.fillStyle = '#040610'; ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center';
+          ctx.fillText(it.tipo, it.x, it.y + 3.5);
+          ctx.restore();
         }
+
         for (var i = 0; i < inimigos.length; i++) {
           var en = inimigos[i];
-          ctx.fillStyle = '#ff6600'; ctx.beginPath(); ctx.arc(en.x, en.y, en.r, 0, Math.PI * 2); ctx.fill();
+          ctx.save();
+          ctx.translate(en.x, en.y);
+
+          if (en.tipo === 5) {
+            ctx.shadowBlur = 16;
+            ctx.shadowColor = '#a855f7';
+            ctx.fillStyle = '#6b21a8';
+            ctx.strokeStyle = '#d8b4fe';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            for (var h = 0; h < 6; h++) {
+              var angH = (Math.PI / 3) * h;
+              var px = Math.cos(angH) * en.r, py = Math.sin(angH) * en.r;
+              if (h === 0) ctx.moveTo(px, py);
+              else ctx.lineTo(px, py);
+            }
+            ctx.closePath(); ctx.fill(); ctx.stroke();
+            ctx.fillStyle = '#f3e8ff';
+            ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI * 2); ctx.fill();
+          } else if (en.tipo === 4) {
+            ctx.shadowBlur = 14;
+            ctx.shadowColor = '#00f3ff';
+            ctx.fillStyle = '#0284c7';
+            ctx.beginPath();
+            ctx.moveTo(0, en.r + 4); ctx.lineTo(-en.r * 0.85, -en.r); ctx.lineTo(0, -en.r * 0.3); ctx.lineTo(en.r * 0.85, -en.r);
+            ctx.closePath(); ctx.fill();
+          } else if (en.tipo === 3) {
+            ctx.shadowBlur = 16;
+            ctx.shadowColor = '#ffee00';
+            ctx.fillStyle = '#ffcc00';
+            ctx.beginPath();
+            ctx.moveTo(0, en.r); ctx.lineTo(-en.r, 0); ctx.lineTo(0, -en.r); ctx.lineTo(en.r, 0);
+            ctx.closePath(); ctx.fill();
+            ctx.fillStyle = '#040610';
+            ctx.beginPath(); ctx.arc(0, 0, 7, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#ffee00';
+            ctx.font = 'bold 9px Arial'; ctx.textAlign = 'center';
+            ctx.fillText('★', 0, 3);
+          } else if (en.tipo === 2) {
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = '#ff0055';
+            ctx.fillStyle = '#ff0055';
+            ctx.beginPath();
+            ctx.moveTo(0, en.r); ctx.lineTo(-en.r, -en.r * 0.6); ctx.lineTo(-en.r * 0.4, -en.r);
+            ctx.lineTo(en.r * 0.4, -en.r); ctx.lineTo(en.r, -en.r * 0.6);
+            ctx.closePath(); ctx.fill();
+            ctx.fillStyle = '#1e293b';
+            ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI * 2); ctx.fill();
+          } else {
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#ff6600';
+            ctx.fillStyle = '#ff6600';
+            ctx.beginPath();
+            ctx.moveTo(0, en.r); ctx.lineTo(-en.r, -en.r); ctx.lineTo(0, -en.r * 0.4); ctx.lineTo(en.r, -en.r);
+            ctx.closePath(); ctx.fill();
+          }
+          ctx.restore();
         }
 
         if (chefeOn && chefe) {
-          ctx.save(); ctx.translate(chefe.x, chefe.y);
-          ctx.fillStyle = chefe.corAura; ctx.beginPath(); ctx.arc(0, 0, 48, 0, Math.PI * 2); ctx.fill();
+          ctx.save();
+          ctx.translate(chefe.x, chefe.y);
+
+          ctx.shadowBlur = 35;
+          ctx.shadowColor = chefe.corAura;
+          ctx.strokeStyle = chefe.corAura;
+          ctx.lineWidth = chefe.inferno ? 6 : 4;
+          ctx.beginPath();
+          ctx.arc(0, 0, 56 + Math.sin(q * 0.15) * 5, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.fillStyle = '#f1f5f9'; ctx.beginPath(); ctx.arc(0, 8, 46, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#ffcca8'; ctx.beginPath(); ctx.arc(0, -4, 34, 0, Math.PI * 2); ctx.fill();
+
+          ctx.fillStyle = chefe.corAura;
+          ctx.beginPath(); ctx.moveTo(-34, -18); ctx.lineTo(34, -18); ctx.lineTo(14, -58); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = '#ffffff'; ctx.fillRect(-36, -24, 72, 11);
+          ctx.beginPath(); ctx.arc(16, -58, 8, 0, Math.PI * 2); ctx.fill();
+
+          ctx.fillStyle = '#090a0f'; ctx.fillRect(-26, -12, 22, 12); ctx.fillRect(4, -12, 22, 12);
+          ctx.fillStyle = chefe.corAura; ctx.fillRect(-22, -9, 7, 3); ctx.fillRect(8, -9, 7, 3);
           ctx.restore();
 
-          ctx.fillStyle = 'rgba(10, 15, 30, 0.9)'; ctx.fillRect(140, 52, 320, 14);
-          ctx.fillStyle = chefe.corAura; ctx.fillRect(142, 54, 316 * Math.max(0, chefe.hp / chefe.maxHp), 10);
+          ctx.fillStyle = 'rgba(10, 15, 30, 0.85)'; ctx.fillRect(130, 52, 340, 15);
+          ctx.fillStyle = chefe.corAura; ctx.fillRect(132, 54, 336 * Math.max(0, chefe.hp / chefe.maxHp), 11);
+          ctx.fillStyle = '#ffffff'; ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center';
+          var nomeChefe = chefe.final ? 'MEMENOEL SUPREMO' : (chefe.inferno ? 'MEMENOEL INFERNAL' : 'MEMENOEL S' + fase);
+          ctx.fillText(nomeChefe + ' • MODO ' + chefe.modoCor, 300, 63);
         }
 
         for (var i = 0; i < tChefe.length; i++) {
           var tc = tChefe[i];
-          ctx.fillStyle = tc.cor; ctx.beginPath(); ctx.arc(tc.x, tc.y, 7, 0, Math.PI * 2); ctx.fill();
+          ctx.save();
+          ctx.shadowBlur = 14;
+          ctx.shadowColor = tc.cor || '#ff0055';
+          ctx.fillStyle = tc.cor || '#ff0055';
+          ctx.beginPath(); ctx.arc(tc.x, tc.y, 8, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath(); ctx.arc(tc.x, tc.y, 3.5, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
         }
 
-        ctx.save(); ctx.translate(nave.x, nave.y); ctx.rotate(nave.tilt);
-        ctx.fillStyle = '#00f3ff'; ctx.beginPath(); ctx.moveTo(0, -25); ctx.lineTo(-20, 20); ctx.lineTo(20, 20); ctx.closePath(); ctx.fill();
+        ctx.save();
+        ctx.translate(nave.x, nave.y);
+        ctx.rotate(nave.tilt);
+
+        var chamaH = 16 + Math.random() * 12;
+        ctx.fillStyle = '#ff6600';
+        ctx.beginPath(); ctx.moveTo(-12, 18); ctx.lineTo(-6, 18 + chamaH); ctx.lineTo(-2, 18); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(2, 18); ctx.lineTo(6, 18 + chamaH); ctx.lineTo(12, 18); ctx.fill();
+
+        ctx.shadowBlur = 16;
+        ctx.shadowColor = '#00f3ff';
+        ctx.fillStyle = '#00f3ff';
+        ctx.beginPath();
+        ctx.moveTo(0, -30); ctx.lineTo(-26, 22); ctx.lineTo(-10, 15); ctx.lineTo(0, 20);
+        ctx.lineTo(10, 15); ctx.lineTo(26, 22);
+        ctx.closePath(); ctx.fill();
+
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.moveTo(0, -14); ctx.lineTo(-12, 10); ctx.lineTo(12, 10);
+        ctx.closePath(); ctx.fill();
+
+        ctx.fillStyle = '#ff0055';
+        ctx.beginPath(); ctx.ellipse(0, -2, 4.5, 9, 0, 0, Math.PI * 2); ctx.fill();
+
+        if (nave.escudoT > 0) {
+          ctx.strokeStyle = '#00ff88'; ctx.lineWidth = 3;
+          ctx.shadowColor = '#00ff88';
+          ctx.beginPath(); ctx.arc(0, 0, 36, 0, Math.PI * 2); ctx.stroke();
+        }
         ctx.restore();
+      }
+      for (var i = 0; i < ondas.length; i++) {
+        var od = ondas[i];
+        ctx.save();
+        ctx.strokeStyle = od.cor;
+        ctx.globalAlpha = Math.max(0, od.alpha);
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(od.x, od.y, od.r, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+      }
+
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        ctx.fillStyle = p.cor;
+        ctx.globalAlpha = Math.max(0, p.vida / 38);
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r || 2.5, 0, Math.PI * 2); ctx.fill();
       }
       ctx.restore();
     }
 
     function loop() {
-      if (estado === 'JOGANDO') {
-        atualizarJogo();
-        desenharJogo();
-      }
+      atualizarJogo();
+      desenharJogo();
       requestAnimationFrame(loop);
     }
 
@@ -534,19 +878,6 @@
     });
     window.addEventListener('keyup', function(e) { teclas[e.code] = false; });
 
-    function alternarPausa() {
-      if (estado === 'JOGANDO') {
-        estado = 'PAUSADO';
-        document.getElementById('pause-screen').classList.remove('hidden');
-      } else if (estado === 'PAUSADO') {
-        estado = 'JOGANDO';
-        document.getElementById('pause-screen').classList.add('hidden');
-      }
-    }
-
-    document.getElementById('btn-pause').onclick = alternarPausa;
-    document.getElementById('btn-resume').onclick = alternarPausa;
-
     function moverPonteiro(clientX, clientY) {
       var rect = c.getBoundingClientRect();
       alvoX = (clientX - rect.left) * (600 / rect.width);
@@ -555,38 +886,180 @@
     c.addEventListener('mousemove', function(e) { if (estado === 'JOGANDO') moverPonteiro(e.clientX, e.clientY); });
     c.addEventListener('touchstart', function(e) { tocando = true; var t = e.touches.item(0); if (t) moverPonteiro(t.clientX, t.clientY); }, { passive: true });
     c.addEventListener('touchmove', function(e) { if (tocando) { var t = e.touches.item(0); if (t) moverPonteiro(t.clientX, t.clientY); } }, { passive: true });
+    c.addEventListener('touchend', function() { tocando = false; });
 
     function encerrarPartida(titulo, desc, acaoModo) {
-      estado = 'MODAL'; modo = acaoModo;
+      estado = 'MODAL';
+      modo = acaoModo;
       document.getElementById('m-tit').textContent = titulo;
       document.getElementById('m-desc').textContent = desc;
+      document.getElementById('nome-modal').value = localStorage.getItem('wm_n') || '';
+      document.getElementById('btn-ok').textContent = (acaoModo === 'PROX') ? 'PRÓXIMO SETOR' : 'JOGAR NOVAMENTE';
+      if (acaoModo === 'PROX' && fase + 1 > maxFaseSalva) {
+        maxFaseSalva = fase + 1;
+        localStorage.setItem('wm_maxf', maxFaseSalva);
+      }
+      salvarRanking('nome-inicio');
       document.getElementById('modal').classList.remove('hidden');
     }
 
-    document.getElementById('btn-som').onclick = function() { mudo = !mudo; this.textContent = mudo ? 'MUDO' : 'SOM'; };
-    document.getElementById('btn-ult').onclick = ativarSuperLaser;
+    window.rankingGlobal = [];
 
-    document.getElementById('btn-play').onclick = function() {
-      document.getElementById('start-screen').classList.add('hidden');
-      iniciarFase(1); estado = 'JOGANDO';
+    window.desenharRankingNaTela = function(lista) {
+      var html = lista.length === 0 ? '<div class="rk-row"><span>Nenhum recorde ainda.</span></div>' : '';
+      var medalhas = ['🥇', '🥈', '🥉', '🎖️', '🎖️'];
+      var titulos = ['SUPREMO', 'ÁS ESTELAR', 'ELITE', 'VETERANO', 'VETERANO'];
+
+      for (var idx = 0; idx < lista.length; idx++) {
+        var item = lista[idx];
+        var faseExibir = item.fase || 1;
+        var ptsExibir = item.pts || 0;
+        var icone = medalhas[idx] || '#' + (idx + 1);
+        var patente = titulos[idx] ? ' <small style="color:#ffcc00; font-size:10px;">[' + titulos[idx] + ']</small>' : '';
+
+        html += '<div class="rk-row"><span>' + icone + ' ' + item.nome + patente + ' (F' + faseExibir + ')</span><span style="color:#00f3ff;">' + ptsExibir + ' pts</span></div>';
+      }
+      document.getElementById('rank-inicio').innerHTML = html;
+      document.getElementById('rank-modal').innerHTML = html;
     };
+
+    function atualizarListasRanking() {
+      try {
+        var n = localStorage.getItem('wm_n') || '';
+        document.getElementById('nome-inicio').value = n;
+        maxFaseSalva = parseInt(localStorage.getItem('wm_maxf') || '1', 10);
+        if (maxFaseSalva > 1) {
+          document.getElementById('max-lvl').textContent = maxFaseSalva;
+          document.getElementById('btn-cont').classList.remove('hidden');
+        }
+        window.desenharRankingNaTela(window.rankingGlobal);
+        renderizarConquistas();
+      } catch (e) {}
+    }
+
+    function salvarRanking(nomeInputId) {
+      try {
+        var el = document.getElementById(nomeInputId);
+        var n = (el && el.value.trim()) ? el.value.trim() : (localStorage.getItem('wm_n') || 'Piloto');
+        localStorage.setItem('wm_n', n);
+        if (fase > maxFaseSalva) { maxFaseSalva = fase; localStorage.setItem('wm_maxf', maxFaseSalva); }
+
+        if (pontos > 0 && typeof window.enviarPontuacaoFirebase === 'function') {
+          window.enviarPontuacaoFirebase(n, fase, pontos);
+        }
+        atualizarListasRanking();
+      } catch (e) {}
+    }
+
+    document.getElementById('btn-pause').onclick = alternarPausa;
+    document.getElementById('btn-resume').onclick = alternarPausa;
     document.getElementById('btn-pause-menu').onclick = function() {
       document.getElementById('pause-screen').classList.add('hidden');
       document.getElementById('start-screen').classList.remove('hidden');
       estado = 'INICIO';
     };
-    document.getElementById('btn-ok').onclick = function() {
-      document.getElementById('modal').classList.add('hidden');
-      iniciarFase(modo === 'PROX' ? fase + 1 : 1);
+
+    document.getElementById('btn-som').onclick = function() {
+      mudo = !mudo;
+      this.textContent = mudo ? 'MUDO' : 'SOM';
+    };
+
+    document.getElementById('btn-ult').onclick = ativarSuperLaser;
+
+    document.getElementById('btn-play').onclick = function() {
+      var n = document.getElementById('nome-inicio').value.trim() || 'Piloto';
+      localStorage.setItem('wm_n', n);
+      pontos = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
+      document.getElementById('start-screen').classList.add('hidden');
+      iniciarFase(1);
       estado = 'JOGANDO';
     };
+
+    document.getElementById('btn-cont').onclick = function() {
+      var n = document.getElementById('nome-inicio').value.trim() || 'Piloto';
+      localStorage.setItem('wm_n', n);
+      pontos = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
+      document.getElementById('start-screen').classList.add('hidden');
+      iniciarFase(maxFaseSalva);
+      estado = 'JOGANDO';
+    };
+
+    document.getElementById('btn-ok').onclick = function() {
+      salvarRanking('nome-modal');
+      document.getElementById('modal').classList.add('hidden');
+      if (modo === 'PROX') {
+        nave.hp = Math.min(100, nave.hp + 25);
+        iniciarFase(fase + 1);
+      } else {
+        pontos = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0;
+        iniciarFase(1);
+      }
+      estado = 'JOGANDO';
+    };
+
     document.getElementById('btn-menu').onclick = function() {
+      salvarRanking('nome-modal');
       document.getElementById('modal').classList.add('hidden');
       document.getElementById('start-screen').classList.remove('hidden');
       estado = 'INICIO';
     };
 
+    atualizarListasRanking();
     loop();
+  </script>
+
+  <script type="module">
+    const base = "https://www.gstatic." + "com/firebasejs/10.8.0/";
+    const { initializeApp } = await import(base + "firebase-app.js");
+    const { getDatabase, ref, get, set, query, orderByChild, limitToLast, onValue } = await import(base + "firebase-database.js");
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDO2OsIRMpnTF__MHT022S2QT4bI5YTn1U",
+      authDomain: "war-memenoel." + "firebaseapp.com",
+      databaseURL: "https://war-memenoel-default-rtdb." + "firebaseio.com",
+      projectId: "war-memenoel",
+      storageBucket: "war-memenoel.firebasestorage.app",
+      messagingSenderId: "225210728615",
+      appId: "1:225210728615:web:bfe42ca37d738d4eed5b82",
+      measurementId: "G-RX38KL6JNQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const rankingRef = ref(db, 'ranking_unico');
+
+    window.enviarPontuacaoFirebase = async function(nome, faseAtual, pts) {
+      const chavePiloto = nome.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+      if (!chavePiloto) return;
+
+      const pilotoRef = ref(db, 'ranking_unico/' + chavePiloto);
+      const snapshot = await get(pilotoRef);
+      const ptsNovos = Number(pts);
+
+      if (!snapshot.exists() || ptsNovos > (snapshot.val().pts || 0)) {
+        await set(pilotoRef, {
+          nome: nome.trim(),
+          fase: Number(faseAtual),
+          pts: ptsNovos,
+          data: Date.now()
+        });
+      }
+    };
+
+    const top5Query = query(rankingRef, orderByChild('pts'), limitToLast(5));
+    onValue(top5Query, (snapshot) => {
+      const lista = [];
+      snapshot.forEach((child) => {
+        lista.push(child.val());
+      });
+      lista.sort((a, b) => b.pts - a.pts);
+
+      window.rankingGlobal = lista;
+      if (typeof window.desenharRankingNaTela === 'function') {
+        window.desenharRankingNaTela(lista);
+      }
+    });
   </script>
 </body>
 </html>
+
