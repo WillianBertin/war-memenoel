@@ -148,7 +148,7 @@
 
     <div id="start-screen" class="overlay">
       <div class="card">
-        <div class="badge">Ultra Graphics • Chefe em Todos os 20 Setores</div>
+        <div class="badge">Ultra Remastered • Chefe em Todos os 20 Setores</div>
         <svg width="58" height="58" viewBox="0 0 100 100" style="margin-bottom:2px;">
           <circle cx="50" cy="56" r="32" fill="#f1f5f9"/>
           <circle cx="50" cy="46" r="24" fill="#ffcca8"/>
@@ -163,7 +163,7 @@
           <circle cx="50" cy="51" r="5" fill="#ff1a40"/>
         </svg>
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Derrote o Chefão no final de cada setor! Sobreviva aos setores 19 e 20 de dificuldade extrema!</p>
+        <p class="sub">Gráficos Ultra HD, Chefão em cada setor e o desafio impossível nos andares 19 e 20!</p>
         <input type="text" id="nome-inicio" placeholder="Seu apelido de piloto" maxlength="14">
         <button id="btn-play" type="button" class="btn">DECOLAR AGORA</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">CONTINUAR FASE <span id="max-lvl">1</span></button>
@@ -200,10 +200,10 @@
   <script>
     var c = document.getElementById('c'), ctx = c.getContext('2d');
     var estado = 'INICIO', modo = 'PROX', fase = 1, maxFaseSalva = 1, pontos = 0, combo = 1, comboT = 0;
-    var q = 0, abates = 0, metaAbates = 15, chefeOn = false, tremor = 0, mudo = false, ac = null;
+    var q = 0, abates = 0, metaAbates = 15, chefeOn = false, tremor = 0, flashTela = 0, mudo = false, ac = null;
     var alertaChefeT = 0, bgmTimer = null, bgmPasso = 0;
     var nave = { x: 300, y: 650, hp: 100, t: 0, arma: 1, ult: 0, laserT: 0, escudoT: 0, tilt: 0 };
-    var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], ondas = [], estrelas = [];
+    var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], ondas = [], estrelas = [], planetas = [];
     var chefe = null, teclas = {}, alvoX = 300, alvoY = 650, tocando = false;
 
     var CONQUISTAS_DEF = [
@@ -226,7 +226,7 @@
         var toast = document.getElementById('toast-conquista');
         toast.textContent = 'CONQUISTA: ' + info.nome;
         toast.style.opacity = '1';
-        som(980, 'sine', 0.35, 0.12);
+        som(980, 'sine', 0.35, 0.12, 1320);
         setTimeout(function() { toast.style.opacity = '0'; }, 2800);
       }
       renderizarConquistas();
@@ -247,16 +247,20 @@
       if (countEl) countEl.textContent = total;
     }
 
-    for (var i = 0; i < 85; i++) {
+    for (var i = 0; i < 110; i++) {
       var camada = (i % 3) + 1;
       estrelas.push({
         x: Math.random() * 600,
         y: Math.random() * 760,
-        v: camada * 1.1,
-        r: camada * 0.75,
-        cor: camada === 3 ? '#00f3ff' : (camada === 2 ? '#c2d1eb' : '#64748b')
+        v: camada * 1.15,
+        r: camada * 0.8,
+        cor: camada === 3 ? '#00f3ff' : (camada === 2 ? '#e2e8f0' : '#64748b'),
+        brilho: Math.random() * Math.PI * 2
       });
     }
+
+    planetas.push({ x: 110, y: 180, r: 42, vy: 0.25, cor1: '#1e3a8a', cor2: '#06b6d4', anel: true });
+    planetas.push({ x: 480, y: 520, r: 28, vy: 0.18, cor1: '#701a75', cor2: '#f43f5e', anel: false });
 
     function iniciarAudioContext() {
       if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -305,11 +309,14 @@
 
     function criarParticulas(x, y, cor, qtd, ondaChoque) {
       for (var i = 0; i < qtd; i++) {
-        var ang = Math.random() * Math.PI * 2, vel = 1.2 + Math.random() * 5;
-        parts.push({ x: x, y: y, vx: Math.cos(ang) * vel, vy: Math.sin(ang) * vel, vida: 22 + Math.random() * 18, cor: cor, r: 2 + Math.random() * 2.5 });
+        var ang = Math.random() * Math.PI * 2, vel = 1.4 + Math.random() * 5.5;
+        parts.push({
+          x: x, y: y, vx: Math.cos(ang) * vel, vy: Math.sin(ang) * vel,
+          vida: 24 + Math.random() * 20, maxVida: 44, cor: cor, r: 2 + Math.random() * 2.8
+        });
       }
       if (ondaChoque) {
-        ondas.push({ x: x, y: y, r: 8, maxR: 65, cor: cor, alpha: 1 });
+        ondas.push({ x: x, y: y, r: 8, maxR: 75, cor: cor, alpha: 1 });
       }
     }
 
@@ -351,10 +358,10 @@
       var velBase = isInferno ? 4.4 : (2.2 + fase * 0.14);
 
       chefe = {
-        x: 300, y: -100, alvoY: 138, vx: velBase,
-        hp: vidaMax, maxHp: vidaMax, t: 0,
+        x: 300, y: -110, alvoY: 145, vx: velBase,
+        hp: vidaMax, hpVisual: vidaMax, maxHp: vidaMax, t: 0,
         final: (fase === 20), inferno: isInferno, superChefe: isSuper,
-        modoCor: 'FOGO', corAura: '#ff0055', angEspiral: 0
+        modoCor: 'FOGO', corAura: '#ff0055', angEspiral: 0, hitFlash: 0
       };
       tremor = isInferno ? 28 : 18;
       som(140, 'sawtooth', 0.75, 0.16, 45);
@@ -382,6 +389,7 @@
       nave.ult = 0;
       nave.laserT = 135;
       tremor = 16;
+      flashTela = 0.45;
       som(260, 'sawtooth', 0.85, 0.16, 65);
       atualizarHUD();
     }
@@ -390,8 +398,9 @@
       if (nave.escudoT > 0) return;
       nave.hp -= dano;
       combo = 1;
-      tremor = 14;
-      criarParticulas(nave.x, nave.y, '#ff0055', 16, true);
+      tremor = 15;
+      flashTela = 0.5;
+      criarParticulas(nave.x, nave.y, '#ff0055', 18, true);
       som(90, 'square', 0.28, 0.14, 30);
       if (nave.hp <= 0) {
         nave.hp = 0;
@@ -413,6 +422,7 @@
       if (estado !== 'JOGANDO') return;
       q++;
       if (tremor > 0) tremor--;
+      if (flashTela > 0) flashTela = Math.max(0, flashTela - 0.05);
       if (alertaChefeT > 0) alertaChefeT--;
       if (nave.escudoT > 0) nave.escudoT--;
       if (nave.laserT > 0) nave.laserT--;
@@ -436,33 +446,33 @@
       if (nave.t % cadencia === 0) {
         som(680 + nave.arma * 40, 'triangle', 0.07, 0.035);
         if (nave.arma === 1) {
-          tiros.push({ x: nave.x, y: nave.y - 22, vx: 0, vy: -13, d: 20, cor: '#00f3ff', tipo: 'LASER' });
+          tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -14, d: 20, cor: '#00f3ff', tipo: 'LASER' });
         } else if (nave.arma === 2) {
-          tiros.push({ x: nave.x - 11, y: nave.y - 18, vx: 0, vy: -13, d: 18, cor: '#00f3ff', tipo: 'LASER' });
-          tiros.push({ x: nave.x + 11, y: nave.y - 18, vx: 0, vy: -13, d: 18, cor: '#00f3ff', tipo: 'LASER' });
+          tiros.push({ x: nave.x - 12, y: nave.y - 20, vx: 0, vy: -14, d: 18, cor: '#00f3ff', tipo: 'LASER' });
+          tiros.push({ x: nave.x + 12, y: nave.y - 20, vx: 0, vy: -14, d: 18, cor: '#00f3ff', tipo: 'LASER' });
         } else if (nave.arma === 3) {
-          tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -14, d: 22, cor: '#ffcc00', tipo: 'LASER' });
-          tiros.push({ x: nave.x - 15, y: nave.y - 14, vx: -1.6, vy: -13, d: 18, cor: '#00f3ff', tipo: 'LASER' });
-          tiros.push({ x: nave.x + 15, y: nave.y - 14, vx: 1.6, vy: -13, d: 18, cor: '#00f3ff', tipo: 'LASER' });
+          tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -15, d: 22, cor: '#ffcc00', tipo: 'LASER' });
+          tiros.push({ x: nave.x - 16, y: nave.y - 16, vx: -1.6, vy: -14, d: 18, cor: '#00f3ff', tipo: 'LASER' });
+          tiros.push({ x: nave.x + 16, y: nave.y - 16, vx: 1.6, vy: -14, d: 18, cor: '#00f3ff', tipo: 'LASER' });
         } else if (nave.arma === 4) {
-          tiros.push({ x: nave.x - 8, y: nave.y - 24, vx: 0, vy: -15, d: 24, cor: '#ff0055', tipo: 'PLASMA' });
-          tiros.push({ x: nave.x + 8, y: nave.y - 24, vx: 0, vy: -15, d: 24, cor: '#ff0055', tipo: 'PLASMA' });
-          tiros.push({ x: nave.x - 20, y: nave.y - 12, vx: -2.4, vy: -13, d: 20, cor: '#ffcc00', tipo: 'LASER' });
-          tiros.push({ x: nave.x + 20, y: nave.y - 12, vx: 2.4, vy: -13, d: 20, cor: '#ffcc00', tipo: 'LASER' });
+          tiros.push({ x: nave.x - 9, y: nave.y - 26, vx: 0, vy: -15, d: 24, cor: '#ff0055', tipo: 'PLASMA' });
+          tiros.push({ x: nave.x + 9, y: nave.y - 26, vx: 0, vy: -15, d: 24, cor: '#ff0055', tipo: 'PLASMA' });
+          tiros.push({ x: nave.x - 21, y: nave.y - 12, vx: -2.4, vy: -14, d: 20, cor: '#ffcc00', tipo: 'LASER' });
+          tiros.push({ x: nave.x + 21, y: nave.y - 12, vx: 2.4, vy: -14, d: 20, cor: '#ffcc00', tipo: 'LASER' });
         } else if (nave.arma === 5) {
-          tiros.push({ x: nave.x - 9, y: nave.y - 24, vx: 0, vy: -15, d: 26, cor: '#ff0055', tipo: 'PLASMA' });
-          tiros.push({ x: nave.x + 9, y: nave.y - 24, vx: 0, vy: -15, d: 26, cor: '#ff0055', tipo: 'PLASMA' });
+          tiros.push({ x: nave.x - 10, y: nave.y - 26, vx: 0, vy: -15, d: 26, cor: '#ff0055', tipo: 'PLASMA' });
+          tiros.push({ x: nave.x + 10, y: nave.y - 26, vx: 0, vy: -15, d: 26, cor: '#ff0055', tipo: 'PLASMA' });
           if (nave.t % (cadencia * 2) === 0) {
-            tiros.push({ x: nave.x - 24, y: nave.y - 8, vx: -3, vy: -9, d: 34, cor: '#00ff88', tipo: 'MISSIL' });
-            tiros.push({ x: nave.x + 24, y: nave.y - 8, vx: 3, vy: -9, d: 34, cor: '#00ff88', tipo: 'MISSIL' });
+            tiros.push({ x: nave.x - 25, y: nave.y - 8, vx: -3, vy: -9, d: 34, cor: '#00ff88', tipo: 'MISSIL' });
+            tiros.push({ x: nave.x + 25, y: nave.y - 8, vx: 3, vy: -9, d: 34, cor: '#00ff88', tipo: 'MISSIL' });
           }
         } else {
           tiros.push({ x: nave.x, y: nave.y - 28, vx: 0, vy: -15, d: 35, cor: '#d946ef', tipo: 'ONDA' });
           tiros.push({ x: nave.x - 16, y: nave.y - 18, vx: -1.2, vy: -14, d: 24, cor: '#00f3ff', tipo: 'PLASMA' });
           tiros.push({ x: nave.x + 16, y: nave.y - 18, vx: 1.2, vy: -14, d: 24, cor: '#00f3ff', tipo: 'PLASMA' });
           if (nave.t % (cadencia * 2) === 0) {
-            tiros.push({ x: nave.x - 26, y: nave.y - 6, vx: -3.5, vy: -9, d: 38, cor: '#ffcc00', tipo: 'MISSIL' });
-            tiros.push({ x: nave.x + 26, y: nave.y - 6, vx: 3.5, vy: -9, d: 38, cor: '#ffcc00', tipo: 'MISSIL' });
+            tiros.push({ x: nave.x - 27, y: nave.y - 6, vx: -3.5, vy: -9, d: 38, cor: '#ffcc00', tipo: 'MISSIL' });
+            tiros.push({ x: nave.x + 27, y: nave.y - 6, vx: 3.5, vy: -9, d: 38, cor: '#ffcc00', tipo: 'MISSIL' });
           }
         }
       }
@@ -488,8 +498,7 @@
           vy: (baseVy + fase * 0.09) * multVel,
           hp: Math.round((baseHp + fase * 5) * multHp),
           r: tipo === 5 ? 27 : (tipo === 2 ? 23 : (tipo === 3 ? 20 : 17)),
-          tipo: tipo,
-          t: 0
+          tipo: tipo, t: 0, hitFlash: 0
         });
       }
 
@@ -512,6 +521,7 @@
       for (var i = inimigos.length - 1; i >= 0; i--) {
         var en = inimigos[i];
         en.t++;
+        if (en.hitFlash > 0) en.hitFlash--;
         if (en.tipo === 4) en.x += Math.sin(en.t * 0.14) * (isInferno ? 6.5 : 4.2);
         else en.x += en.vx;
         en.y += en.vy;
@@ -526,6 +536,7 @@
 
         if (nave.laserT > 0 && Math.abs(en.x - nave.x) < 40 && en.y < nave.y) {
           en.hp -= 9;
+          en.hitFlash = 2;
         }
 
         for (var j = tiros.length - 1; j >= 0; j--) {
@@ -533,6 +544,7 @@
           var raioAcerto = tr.tipo === 'ONDA' ? en.r + 22 : en.r + 8;
           if (Math.hypot(en.x - tr.x, en.y - tr.y) < raioAcerto) {
             en.hp -= tr.d;
+            en.hitFlash = 3;
             criarParticulas(tr.x, tr.y, tr.cor, 4, false);
             if (tr.tipo !== 'ONDA') { tiros.splice(j, 1); break; }
           }
@@ -547,7 +559,7 @@
           comboT = 135;
           nave.ult = Math.min(100, nave.ult + (en.tipo === 3 ? 12 : 6));
           if (!chefeOn) abates++;
-          criarParticulas(en.x, en.y, en.tipo === 3 ? '#ffee00' : (en.tipo === 5 ? '#a855f7' : '#ffaa00'), 14, en.tipo !== 1);
+          criarParticulas(en.x, en.y, en.tipo === 3 ? '#ffee00' : (en.tipo === 5 ? '#a855f7' : '#ffaa00'), 16, en.tipo !== 1);
           som(180, 'sawtooth', 0.14, 0.06);
 
           if (en.tipo === 3 || Math.random() < (isInferno ? 0.12 : 0.18)) {
@@ -571,11 +583,13 @@
       }
 
       if (chefeOn && chefe) {
+        if (chefe.hitFlash > 0) chefe.hitFlash--;
+        chefe.hpVisual += (chefe.hp - chefe.hpVisual) * 0.15;
         if (chefe.y < chefe.alvoY) chefe.y += 2.2;
         else {
           chefe.x += chefe.vx;
           if (chefe.inferno) chefe.y = chefe.alvoY + Math.sin(chefe.t * 0.06) * 24;
-          if (chefe.x < 78 || chefe.x > 522) chefe.vx *= -1;
+          if (chefe.x < 85 || chefe.x > 515) chefe.vx *= -1;
         }
         chefe.t++;
 
@@ -600,33 +614,48 @@
         } else if (chefe.modoCor === 'RAIO' && chefe.t % intRaio === 0) {
           var angMirado = Math.atan2(nave.y - chefe.y, nave.x - chefe.x);
           var velR = chefe.inferno ? 8.8 : 6.4;
-          tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: chefe.inferno ? 48 : 32 });
-          if (chefe.inferno) {
-            tChefe.push({ x: chefe.x - 28, y: chefe.y + 38, vx: Math.cos(angMirado - 0.14) * velR, vy: Math.sin(angMirado - 0.14) * velR, cor: '#00f3ff', dano: 42 });
-            tChefe.push({ x: chefe.x + 28, y: chefe.y + 38, vx: Math.cos(angMirado + 0.14) * velR, vy: Math.sin(angMirado + 0.14) * velR, cor: '#00f3ff', dano: 42 });
-          }
+          tChefe.push({ x: chefe.x - 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: chefe.inferno ? 48 : 32 });
+          tChefe.push({ x: chefe.x + 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: chefe.inferno ? 48 : 32 });
           som(420, 'sawtooth', 0.12, 0.07);
-        } else if (chefe.modoCor === 'CAOS' && chefe.t % intCaos === 0) {
-          chefe.angEspiral += chefe.inferno ? 0.55 : 0.45;
     function desenharJogo() {
       ctx.save();
       if (tremor > 0) ctx.translate((Math.random() - 0.5) * tremor, (Math.random() - 0.5) * tremor);
 
       var isInferno = (fase >= 19);
       var hueSetor = isInferno ? 345 : ((fase * 28) % 360);
-      var bgGrad = ctx.createRadialGradient(300, 320, 40, 300, 380, 520);
-      bgGrad.addColorStop(0, isInferno ? 'rgba(95, 10, 30, 1)' : 'hsla(' + hueSetor + ', 65%, 14%, 1)');
-      bgGrad.addColorStop(0.6, '#050817');
+      var bgGrad = ctx.createRadialGradient(300, 320, 40, 300, 380, 540);
+      bgGrad.addColorStop(0, isInferno ? 'rgba(110, 12, 34, 1)' : 'hsla(' + hueSetor + ', 70%, 16%, 1)');
+      bgGrad.addColorStop(0.55, '#060a1c');
       bgGrad.addColorStop(1, '#020308');
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, 600, 760);
 
+      for (var pIdx = 0; pIdx < planetas.length; pIdx++) {
+        var pl = planetas[pIdx];
+        if (estado === 'JOGANDO') pl.y += pl.vy * (isInferno ? 1.5 : 1);
+        if (pl.y > 830) { pl.y = -80; pl.x = 70 + Math.random() * 460; }
+        ctx.save();
+        var plGrad = ctx.createRadialGradient(pl.x - pl.r * 0.3, pl.y - pl.r * 0.3, 4, pl.x, pl.y, pl.r);
+        plGrad.addColorStop(0, isInferno ? '#ff4d6d' : pl.cor2);
+        plGrad.addColorStop(1, isInferno ? '#4c0519' : pl.cor1);
+        ctx.fillStyle = plGrad;
+        ctx.globalAlpha = 0.45;
+        ctx.beginPath(); ctx.arc(pl.x, pl.y, pl.r, 0, Math.PI * 2); ctx.fill();
+        if (pl.anel) {
+          ctx.strokeStyle = isInferno ? 'rgba(255, 100, 130, 0.35)' : 'rgba(0, 243, 255, 0.35)';
+          ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.ellipse(pl.x, pl.y, pl.r * 1.75, pl.r * 0.42, -0.25, 0, Math.PI * 2); ctx.stroke();
+        }
+        ctx.restore();
+      }
+
       for (var i = 0; i < estrelas.length; i++) {
         var st = estrelas[i];
-        if (estado === 'JOGANDO') st.y += st.v * (isInferno ? 1.8 : 1);
+        st.brilho += 0.08;
+        if (estado === 'JOGANDO') st.y += st.v * (isInferno ? 1.9 : 1);
         if (st.y > 760) { st.y = 0; st.x = Math.random() * 600; }
-        ctx.fillStyle = isInferno ? '#ff6688' : st.cor;
-        ctx.globalAlpha = 0.4 + (st.v / 5);
+        ctx.fillStyle = isInferno ? '#ff758f' : st.cor;
+        ctx.globalAlpha = (0.35 + (st.v / 5)) * (0.75 + Math.sin(st.brilho) * 0.25);
         ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2); ctx.fill();
       }
       ctx.globalAlpha = 1;
@@ -634,7 +663,7 @@
       if (estado === 'JOGANDO' || estado === 'PAUSADO') {
         if (isInferno && q % 60 < 38) {
           ctx.save();
-          ctx.fillStyle = 'rgba(255, 0, 68, 0.85)';
+          ctx.fillStyle = 'rgba(255, 0, 68, 0.9)';
           ctx.font = 'bold 11px Arial';
           ctx.textAlign = 'center';
           ctx.fillText('⚠️ SETOR INFERNAL ' + fase + ' — DIFICULDADE EXTREMA ⚠️', 300, 82);
@@ -646,7 +675,7 @@
           ctx.fillStyle = '#ffcc00';
           ctx.font = '900 18px Arial';
           ctx.textAlign = 'center';
-          ctx.shadowBlur = 15;
+          ctx.shadowBlur = 18;
           ctx.shadowColor = '#ff0055';
           ctx.fillText('🚨 CHEFÃO DO SETOR ' + fase + ' SE APROXIMANDO! 🚨', 300, 250);
           ctx.restore();
@@ -654,44 +683,47 @@
 
         if (nave.laserT > 0) {
           ctx.save();
-          ctx.shadowBlur = 25;
+          ctx.shadowBlur = 28;
           ctx.shadowColor = '#ffee00';
-          var grad = ctx.createLinearGradient(nave.x - 36, 0, nave.x + 36, 0);
+          var grad = ctx.createLinearGradient(nave.x - 38, 0, nave.x + 38, 0);
           grad.addColorStop(0, 'rgba(255, 0, 85, 0)');
-          grad.addColorStop(0.3, 'rgba(255, 0, 85, 0.85)');
+          grad.addColorStop(0.28, 'rgba(255, 0, 85, 0.88)');
           grad.addColorStop(0.5, 'rgba(255, 255, 255, 1)');
-          grad.addColorStop(0.7, 'rgba(255, 0, 85, 0.85)');
+          grad.addColorStop(0.72, 'rgba(255, 0, 85, 0.88)');
           grad.addColorStop(1, 'rgba(255, 0, 85, 0)');
           ctx.fillStyle = grad;
-          ctx.fillRect(nave.x - 36, 0, 72, nave.y);
+          ctx.fillRect(nave.x - 38, 0, 76, nave.y);
           ctx.restore();
         }
 
         for (var i = 0; i < tiros.length; i++) {
           var tr = tiros[i];
           ctx.save();
-          ctx.shadowBlur = 12;
+          ctx.shadowBlur = 14;
           ctx.shadowColor = tr.cor;
           ctx.fillStyle = tr.cor;
 
           if (tr.tipo === 'ONDA') {
             ctx.strokeStyle = tr.cor;
-            ctx.lineWidth = 4;
+            ctx.lineWidth = 5;
             ctx.beginPath();
-            ctx.arc(tr.x, tr.y + 10, 24, Math.PI * 1.15, Math.PI * 1.85);
+            ctx.arc(tr.x, tr.y + 10, 26, Math.PI * 1.15, Math.PI * 1.85);
             ctx.stroke();
           } else if (tr.tipo === 'MISSIL') {
-            ctx.beginPath();
-            ctx.arc(tr.x, tr.y, 5, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.fillStyle = 'rgba(0, 255, 136, 0.35)';
+            ctx.fillRect(tr.x - 2, tr.y + 5, 4, 14);
+            ctx.fillStyle = tr.cor;
+            ctx.beginPath(); ctx.arc(tr.x, tr.y, 5.5, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(tr.x - 2, tr.y + 4, 4, 8);
+            ctx.beginPath(); ctx.arc(tr.x, tr.y - 1, 2.5, 0, Math.PI * 2); ctx.fill();
           } else if (tr.tipo === 'PLASMA') {
-            ctx.fillRect(tr.x - 4, tr.y - 14, 8, 24);
+            ctx.fillRect(tr.x - 4.5, tr.y - 15, 9, 26);
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(tr.x - 1.5, tr.y - 10, 3, 16);
+            ctx.fillRect(tr.x - 1.8, tr.y - 11, 3.6, 18);
           } else {
-            ctx.fillRect(tr.x - 2.5, tr.y - 11, 5, 20);
+            ctx.fillRect(tr.x - 2.5, tr.y - 12, 5, 22);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(tr.x - 1, tr.y - 9, 2, 16);
           }
           ctx.restore();
         }
@@ -700,11 +732,11 @@
           var it = itens[i];
           var corItem = it.tipo === 'ARMA' ? '#ffcc00' : (it.tipo === 'HP' ? '#00ff88' : (it.tipo === 'ULT' ? '#ff0055' : '#00f3ff'));
           ctx.save();
-          ctx.shadowBlur = 15;
+          ctx.shadowBlur = 18;
           ctx.shadowColor = corItem;
           ctx.fillStyle = corItem;
-          ctx.beginPath(); ctx.arc(it.x, it.y, 16, 0, Math.PI * 2); ctx.fill();
-          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+          ctx.beginPath(); ctx.arc(it.x, it.y, 17, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.stroke();
           ctx.fillStyle = '#040610'; ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center';
           ctx.fillText(it.tipo, it.x, it.y + 3.5);
           ctx.restore();
@@ -714,103 +746,128 @@
           var en = inimigos[i];
           ctx.save();
           ctx.translate(en.x, en.y);
+          var flash = en.hitFlash > 0;
 
           if (en.tipo === 5) {
-            ctx.shadowBlur = 16;
-            ctx.shadowColor = '#a855f7';
-            ctx.fillStyle = '#6b21a8';
-            ctx.strokeStyle = '#d8b4fe';
-            ctx.lineWidth = 2.5;
+            ctx.shadowBlur = 18; ctx.shadowColor = '#a855f7';
+            ctx.fillStyle = flash ? '#ffffff' : '#581c87';
+            ctx.strokeStyle = '#e9d5ff'; ctx.lineWidth = 2.5;
             ctx.beginPath();
             for (var h = 0; h < 6; h++) {
-              var angH = (Math.PI / 3) * h;
+              var angH = (Math.PI / 3) * h + q * 0.02;
               var px = Math.cos(angH) * en.r, py = Math.sin(angH) * en.r;
-              if (h === 0) ctx.moveTo(px, py);
-              else ctx.lineTo(px, py);
+              if (h === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
             }
             ctx.closePath(); ctx.fill(); ctx.stroke();
-            ctx.fillStyle = '#f3e8ff';
-            ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#c084fc';
+            ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#090a0f';
+            ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fill();
           } else if (en.tipo === 4) {
-            ctx.shadowBlur = 14;
-            ctx.shadowColor = '#00f3ff';
-            ctx.fillStyle = '#0284c7';
+            ctx.shadowBlur = 15; ctx.shadowColor = '#00f3ff';
+            ctx.fillStyle = flash ? '#ffffff' : '#0369a1';
             ctx.beginPath();
-            ctx.moveTo(0, en.r + 4); ctx.lineTo(-en.r * 0.85, -en.r); ctx.lineTo(0, -en.r * 0.3); ctx.lineTo(en.r * 0.85, -en.r);
+            ctx.moveTo(0, en.r + 5); ctx.lineTo(-en.r * 0.9, -en.r); ctx.lineTo(0, -en.r * 0.35); ctx.lineTo(en.r * 0.9, -en.r);
             ctx.closePath(); ctx.fill();
+            ctx.fillStyle = '#38bdf8';
+            ctx.beginPath(); ctx.moveTo(0, en.r - 4); ctx.lineTo(-7, -6); ctx.lineTo(7, -6); ctx.closePath(); ctx.fill();
           } else if (en.tipo === 3) {
-            ctx.shadowBlur = 16;
-            ctx.shadowColor = '#ffee00';
-            ctx.fillStyle = '#ffcc00';
+            ctx.shadowBlur = 18; ctx.shadowColor = '#ffee00';
+            ctx.fillStyle = flash ? '#ffffff' : '#f59e0b';
             ctx.beginPath();
             ctx.moveTo(0, en.r); ctx.lineTo(-en.r, 0); ctx.lineTo(0, -en.r); ctx.lineTo(en.r, 0);
             ctx.closePath(); ctx.fill();
+            ctx.strokeStyle = '#fef08a'; ctx.lineWidth = 2; ctx.stroke();
             ctx.fillStyle = '#040610';
-            ctx.beginPath(); ctx.arc(0, 0, 7, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = '#ffee00';
-            ctx.font = 'bold 9px Arial'; ctx.textAlign = 'center';
-            ctx.fillText('★', 0, 3);
-          } else if (en.tipo === 2) {
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = '#ff0055';
-            ctx.fillStyle = '#ff0055';
-            ctx.beginPath();
-            ctx.moveTo(0, en.r); ctx.lineTo(-en.r, -en.r * 0.6); ctx.lineTo(-en.r * 0.4, -en.r);
-            ctx.lineTo(en.r * 0.4, -en.r); ctx.lineTo(en.r, -en.r * 0.6);
-            ctx.closePath(); ctx.fill();
-            ctx.fillStyle = '#1e293b';
             ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#ffee00';
+            ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center';
+            ctx.fillText('★', 0, 3.5);
+          } else if (en.tipo === 2) {
+            ctx.shadowBlur = 14; ctx.shadowColor = '#ff0055';
+            ctx.fillStyle = flash ? '#ffffff' : '#be123c';
+            ctx.beginPath();
+            ctx.moveTo(0, en.r); ctx.lineTo(-en.r, -en.r * 0.5); ctx.lineTo(-en.r * 0.45, -en.r);
+            ctx.lineTo(en.r * 0.45, -en.r); ctx.lineTo(en.r, -en.r * 0.5);
+            ctx.closePath(); ctx.fill();
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath(); ctx.arc(0, -2, 9, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#fb7185';
+            ctx.beginPath(); ctx.arc(0, -2, 4, 0, Math.PI * 2); ctx.fill();
           } else {
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = '#ff6600';
-            ctx.fillStyle = '#ff6600';
+            ctx.shadowBlur = 10; ctx.shadowColor = '#ff6600';
+            ctx.fillStyle = flash ? '#ffffff' : '#ea580c';
             ctx.beginPath();
             ctx.moveTo(0, en.r); ctx.lineTo(-en.r, -en.r); ctx.lineTo(0, -en.r * 0.4); ctx.lineTo(en.r, -en.r);
             ctx.closePath(); ctx.fill();
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath(); ctx.arc(0, -2, 4, 0, Math.PI * 2); ctx.fill();
           }
           ctx.restore();
         }
-
         if (chefeOn && chefe) {
           ctx.save();
           ctx.translate(chefe.x, chefe.y);
 
-          ctx.shadowBlur = 35;
+          ctx.shadowBlur = 40;
           ctx.shadowColor = chefe.corAura;
           ctx.strokeStyle = chefe.corAura;
           ctx.lineWidth = chefe.inferno ? 6 : 4;
           ctx.beginPath();
-          ctx.arc(0, 0, 56 + Math.sin(q * 0.15) * 5, 0, Math.PI * 2);
+          ctx.arc(0, 0, 62 + Math.sin(q * 0.16) * 6, 0, Math.PI * 2);
           ctx.stroke();
 
-          ctx.fillStyle = '#f1f5f9'; ctx.beginPath(); ctx.arc(0, 8, 46, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#ffcca8'; ctx.beginPath(); ctx.arc(0, -4, 34, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(-56, -8, 16, 36);
+          ctx.fillRect(40, -8, 16, 36);
+          ctx.fillStyle = chefe.corAura;
+          ctx.fillRect(-52, 22, 8, 10);
+          ctx.fillRect(44, 22, 8, 10);
+
+          ctx.fillStyle = chefe.hitFlash > 0 ? '#ffffff' : '#f8fafc';
+          ctx.beginPath(); ctx.arc(0, 10, 48, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = chefe.hitFlash > 0 ? '#ffe4e6' : '#ffcca8';
+          ctx.beginPath(); ctx.arc(0, -4, 35, 0, Math.PI * 2); ctx.fill();
 
           ctx.fillStyle = chefe.corAura;
-          ctx.beginPath(); ctx.moveTo(-34, -18); ctx.lineTo(34, -18); ctx.lineTo(14, -58); ctx.closePath(); ctx.fill();
-          ctx.fillStyle = '#ffffff'; ctx.fillRect(-36, -24, 72, 11);
-          ctx.beginPath(); ctx.arc(16, -58, 8, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(-36, -18); ctx.lineTo(36, -18); ctx.lineTo(15, -62); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = '#ffffff'; ctx.fillRect(-38, -25, 76, 12);
+          ctx.beginPath(); ctx.arc(17, -62, 9, 0, Math.PI * 2); ctx.fill();
 
-          ctx.fillStyle = '#090a0f'; ctx.fillRect(-26, -12, 22, 12); ctx.fillRect(4, -12, 22, 12);
-          ctx.fillStyle = chefe.corAura; ctx.fillRect(-22, -9, 7, 3); ctx.fillRect(8, -9, 7, 3);
+          ctx.fillStyle = '#090a0f';
+          ctx.fillRect(-27, -12, 23, 13);
+          ctx.fillRect(4, -12, 23, 13);
+          ctx.fillRect(-4, -9, 8, 4);
+          ctx.fillStyle = chefe.corAura;
+          ctx.fillRect(-23, -9, 8, 4);
+          ctx.fillRect(8, -9, 8, 4);
+
+          ctx.fillStyle = '#ff1a40';
+          ctx.beginPath(); ctx.arc(0, 4, 6, 0, Math.PI * 2); ctx.fill();
           ctx.restore();
 
-          ctx.fillStyle = 'rgba(10, 15, 30, 0.85)'; ctx.fillRect(130, 52, 340, 15);
-          ctx.fillStyle = chefe.corAura; ctx.fillRect(132, 54, 336 * Math.max(0, chefe.hp / chefe.maxHp), 11);
-          ctx.fillStyle = '#ffffff'; ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center';
+          ctx.fillStyle = 'rgba(10, 15, 30, 0.9)';
+          ctx.fillRect(120, 50, 360, 16);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(122, 52, 356 * Math.max(0, chefe.hpVisual / chefe.maxHp), 12);
+          ctx.fillStyle = chefe.corAura;
+          ctx.fillRect(122, 52, 356 * Math.max(0, chefe.hp / chefe.maxHp), 12);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 10.5px Arial';
+          ctx.textAlign = 'center';
           var nomeChefe = chefe.final ? 'MEMENOEL SUPREMO' : (chefe.inferno ? 'MEMENOEL INFERNAL' : 'MEMENOEL S' + fase);
-          ctx.fillText(nomeChefe + ' • MODO ' + chefe.modoCor, 300, 63);
+          ctx.fillText(nomeChefe + ' • PODER ' + chefe.modoCor, 300, 62);
         }
 
         for (var i = 0; i < tChefe.length; i++) {
           var tc = tChefe[i];
           ctx.save();
-          ctx.shadowBlur = 14;
+          ctx.shadowBlur = 16;
           ctx.shadowColor = tc.cor || '#ff0055';
           ctx.fillStyle = tc.cor || '#ff0055';
-          ctx.beginPath(); ctx.arc(tc.x, tc.y, 8, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(tc.x, tc.y, 8.5, 0, Math.PI * 2); ctx.fill();
           ctx.fillStyle = '#ffffff';
-          ctx.beginPath(); ctx.arc(tc.x, tc.y, 3.5, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(tc.x, tc.y, 3.8, 0, Math.PI * 2); ctx.fill();
           ctx.restore();
         }
 
@@ -818,34 +875,45 @@
         ctx.translate(nave.x, nave.y);
         ctx.rotate(nave.tilt);
 
-        var chamaH = 16 + Math.random() * 12;
+        var chamaH = 18 + Math.random() * 14;
         ctx.fillStyle = '#ff6600';
-        ctx.beginPath(); ctx.moveTo(-12, 18); ctx.lineTo(-6, 18 + chamaH); ctx.lineTo(-2, 18); ctx.fill();
-        ctx.beginPath(); ctx.moveTo(2, 18); ctx.lineTo(6, 18 + chamaH); ctx.lineTo(12, 18); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(-13, 18); ctx.lineTo(-7, 18 + chamaH); ctx.lineTo(-2, 18); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(2, 18); ctx.lineTo(7, 18 + chamaH); ctx.lineTo(13, 18); ctx.fill();
+        ctx.fillStyle = '#ffee00';
+        ctx.beginPath(); ctx.moveTo(-10, 18); ctx.lineTo(-7, 18 + chamaH * 0.6); ctx.lineTo(-4, 18); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(4, 18); ctx.lineTo(7, 18 + chamaH * 0.6); ctx.lineTo(10, 18); ctx.fill();
 
-        ctx.shadowBlur = 16;
+        ctx.shadowBlur = 20;
         ctx.shadowColor = '#00f3ff';
-        ctx.fillStyle = '#00f3ff';
+        var naveGrad = ctx.createLinearGradient(0, -32, 0, 24);
+        naveGrad.addColorStop(0, '#e0f2fe');
+        naveGrad.addColorStop(0.5, '#00f3ff');
+        naveGrad.addColorStop(1, '#0284c7');
+        ctx.fillStyle = naveGrad;
         ctx.beginPath();
-        ctx.moveTo(0, -30); ctx.lineTo(-26, 22); ctx.lineTo(-10, 15); ctx.lineTo(0, 20);
-        ctx.lineTo(10, 15); ctx.lineTo(26, 22);
+        ctx.moveTo(0, -32); ctx.lineTo(-28, 22); ctx.lineTo(-11, 15); ctx.lineTo(0, 21);
+        ctx.lineTo(11, 15); ctx.lineTo(28, 22);
         ctx.closePath(); ctx.fill();
 
         ctx.fillStyle = '#0f172a';
         ctx.beginPath();
-        ctx.moveTo(0, -14); ctx.lineTo(-12, 10); ctx.lineTo(12, 10);
+        ctx.moveTo(0, -15); ctx.lineTo(-13, 11); ctx.lineTo(13, 11);
         ctx.closePath(); ctx.fill();
 
         ctx.fillStyle = '#ff0055';
-        ctx.beginPath(); ctx.ellipse(0, -2, 4.5, 9, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(0, -2, 5, 10, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.ellipse(-1.5, -5, 1.5, 4, 0, 0, Math.PI * 2); ctx.fill();
 
         if (nave.escudoT > 0) {
-          ctx.strokeStyle = '#00ff88'; ctx.lineWidth = 3;
+          ctx.strokeStyle = '#00ff88';
+          ctx.lineWidth = 3;
           ctx.shadowColor = '#00ff88';
-          ctx.beginPath(); ctx.arc(0, 0, 36, 0, Math.PI * 2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(0, 0, 38, 0, Math.PI * 2); ctx.stroke();
         }
         ctx.restore();
       }
+
       for (var i = 0; i < ondas.length; i++) {
         var od = ondas[i];
         ctx.save();
@@ -859,8 +927,14 @@
       for (var i = 0; i < parts.length; i++) {
         var p = parts[i];
         ctx.fillStyle = p.cor;
-        ctx.globalAlpha = Math.max(0, p.vida / 38);
+        ctx.globalAlpha = Math.max(0, p.vida / 42);
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r || 2.5, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      if (flashTela > 0) {
+        ctx.fillStyle = 'rgba(255, 255, 255, ' + flashTela + ')';
+        ctx.fillRect(0, 0, 600, 760);
       }
       ctx.restore();
     }
@@ -1062,4 +1136,3 @@
   </script>
 </body>
 </html>
-
