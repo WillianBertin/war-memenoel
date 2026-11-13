@@ -208,6 +208,11 @@
     var estado = 'INICIO', modo = 'PROX', fase = 1, maxFaseSalva = 1, pontos = 0, combo = 1, comboT = 0;
     var q = 0, abates = 0, metaAbates = 15, chefeOn = false, tremor = 0, flashTela = 0, mudo = false, ac = null;
     var alertaChefeT = 0, bgmTimer = null, bgmPasso = 0;
+    
+    // Variáveis para controle de FPS (trava estável em 60 FPS para celulares e PCs)
+    var ultimoTempo = 0;
+    var intervaloFps = 1000 / 60;
+
     var nave = { x: 300, y: 650, hp: 100, t: 0, arma: 1, ult: 0, laserT: 0, escudoT: 0, tilt: 0 };
     var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], ondas = [], estrelas = [], planetas = [];
     var chefe = null, teclas = {}, alvoX = 300, alvoY = 650, tocando = false;
@@ -1005,10 +1010,19 @@
       ctx.restore();
     }
 
-    function loop() {
-      atualizarJogo();
-      desenharJogo();
+    // Loop controlado por delta time (60 FPS fixos para celular e PC)
+    function loop(tempoAtual) {
       requestAnimationFrame(loop);
+
+      if (!ultimoTempo) ultimoTempo = tempoAtual;
+      var delta = tempoAtual - ultimoTempo;
+
+      if (delta >= intervaloFps) {
+        ultimoTempo = tempoAtual - (delta % intervaloFps);
+
+        atualizarJogo();
+        desenharJogo();
+      }
     }
 
     window.addEventListener('keydown', function(e) {
@@ -1145,7 +1159,7 @@
     };
 
     atualizarListasRanking();
-    loop();
+    requestAnimationFrame(loop);
   </script>
 
   <script type="module">
