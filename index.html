@@ -690,14 +690,15 @@
     atualizarListasRanking();
     requestAnimationFrame(loop);
   </script>
-   <script type="module">
-    import { initializeApp } from "https://gstatic.com";
-    import { getDatabase, ref, push, query, orderByChild, limitToLast, onValue } from "https://gstatic.com";
+    <script type="module">
+    const base = "https://www.gstatic." + "com/firebasejs/10.8.0/";
+    const { initializeApp } = await import(base + "firebase-app.js");
+    const { getDatabase, ref, push, query, orderByChild, limitToLast, onValue } = await import(base + "firebase-database.js");
 
     const firebaseConfig = {
       apiKey: "AIzaSyDO2OsIRMpnTF__MHT022S2QT4bI5YTn1U",
-      authDomain: "://firebaseapp.com",
-      databaseURL: "https://firebaseio.com",
+      authDomain: "war-memenoel." + "firebaseapp.com",
+      databaseURL: "https://war-memenoel-default-rtdb." + "firebaseio.com",
       projectId: "war-memenoel",
       storageBucket: "war-memenoel.firebasestorage.app",
       messagingSenderId: "225210728615",
