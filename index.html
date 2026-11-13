@@ -197,6 +197,12 @@
         <button id="btn-menu" type="button" class="btn btn-sec">TELA INICIAL</button>
         <div class="rank-box">
           <h4>Top 5 Melhores Pilotos</h4>
+          <div id="rank-modal"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     var c = document.getElementById('c'), ctx = c.getContext('2d');
     var estado = 'INICIO', modo = 'PROX', fase = 1, maxFaseSalva = 1, pontos = 0, combo = 1, comboT = 0;
@@ -418,6 +424,7 @@
       }
       return alvo;
     }
+
     function atualizarJogo() {
       if (estado !== 'JOGANDO') return;
       q++;
@@ -617,6 +624,65 @@
           tChefe.push({ x: chefe.x - 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: chefe.inferno ? 48 : 32 });
           tChefe.push({ x: chefe.x + 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: chefe.inferno ? 48 : 32 });
           som(420, 'sawtooth', 0.12, 0.07);
+        }
+      }
+
+      for (var i = tChefe.length - 1; i >= 0; i--) {
+        var tc = tChefe[i];
+        tc.x += tc.vx; tc.y += tc.vy;
+        if (Math.hypot(tc.x - nave.x, tc.y - nave.y) < 20) {
+          sofrerDano(tc.d || 20);
+          tChefe.splice(i, 1);
+          continue;
+        }
+        if (tc.y > 790 || tc.y < -30 || tc.x < -30 || tc.x > 630) tChefe.splice(i, 1);
+      }
+
+      for (var i = itens.length - 1; i >= 0; i--) {
+        var it = itens[i];
+        it.y += it.vy;
+        if (Math.hypot(it.x - nave.x, it.y - nave.y) < 28) {
+          if (it.tipo === 'ARMA') { nave.arma = Math.min(6, nave.arma + 1); if (nave.arma >= 6) desbloquearConquista('arma'); }
+          else if (it.tipo === 'HP') { nave.hp = Math.min(100, nave.hp + 35); }
+          else if (it.tipo === 'ESCUDO') { nave.escudoT = 240; }
+          else if (it.tipo === 'ULT') { nave.ult = 100; }
+          som(520, 'sine', 0.2, 0.1, 880);
+          itens.splice(i, 1);
+          atualizarHUD();
+          continue;
+        }
+        if (it.y > 790) itens.splice(i, 1);
+      }
+
+      for (var i = parts.length - 1; i >= 0; i--) {
+        var p = parts[i];
+        p.x += p.vx; p.y += p.vy; p.vida--;
+        if (p.vida <= 0) parts.splice(i, 1);
+      }
+
+      for (var i = ondas.length - 1; i >= 0; i--) {
+        var od = ondas[i];
+        od.r += 3.5; od.alpha -= 0.04;
+        if (od.alpha <= 0 || od.r >= od.maxR) ondas.splice(i, 1);
+      }
+
+      if (chefeOn && chefe && chefe.hp <= 0) {
+        criarParticulas(chefe.x, chefe.y, '#ff0055', 45, true);
+        som(70, 'sawtooth', 0.9, 0.2, 20);
+        pontos += 1500 * fase;
+        chefeOn = false;
+        chefe = null;
+        if (fase === 19) desbloquearConquista('inferno');
+        if (fase >= 20) {
+          desbloquearConquista('lenda');
+          encerrarPartida('VITÓRIA SUPREMA!', 'Você completou todos os 20 setores e salvou a galáxia!', 'REINICIAR');
+        } else {
+          encerrarPartida('SETORES LIMPOS!', 'Você derrotou o chefão e avançou com sucesso.', 'PROX');
+        }
+      }
+      atualizarHUD();
+    }
+
     function desenharJogo() {
       ctx.save();
       if (tremor > 0) ctx.translate((Math.random() - 0.5) * tremor, (Math.random() - 0.5) * tremor);
