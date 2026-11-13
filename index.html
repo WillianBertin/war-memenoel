@@ -102,6 +102,10 @@
       background: linear-gradient(90deg, #0066ff, #00d4ff);
       box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
     }
+    .btn-warn {
+      background: linear-gradient(90deg, #854d0e, #ca8a04);
+      box-shadow: 0 6px 20px rgba(202, 138, 4, 0.4);
+    }
     .rank-box {
       margin-top: 8px; background: rgba(6, 9, 22, 0.88);
       border: 1px solid rgba(255, 204, 0, 0.45); border-radius: 12px;
@@ -184,6 +188,7 @@
         <h2 style="color:#ffcc00; margin-bottom:8px; font-size:24px;">JOGO PAUSADO</h2>
         <p class="sub">Respire fundo, piloto. A galáxia aguarda o seu retorno!</p>
         <button id="btn-resume" type="button" class="btn">CONTINUAR MISSÃO</button>
+        <button id="btn-restart-f1" type="button" class="btn btn-warn">REINICIAR PARA FASE 1</button>
         <button id="btn-pause-menu" type="button" class="btn btn-sec">SAIR PARA O MENU</button>
       </div>
     </div>
@@ -194,6 +199,7 @@
         <p id="m-desc" class="sub">Confira sua posição no ranking:</p>
         <input type="text" id="nome-modal" placeholder="Seu apelido de piloto" maxlength="14">
         <button id="btn-ok" type="button" class="btn">CONTINUAR MISSAO</button>
+        <button id="btn-restart-f1-modal" type="button" class="btn btn-warn">VOLTAR PARA A FASE 1</button>
         <button id="btn-menu" type="button" class="btn btn-sec">TELA INICIAL</button>
         <div class="rank-box">
           <h4>Top 5 Melhores Pilotos</h4>
@@ -209,7 +215,6 @@
     var q = 0, abates = 0, metaAbates = 15, chefeOn = false, tremor = 0, flashTela = 0, mudo = false, ac = null;
     var alertaChefeT = 0, bgmTimer = null, bgmPasso = 0;
     
-    // Variáveis para controle de FPS (trava estável em 60 FPS para celulares e PCs)
     var ultimoTempo = 0;
     var intervaloFps = 1000 / 60;
 
@@ -341,6 +346,18 @@
         document.getElementById('pause-screen').classList.add('hidden');
         document.getElementById('btn-pause').textContent = 'PAUSAR';
       }
+    }
+
+    function reiniciarParaFase1() {
+      pontos = 0;
+      nave.hp = 100;
+      nave.arma = 1;
+      nave.ult = 0;
+      nave.escudoT = 0;
+      document.getElementById('pause-screen').classList.add('hidden');
+      document.getElementById('modal').classList.add('hidden');
+      iniciarFase(1);
+      estado = 'JOGANDO';
     }
 
     function iniciarFase(numFase) {
@@ -1010,7 +1027,6 @@
       ctx.restore();
     }
 
-    // Loop controlado por delta time (60 FPS fixos para celular e PC)
     function loop(tempoAtual) {
       requestAnimationFrame(loop);
 
@@ -1107,6 +1123,9 @@
 
     document.getElementById('btn-pause').onclick = alternarPausa;
     document.getElementById('btn-resume').onclick = alternarPausa;
+    document.getElementById('btn-restart-f1').onclick = reiniciarParaFase1;
+    document.getElementById('btn-restart-f1-modal').onclick = reiniciarParaFase1;
+
     document.getElementById('btn-pause-menu').onclick = function() {
       document.getElementById('pause-screen').classList.add('hidden');
       document.getElementById('start-screen').classList.remove('hidden');
