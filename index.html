@@ -14,28 +14,31 @@
     }
     #box {
       position: relative; width: 100%; max-width: 600px; height: 100%; max-height: 760px;
-      border: 2px solid #00f3ff; border-radius: 20px; overflow: hidden;
-      background: #03050c; box-shadow: 0 0 80px rgba(0, 243, 255, 0.35), 0 0 140px rgba(255, 0, 85, 0.25);
+      border: 3px solid #00f3ff; border-radius: 20px; overflow: hidden;
+      background: #03050c; box-shadow: 0 0 50px rgba(0, 243, 255, 0.4), 0 0 100px rgba(255, 0, 85, 0.25);
     }
     canvas { display: block; width: 100%; height: 100%; touch-action: none; }
     #hud {
-      position: absolute; top: 10px; left: 10px; right: 10px;
+      position: absolute; top: 12px; left: 12px; right: 12px;
       display: flex; justify-content: space-between; align-items: center; gap: 4px;
-      background: rgba(8, 12, 26, 0.9); border: 1px solid rgba(0, 243, 255, 0.6);
-      border-radius: 18px; padding: 7px 9px; font-size: 10.5px; font-weight: bold;
-      pointer-events: none; z-index: 10; backdrop-filter: blur(5px);
+      background: rgba(8, 12, 26, 0.95); border: 2px solid rgba(0, 243, 255, 0.8);
+      border-radius: 18px; padding: 8px 11px; font-size: 11px; font-weight: bold;
+      pointer-events: none; z-index: 10; backdrop-filter: blur(8px);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
     }
     .bar-bg {
       display: inline-block; width: 44px; height: 8px; background: #161c2e;
       border-radius: 5px; overflow: hidden; vertical-align: middle; margin-left: 2px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     #hp-bar { display: block; width: 100%; height: 100%; background: linear-gradient(90deg, #ff0055, #00ff88); transition: width 0.15s; }
     #ult-bar { display: block; width: 0%; height: 100%; background: linear-gradient(90deg, #ff8800, #ffee00); transition: width 0.15s; }
     .hud-btn {
-      pointer-events: auto; background: #112233; border: 1px solid #00f3ff;
-      color: #fff; padding: 4px 7px; border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: bold;
+      pointer-events: auto; background: #112233; border: 1.5px solid #00f3ff;
+      color: #fff; padding: 5px 8px; border-radius: 8px; cursor: pointer; font-size: 9.5px; font-weight: bold;
+      text-transform: uppercase; box-shadow: 0 0 8px rgba(0, 243, 255, 0.2);
     }
-    #btn-pause { border-color: #ffcc00; color: #ffcc00; }
+    #btn-pause { border-color: #ffcc00; color: #ffcc00; box-shadow: 0 0 8px rgba(255, 204, 0, 0.2); }
     #hud-bot {
       position: absolute; bottom: 14px; left: 14px; right: 14px;
       display: flex; justify-content: space-between; align-items: center;
@@ -44,7 +47,7 @@
     #combo-tag {
       background: linear-gradient(90deg, #ff0055, #ff6600);
       padding: 5px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; opacity: 0;
-      transition: opacity 0.2s; box-shadow: 0 0 12px rgba(255, 0, 85, 0.6);
+      transition: opacity 0.2s; box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
     }
     #btn-ult {
       pointer-events: auto; background: linear-gradient(90deg, #ffaa00, #ff0055);
@@ -59,75 +62,89 @@
     #toast-conquista {
       position: absolute; top: 58px; left: 50%; transform: translateX(-50%);
       background: linear-gradient(90deg, rgba(255, 170, 0, 0.95), rgba(255, 0, 85, 0.95));
-      border: 1px solid #fff; color: #fff; padding: 6px 14px; border-radius: 14px;
+      border: 1.5px solid #fff; color: #fff; padding: 7px 16px; border-radius: 14px;
       font-size: 11.5px; font-weight: bold; z-index: 30; pointer-events: none;
-      opacity: 0; transition: opacity 0.3s; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+      opacity: 0; transition: opacity 0.3s; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 100, 0, 0.4);
       white-space: nowrap;
     }
     .overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at center, rgba(10, 15, 34, 0.65) 0%, rgba(3, 5, 12, 0.94) 100%);
-      backdrop-filter: blur(5px); display: flex; align-items: center;
+      background: radial-gradient(circle at center, rgba(10, 15, 34, 0.8) 0%, rgba(3, 5, 12, 0.98) 100%);
+      backdrop-filter: blur(8px); display: flex; align-items: center;
       justify-content: center; padding: 14px; z-index: 50;
     }
     .card {
-      background: rgba(12, 19, 38, 0.94); border: 2px solid rgba(0, 243, 255, 0.7);
-      border-radius: 24px; padding: 16px 18px; width: 100%; max-width: 405px;
-      text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+      background: rgba(12, 19, 38, 0.96); border: 2.5px solid rgba(0, 243, 255, 0.8);
+      border-radius: 24px; padding: 22px 20px; width: 100%; max-width: 420px;
+      text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 243, 255, 0.15);
       max-height: 96%; overflow-y: auto;
     }
     .badge {
-      display: inline-block; background: rgba(255, 0, 85, 0.22); border: 1px solid #ff0055;
-      color: #ff85b3; font-size: 10px; font-weight: bold; letter-spacing: 1.5px;
-      padding: 4px 12px; border-radius: 16px; margin-bottom: 6px; text-transform: uppercase;
+      display: inline-block; background: rgba(255, 0, 85, 0.25); border: 1.5px solid #ff0055;
+      color: #ff9ec2; font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+      padding: 5px 14px; border-radius: 16px; margin-bottom: 8px; text-transform: uppercase;
+      box-shadow: 0 0 10px rgba(255, 0, 85, 0.25);
     }
     h1 {
-      font-size: 29px; font-weight: 900; letter-spacing: 1.5px; margin-bottom: 5px;
-      background: linear-gradient(90deg, #ff0055, #ffcc00, #00f3ff);
+      font-size: 34px; font-weight: 950; letter-spacing: 2px; margin-bottom: 4px;
+      background: linear-gradient(90deg, #ff0055 10%, #ffee00 50%, #00f3ff 90%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 25px rgba(0, 243, 255, 0.35);
+      filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.6));
     }
-    .sub { color: #c2d1eb; font-size: 12px; margin-bottom: 10px; line-height: 1.35; }
+    .sub { color: #b1c7ec; font-size: 12px; margin-bottom: 12px; line-height: 1.4; font-weight: 500; }
     input {
-      user-select: text; width: 100%; padding: 10px; border-radius: 12px;
+      user-select: text; width: 100%; padding: 12px; border-radius: 12px;
       border: 2px solid #00f3ff; background: #050814; color: #fff;
-      font-size: 14px; font-weight: bold; text-align: center; margin-bottom: 8px; outline: none;
+      font-size: 14px; font-weight: bold; text-align: center; margin-bottom: 10px; outline: none;
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.2) inset, 0 0 5px rgba(0, 243, 255, 0.1);
+      transition: all 0.3s;
     }
+    input:focus { border-color: #ff0055; box-shadow: 0 0 15px rgba(255, 0, 85, 0.3) inset, 0 0 8px rgba(255, 0, 85, 0.2); }
     .btn {
-      width: 100%; padding: 11px; border: none; border-radius: 12px;
-      background: linear-gradient(90deg, #ff0055, #ff6600);
+      width: 100%; padding: 12px; border: none; border-radius: 12px;
+      background: linear-gradient(90deg, #ff0055, #ff5500);
       color: #fff; font-size: 14px; font-weight: bold; cursor: pointer;
-      margin-bottom: 7px; box-shadow: 0 6px 20px rgba(255, 0, 85, 0.45);
+      margin-bottom: 8px; box-shadow: 0 6px 20px rgba(255, 0, 85, 0.5);
+      text-transform: uppercase; font-family: inherit; letter-spacing: 0.5px;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
+    .btn:active { transform: scale(0.98); }
     .btn-sec {
-      background: linear-gradient(90deg, #0066ff, #00d4ff);
-      box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+      background: linear-gradient(90deg, #0055ff, #00d4ff);
+      box-shadow: 0 6px 20px rgba(0, 212, 255, 0.45);
     }
     .btn-warn {
       background: linear-gradient(90deg, #854d0e, #ca8a04);
       box-shadow: 0 6px 20px rgba(202, 138, 4, 0.4);
     }
     .rank-box {
-      margin-top: 8px; background: rgba(6, 9, 22, 0.88);
-      border: 1px solid rgba(255, 204, 0, 0.45); border-radius: 12px;
-      padding: 8px 10px; text-align: left;
+      margin-top: 10px; background: rgba(6, 9, 22, 0.95);
+      border: 1.5px solid rgba(255, 204, 0, 0.5); border-radius: 14px;
+      padding: 10px 12px; text-align: left;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 8px rgba(255, 204, 0, 0.1);
     }
     .rank-box h4 {
-      color: #ffcc00; font-size: 10.5px; text-transform: uppercase;
-      margin-bottom: 5px; text-align: center; letter-spacing: 1px;
+      color: #ffcc00; font-size: 11px; text-transform: uppercase;
+      margin-bottom: 7px; text-align: center; letter-spacing: 1.5px; font-weight: 800;
     }
     .rk-row {
       display: flex; justify-content: space-between; align-items: center; font-size: 11px;
-      padding: 3px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 5px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-weight: 600;
     }
+    .rk-row:last-child { border-bottom: none; }
     .conq-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 4px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px;
     }
     .conq-item {
-      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 8px; padding: 5px 6px; font-size: 10px; color: #7e8da8;
+      background: rgba(255, 255, 255, 0.04); border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px; padding: 6px 8px; font-size: 10px; color: #7e8da8;
+      font-weight: bold; transition: all 0.3s;
     }
     .conq-item.ativa {
       border-color: #00ff88; background: rgba(0, 255, 136, 0.12); color: #fff;
+      box-shadow: 0 0 8px rgba(0, 255, 136, 0.15);
     }
     .hidden { display: none !important; }
   </style>
@@ -152,50 +169,61 @@
 
     <div id="start-screen" class="overlay">
       <div class="card">
-        <div class="badge">Ultra Remastered • Chefe em Todos os 20 Setores</div>
-        <svg width="58" height="58" viewBox="0 0 100 100" style="margin-bottom:2px;">
-          <circle cx="50" cy="56" r="32" fill="#f1f5f9"/>
-          <circle cx="50" cy="46" r="24" fill="#ffcca8"/>
+        <div class="badge">🎅 ULTRA REMASTERED • SETORES 1 AO 20 🎮</div>
+        
+        <!-- Ilustração do Papai Noel Ciberpunk de Combate espacial -->
+        <svg width="68" height="68" viewBox="0 0 100 100" style="margin-bottom: 4px; filter: drop-shadow(0 0 10px rgba(255, 0, 85, 0.4));">
+          <circle cx="50" cy="56" r="32" fill="#e2e8f0" stroke="#ff0055" stroke-width="2"/>
+          <circle cx="50" cy="46" r="24" fill="#ffd0b0"/>
+          
+          <!-- Gorro Noel Futurista -->
           <path d="M26 34 L74 34 L60 6 Z" fill="#e60026"/>
-          <rect x="24" y="30" width="52" height="9" rx="4" fill="#ffffff"/>
+          <rect x="24" y="30" width="52" height="9" rx="4.5" fill="#ffffff"/>
           <circle cx="62" cy="7" r="7" fill="#ffffff"/>
-          <rect x="30" y="39" width="17" height="9" fill="#090a0f"/>
-          <rect x="53" y="39" width="17" height="9" fill="#090a0f"/>
-          <rect x="47" y="41" width="6" height="3" fill="#090a0f"/>
-          <rect x="33" y="41" width="4" height="2" fill="#00f3ff"/>
-          <rect x="56" y="41" width="4" height="2" fill="#00f3ff"/>
-          <circle cx="50" cy="51" r="5" fill="#ff1a40"/>
+          
+          <!-- Cyber Óculos de Combate -->
+          <rect x="23" y="39.5" width="54" height="11.5" rx="5.5" fill="#090a0f" stroke="#00f3ff" stroke-width="2"/>
+          <path d="M26 44 L74 44" stroke="#ff0055" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="33" y="44" width="12" height="3.5" rx="1.5" fill="#00f3ff" opacity="0.8"/>
+          <rect x="55" y="44" width="12" height="3.5" rx="1.5" fill="#00f3ff" opacity="0.8"/>
+          
+          <!-- Detalhes Tecnológicos da Armadura -->
+          <path d="M30 68 L50 82 L70 68 Z" fill="#e60026" stroke="#00f3ff" stroke-width="1.5"/>
+          <rect x="42" y="70" width="16" height="5" rx="2" fill="#ffaa00"/>
+          <circle cx="50" cy="53" r="4.5" fill="#ff0033"/>
         </svg>
+
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Gráficos Ultra HD, Chefão em cada setor e o desafio impossível nos andares 19 e 20!</p>
-        <input type="text" id="nome-inicio" placeholder="Seu apelido de piloto" maxlength="14">
-        <button id="btn-play" type="button" class="btn">DECOLAR AGORA</button>
+        <p class="sub">Enfrente a armada espacial e chefões épicos em cada setor!</p>
+        <input type="text" id="nome-inicio" placeholder="Digite seu apelido de piloto" maxlength="14">
+        <button id="btn-play" type="button" class="btn">🚀 DECOLAR AGORA</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">CONTINUAR FASE <span id="max-lvl">1</span></button>
+        
         <div class="rank-box">
           <h4>Top 5 Melhores Pilotos</h4>
           <div id="rank-inicio"></div>
         </div>
-        <div class="rank-box">
-          <h4>Conquistas (<span id="conq-count">0</span>/6)</h4>
+        <div class="rank-box" style="border-color: rgba(0, 243, 255, 0.45);">
+          <h4 style="color: #00f3ff;">Conquistas (<span id="conq-count">0</span>/6)</h4>
           <div id="conq-lista" class="conq-grid"></div>
         </div>
       </div>
     </div>
 
     <div id="pause-screen" class="overlay hidden">
-      <div class="card">
-        <div class="badge">Sistema em Espera</div>
-        <h2 style="color:#ffcc00; margin-bottom:8px; font-size:24px;">JOGO PAUSADO</h2>
+      <div class="card" style="border-color: #ffcc00; box-shadow: 0 0 35px rgba(255, 204, 0, 0.15);">
+        <div class="badge" style="background: rgba(255, 204, 0, 0.15); border-color: #ffcc00; color: #ffe680;">SISTEMA EM ESPERA</div>
+        <h2 style="color:#ffcc00; margin-bottom:8px; font-size:24px; font-weight: 900; letter-spacing: 1px;">JOGO PAUSADO</h2>
         <p class="sub">Respire fundo, piloto. A galáxia aguarda o seu retorno!</p>
-        <button id="btn-resume" type="button" class="btn">CONTINUAR MISSÃO</button>
+        <button id="btn-resume" type="button" class="btn btn-sec">CONTINUAR MISSÃO</button>
         <button id="btn-restart-f1" type="button" class="btn btn-warn">REINICIAR PARA FASE 1</button>
-        <button id="btn-pause-menu" type="button" class="btn btn-sec">SAIR PARA O MENU</button>
+        <button id="btn-pause-menu" type="button" class="btn" style="background: #112233; border: 1.5px solid #00f3ff; box-shadow: none;">SAIR PARA O MENU</button>
       </div>
     </div>
 
     <div id="modal" class="overlay hidden">
       <div class="card">
-        <h2 id="m-tit" style="color:#ffcc00; margin-bottom:8px;">FASE VENCIDA!</h2>
+        <h2 id="m-tit" style="color:#ffcc00; margin-bottom:8px; font-size:24px; font-weight: 900; letter-spacing: 1.5px;">FASE VENCIDA!</h2>
         <p id="m-desc" class="sub">Confira sua posição no ranking:</p>
         <input type="text" id="nome-modal" placeholder="Seu apelido de piloto" maxlength="14">
         <button id="btn-ok" type="button" class="btn">CONTINUAR MISSAO</button>
@@ -381,17 +409,17 @@
       chefeOn = true;
       alertaChefeT = 130;
       var isInferno = (fase >= 19);
-      var isSuper = (fase % 5 === 0);
-      var vidaMax = isInferno ? (fase === 20 ? 11500 : 8800) : (isSuper ? (750 + fase * 130) : (420 + fase * 85));
-      var velBase = isInferno ? 4.4 : (2.2 + fase * 0.14);
+      
+      var vidaMax = isInferno ? (fase === 20 ? 11500 : 8800) : (250 + fase * 35);
+      var velBase = isInferno ? 4.4 : 1.6;
 
       chefe = {
         x: 300, y: -110, alvoY: 145, vx: velBase,
         hp: vidaMax, hpVisual: vidaMax, maxHp: vidaMax, t: 0,
-        final: (fase === 20), inferno: isInferno, superChefe: isSuper,
+        final: (fase === 20), inferno: isInferno, superChefe: false,
         modoCor: 'FOGO', corAura: '#ff0055', angEspiral: 0, hitFlash: 0
       };
-      tremor = isInferno ? 28 : 18;
+      tremor = isInferno ? 28 : 12;
       som(140, 'sawtooth', 0.75, 0.16, 45);
     }
 
@@ -628,23 +656,25 @@
         else if (ciclo === 1) { chefe.modoCor = 'RAIO'; chefe.corAura = '#00f3ff'; }
         else { chefe.modoCor = 'CAOS'; chefe.corAura = '#d946ef'; }
 
-        var intFogo = chefe.inferno ? 18 : 40;
-        var intRaio = chefe.inferno ? 11 : 26;
-        var intCaos = chefe.inferno ? 5 : 13;
+        var intFogo = chefe.inferno ? 18 : 65;
+        var intRaio = chefe.inferno ? 11 : 45;
+        var intCaos = chefe.inferno ? 5 : 25;
 
         if (chefe.modoCor === 'FOGO' && chefe.t % intFogo === 0) {
-          var qtd = chefe.inferno ? 9 : (chefe.superChefe ? 6 : 4);
-          var velF = chefe.inferno ? 6.6 : 4.8;
+          var qtd = chefe.inferno ? 9 : 3;
+          var velF = chefe.inferno ? 6.6 : 3.6;
           for (var k = 0; k < qtd; k++) {
-            var ang = (Math.PI / 2) + ((k - (qtd - 1) / 2) * (chefe.inferno ? 0.20 : 0.26));
-            tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * velF, vy: Math.sin(ang) * velF, cor: '#ff0055', dano: chefe.inferno ? 46 : 30 });
+            var ang = (Math.PI / 2) + ((k - (qtd - 1) / 2) * (chefe.inferno ? 0.20 : 0.22));
+            tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * velF, vy: Math.sin(ang) * velF, cor: '#ff0055', dano: chefe.inferno ? 46 : 14 });
           }
           som(140, 'square', 0.16, 0.08);
         } else if (chefe.modoCor === 'RAIO' && chefe.t % intRaio === 0) {
           var angMirado = Math.atan2(nave.y - chefe.y, nave.x - chefe.x);
-          var velR = chefe.inferno ? 8.8 : 6.4;
-          tChefe.push({ x: chefe.x - 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: chefe.inferno ? 48 : 32 });
-          tChefe.push({ x: chefe.x + 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: chefe.inferno ? 48 : 32 });
+          var velR = chefe.inferno ? 8.8 : 4.5;
+          tChefe.push({ x: chefe.x - 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: chefe.inferno ? 48 : 16 });
+          if (chefe.inferno) {
+            tChefe.push({ x: chefe.x + 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: 48 });
+          }
           som(420, 'sawtooth', 0.12, 0.07);
         }
       }
@@ -653,7 +683,7 @@
         var tc = tChefe[i];
         tc.x += tc.vx; tc.y += tc.vy;
         if (Math.hypot(tc.x - nave.x, tc.y - nave.y) < 20) {
-          sofrerDano(tc.d || 20);
+          sofrerDano(tc.d || 15);
           tChefe.splice(i, 1);
           continue;
         }
@@ -889,7 +919,7 @@
             ctx.moveTo(0, en.r); ctx.lineTo(-en.r, -en.r); ctx.lineTo(0, -en.r * 0.4); ctx.lineTo(en.r, -en.r);
             ctx.closePath(); ctx.fill();
             ctx.fillStyle = '#fed7aa';
-            ctx.beginPath(); ctx.arc(0, -2, 4, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); rx = 0, ry = -2, r = 4, 0, Math.PI * 2; ctx.fill();
           }
           ctx.restore();
         }
