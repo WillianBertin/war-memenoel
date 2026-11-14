@@ -569,6 +569,7 @@
         });
       }
 
+      // TRATAMENTO DE TIROS E COLISÕES (INIMIGOS E CHEFÃO)
       for (var i = tiros.length - 1; i >= 0; i--) {
         var t = tiros[i];
         if (t.tipo === 'MISSIL') {
@@ -583,6 +584,7 @@
         }
         t.x += t.vx; t.y += t.vy;
 
+        // Colisão com o Chefe
         if (chefeOn && chefe) {
           var raioAcertoChefe = t.tipo === 'ONDA' ? chefe.r + 25 : chefe.r + 10;
           if (Math.hypot(chefe.x - t.x, chefe.y - t.y) < raioAcertoChefe) {
@@ -595,6 +597,24 @@
             }
           }
         }
+
+        // Colisão com Inimigos Pequenos
+        var tiroRemovido = false;
+        for (var j = inimigos.length - 1; j >= 0; j--) {
+          var en = inimigos[j];
+          var raioAcertoInimigo = t.tipo === 'ONDA' ? en.r + 22 : en.r + 14;
+          if (Math.hypot(en.x - t.x, en.y - t.y) < raioAcertoInimigo) {
+            en.hp -= t.d;
+            en.hitFlash = 3;
+            criarParticulas(t.x, t.y, t.cor, 4, false);
+            if (t.tipo !== 'ONDA') {
+              tiros.splice(i, 1);
+              tiroRemovido = true;
+              break;
+            }
+          }
+        }
+        if (tiroRemovido) continue;
 
         if (t.y < -30 || t.x < -30 || t.x > 630) tiros.splice(i, 1);
       }
