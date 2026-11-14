@@ -80,7 +80,7 @@
       max-height: 96%; overflow-y: auto; position: relative;
     }
     .card::before {
-      content: 'ULTRA_4D_ENGINE // V5.0';
+      content: 'ULTRA_ROGUE_ENGINE // V10.0';
       position: absolute; top: 8px; right: 12px; font-size: 8px; color: #ff0055; letter-spacing: 2px; opacity: 0.7;
     }
     .badge {
@@ -122,6 +122,10 @@
     }
     .btn-sec { background: linear-gradient(90deg, #00f3ff, #0066ff); color: #03050c; box-shadow: 0 0 30px rgba(0, 243, 255, 0.65); }
     .btn-warn { background: linear-gradient(90deg, #854d0e, #ca8a04); color: #fff; box-shadow: 0 0 20px rgba(202, 138, 4, 0.5); }
+    .shop-box {
+      background: rgba(0, 243, 255, 0.05); border: 1.5px solid rgba(0, 243, 255, 0.4);
+      border-radius: 12px; padding: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
+    }
     .rank-box {
       margin-top: 6px; background: rgba(10, 4, 18, 0.92);
       border: 1.5px solid rgba(255, 0, 85, 0.5); border-radius: 12px;
@@ -149,7 +153,7 @@
   <div id="box">
     <canvas id="c" width="600" height="760"></canvas>
     <div id="hud">
-      <div>FASE <span id="lvl" style="color:#ffcc00;">1</span>/21</div>
+      <div>FASE <span id="lvl" style="color:#ffcc00;">1</span>/22</div>
       <div>ARMA <span id="wpn-lvl" style="color:#ffaa00;">NV.1</span></div>
       <div>PTS <span id="pts" style="color:#00f3ff;">0</span></div>
       <div>HP <span class="bar-bg"><span id="hp-bar"></span></span></div>
@@ -170,7 +174,7 @@
         <div class="ship-select-box">
           <div class="ship-option selected" data-ship="1" onclick="selecionarNave(1)">
             <strong style="color:#00f3ff; font-size:11px;">Interceptor V-1</strong>
-            <span>Até 6 Upgrades</span>
+            <span>6 Upgrades</span>
           </div>
           <div class="ship-option" data-ship="2" onclick="selecionarNave(2)">
             <strong style="color:#ff0055; font-size:11px;">Destruidor Plasma</strong>
@@ -183,13 +187,13 @@
         </div>
 
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Modo 4D, Fases estendidas, Kamikazes, Atiradores e Fase Secreta 21!</p>
+        <p class="sub">Loja de Upgrades, Conquistas Ativas, Chefes e Grinch Final!</p>
         <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
         <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">RETORNAR AO SETOR <span id="max-lvl">1</span></button>
         
         <div class="rank-box">
-          <h4>Ranking de Pilotos</h4>
+          <h4>Ranking por Nave</h4>
           <div id="rank-inicio"></div>
         </div>
         <div class="rank-box" style="border-color: rgba(255, 238, 0, 0.4);">
@@ -214,16 +218,35 @@
       <div class="card">
         <h2 id="m-tit" style="color:#ff0055; margin-bottom:8px; font-size:22px; font-weight: 900;">SETOR CONCLUÍDO</h2>
         <p id="m-desc" class="sub">Relatório de telemetria e classificação:</p>
-        <div id="stats-container" style="background: rgba(255, 0, 85, 0.08); border: 1px solid rgba(255, 0, 85, 0.3); border-radius: 10px; padding: 8px; margin-bottom: 10px; font-size: 11px; display: none;">
+        
+        <!-- LOJA DE MELHORIAS ENTRE AS FASES -->
+        <div id="shop-container" style="display:none; margin-bottom: 10px;">
+          <h4 style="color: #00f3ff; font-size:10.5px; text-transform: uppercase; margin-bottom:6px;">🛒 LOJA DE UPGRADES DO SETOR</h4>
+          <div class="shop-box">
+            <span style="font-size:10px; text-align:left;">❤️ Reparar Casco (+35 HP)</span>
+            <button onclick="comprarLoja('hp')" class="hud-btn" style="padding:4px 8px;">250 PTS</button>
+          </div>
+          <div class="shop-box">
+            <span style="font-size:10px; text-align:left;">⚡ Upgrade de Arma (+1 Nv)</span>
+            <button onclick="comprarLoja('arma')" class="hud-btn" style="padding:4px 8px;">500 PTS</button>
+          </div>
+          <div class="shop-box">
+            <span style="font-size:10px; text-align:left;">🛡️ Ativar Escudo Espacial</span>
+            <button onclick="comprarLoja('escudo')" class="hud-btn" style="padding:4px 8px;">400 PTS</button>
+          </div>
+        </div>
+
+        <div id="stats-container" style="background: rgba(255, 0, 85, 0.08); border: 1px solid rgba(255, 0, 85, 0.3); border-radius: 10px; padding: 8px; margin-bottom: 10px; font-size: 11px;">
           <div>Inimigos Destruídos: <strong id="stat-abates" style="color: #00f3ff;">0</strong></div>
-          <div>Pontuação Final: <strong id="stat-pts" style="color: #ffee00;">0</strong></div>
+          <div>Precisão de Disparos: <strong id="stat-precisao" style="color: #00ff88;">94%</strong></div>
+          <div>Pontuação Acumulada: <strong id="stat-pts" style="color: #ffee00;">0</strong></div>
         </div>
         <input type="text" id="nome-modal" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
         <button id="btn-ok" type="button" class="btn">PRÓXIMO SETOR</button>
         <button id="btn-restart-f1-modal" type="button" class="btn btn-warn">VOLTAR PARA A FASE 1</button>
         <button id="btn-menu" type="button" class="btn btn-sec">TELA INICIAL</button>
         <div class="rank-box">
-          <h4>Ranking de Pilotos</h4>
+          <h4>Ranking por Nave</h4>
           <div id="rank-modal"></div>
         </div>
       </div>
@@ -233,7 +256,8 @@
   <script>
     var c = document.getElementById('c'), ctx = c.getContext('2d');
     var estado = 'INICIO', modo = 'PROX', fase = 1, maxFaseSalva = 1, pontos = 0, combo = 1, comboT = 0;
-    var q = 0, abates = 0, totalAbatesPartida = 0, metaAbates = 24, chefeOn = false, miniChefeOn = false, tremor = 0, flashTela = 0, mudo = false, ac = null;
+    var q = 0, abates = 0, totalAbatesPartida = 0, tirosDisparados = 0, tirosAcertados = 0, metaAbates = 24;
+    var chefeOn = false, miniChefeOn = false, tremor = 0, flashTela = 0, mudo = false, ac = null;
     var alertaChefeT = 0, bgmTimer = null, bgmPasso = 0;
     var tipoNaveSelecionada = 1;
     
@@ -241,7 +265,7 @@
     var intervaloFps = 1000 / 60;
 
     var nave = { x: 300, y: 650, hp: 100, t: 0, arma: 1, ult: 0, laserT: 0, escudoT: 0, tilt: 0 };
-    var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], ondas = [], estrelas = [];
+    var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], ondas = [], estrelas = [], meteoros = [];
     var chefe = null, miniChefe = null, teclas = {}, alvoX = 300, alvoY = 650, tocando = false;
 
     function selecionarNave(id) {
@@ -257,7 +281,7 @@
       { id: 'arma', nome: '⚡ Arsenal Nv.6' },
       { id: 'combo', nome: '🔥 Combo x10' },
       { id: 'inferno', nome: '💀 Sobreviveu F19' },
-      { id: 'lenda', nome: '🏆 Lenda Galáctica' }
+      { id: 'lenda', nome: '🏆 Grinch Destruído' }
     ];
     var conquistasSalvas = {};
     try { conquistasSalvas = JSON.parse(localStorage.getItem('wm_conq') || '{}'); } catch (e) {}
@@ -271,6 +295,7 @@
         var toast = document.getElementById('toast-conquista');
         toast.textContent = 'CONQUISTA: ' + info.nome;
         toast.style.opacity = '1';
+        pontos += 500; // Recompensa ativa de pontos por conquista!
         som(980, 'sine', 0.35, 0.12, 1320);
         setTimeout(function() { toast.style.opacity = '0'; }, 2800);
       }
@@ -326,6 +351,7 @@
       if (mudo || estado !== 'JOGANDO') return;
       try {
         iniciarAudioContext();
+        var bpmSpeed = fase >= 19 ? 160 : 210;
         var notasNormais = [110, 110, 146.83, 130.81, 164.81, 146.83, 196, 164.81];
         var notasChefe = [98, 103.83, 98, 116.54, 98, 130.81, 116.54, 103.83];
         var escala = (chefeOn || fase >= 19) ? notasChefe : notasNormais;
@@ -335,7 +361,7 @@
         var osc = ac.createOscillator(), gain = ac.createGain();
         osc.type = (chefeOn || fase >= 19) ? 'sawtooth' : 'triangle';
         osc.frequency.setValueAtTime(freq, ac.currentTime);
-        gain.gain.setValueAtTime(0.032, ac.currentTime);
+        gain.gain.setValueAtTime(0.035, ac.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.18);
         osc.connect(gain); gain.connect(ac.destination);
         osc.start(); osc.stop(ac.currentTime + 0.19);
@@ -344,7 +370,7 @@
 
     function iniciarMusica() {
       if (bgmTimer) clearInterval(bgmTimer);
-      bgmTimer = setInterval(tocarBatidaMusica, 210);
+      bgmTimer = setInterval(tocarBatidaMusica, fase >= 19 ? 160 : 210);
     }
 
     function criarParticulas(x, y, cor, qtd, ondaChoque) {
@@ -355,7 +381,7 @@
           vida: 28 + Math.random() * 20, maxVida: 48, cor: cor, r: 2.2 + Math.random() * 3.2
         });
       }
-      if (ondaChoque) ondas.push({ x: x, y: y, r: 10, maxR: 100, cor: cor, alpha: 1 });
+      if (ondaChoque) ondas.push({ x: x, y: y, r: 10, maxR: 110, cor: cor, alpha: 1 });
     }
 
     function alternarPausa() {
@@ -371,7 +397,8 @@
     }
 
     function reiniciarParaFase1() {
-      pontos = 0; totalAbatesPartida = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
+      pontos = 0; totalAbatesPartida = 0; tirosDisparados = 0; tirosAcertados = 0;
+      nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
       document.getElementById('pause-screen').classList.add('hidden');
       document.getElementById('modal').classList.add('hidden');
       iniciarFase(1);
@@ -389,6 +416,7 @@
       tChefe = [];
       inimigos = [];
       itens = [];
+      meteoros = [];
       metaAbates = 24 + (fase * 2);
       document.getElementById('lvl').textContent = fase;
       document.getElementById('pause-screen').classList.add('hidden');
@@ -408,7 +436,7 @@
         { aura: '#38bdf8', prim: '#fb7185' }, { aura: '#facc15', prim: '#ff0055' },
         { aura: '#34d399', prim: '#f472b6' }, { aura: '#fb923c', prim: '#ff0055' },
         { aura: '#ef4444', prim: '#ffffff' }, { aura: '#00ff88', prim: '#ff0055' },
-        { aura: '#ff00ff', prim: '#00ffff' } // Fase 21 (Secreta)
+        { aura: '#00ff00', prim: '#ff0000' } // Fase 22 (Grinch Final)
       ];
       return paletas[(nFase - 1) % paletas.length];
     }
@@ -421,7 +449,7 @@
       miniChefe = {
         x: 300, y: -80, alvoY: 180, vx: 2.2 + (fase * 0.05),
         hp: vidaMini, maxHp: vidaMini, r: 40, hitFlash: 0,
-        corAura: cores.prim, corPrim: cores.aura, nome: fase === 21 ? 'GUARDIÃO SECRETO' : 'MINI-NOEL S' + fase
+        corAura: cores.prim, corPrim: cores.aura, nome: fase === 22 ? 'GRINCH MECÂNICO' : 'MINI-NOEL S' + fase
       };
       som(180, 'sawtooth', 0.5, 0.12, 60);
     }
@@ -431,7 +459,7 @@
       chefeOn = true;
       alertaChefeT = 130;
       var isInferno = (fase >= 19);
-      var vidaMax = isInferno ? (fase >= 21 ? 14500 : 11500) : (240 + fase * 40);
+      var vidaMax = isInferno ? (fase >= 22 ? 16000 : 11500) : (240 + fase * 40);
       var velBase = isInferno ? 4.8 : 1.5;
       var cores = obterCoresChefao(fase);
 
@@ -440,9 +468,9 @@
         hp: vidaMax, hpVisual: vidaMax, maxHp: vidaMax, t: 0, r: 52,
         final: (fase >= 20), inferno: isInferno, faseChefe: 1,
         modoCor: 'FOGO', corAura: cores.aura, corPrim: cores.prim, hitFlash: 0,
-        nome: fase === 21 ? 'DEUS DO NATAL CIBERNÉTICO' : (fase === 20 ? 'PAPAI NOEL SUPREMO' : (isInferno ? 'PAPAI NOEL INFERNAL' : 'PAPAI NOEL S' + fase))
+        nome: fase === 22 ? 'O GRINCH CIBERNÉTICO SUPREMO' : (fase === 21 ? 'DEUS DO NATAL' : (fase === 20 ? 'PAPAI NOEL SUPREMO' : 'PAPAI NOEL S' + fase))
       };
-      tremor = isInferno ? 28 : 10;
+      tremor = isInferno ? 32 : 10;
       som(140, 'sawtooth', 0.75, 0.16, 45);
     }
 
@@ -467,8 +495,8 @@
       if (nave.ult < 100 || estado !== 'JOGANDO') return;
       nave.ult = 0;
       nave.laserT = 135;
-      tremor = 16;
-      flashTela = 0.45;
+      tremor = 20;
+      flashTela = 0.55;
       som(260, 'sawtooth', 0.85, 0.16, 65);
       atualizarHUD();
     }
@@ -477,18 +505,35 @@
       if (nave.escudoT > 0) return;
       nave.hp -= dano;
       combo = 1;
-      tremor = 15;
+      tremor = 18;
       flashTela = 0.5;
       criarParticulas(nave.x, nave.y, '#ff0055', 18, true);
       som(90, 'square', 0.28, 0.14, 30);
       
-      if (nave.hp > 0 && nave.hp < 25) som(300, 'sine', 0.15, 0.1, 150);
+      if (nave.hp > 0 && nave.hp < 25) {
+        som(300, 'sine', 0.15, 0.1, 150); // Alerta sonoro de HP crítico
+      }
 
       if (nave.hp <= 0) {
         nave.hp = 0;
         atualizarHUD();
         encerrarPartida('DERROTA!', 'Sua nave foi destruída no setor ' + fase + '. Salve seu recorde:', 'REINICIAR');
       }
+    }
+
+    function comprarLoja(tipo) {
+      if (tipo === 'hp' && pontos >= 250) {
+        pontos -= 250; nave.hp = Math.min(100, nave.hp + 35);
+        som(880, 'sine', 0.2, 0.1, 1320);
+      } else if (tipo === 'arma' && pontos >= 500) {
+        pontos -= 500; nave.arma = Math.min(6, nave.arma + 1);
+        if (nave.arma >= 6) desbloquearConquista('arma');
+        som(880, 'sine', 0.2, 0.1, 1760);
+      } else if (tipo === 'escudo' && pontos >= 400) {
+        pontos -= 400; nave.escudoT = 300;
+        som(880, 'sine', 0.2, 0.1, 1500);
+      }
+      atualizarHUD();
     }
 
     function buscarAlvoMaisProximo(x, y) {
@@ -529,6 +574,7 @@
       var danoBase = 18 + (nave.arma * 9);
       var cadencia = Math.max(4, 13 - nave.arma * 1.5);
       if (nave.t % Math.floor(cadencia) === 0) {
+        tirosDisparados++;
         som(600 + nave.arma * 60, 'triangle', 0.06, 0.035);
         
         if (tipoNaveSelecionada === 1) {
@@ -559,6 +605,22 @@
         }
       }
 
+      // Efeito de Clima Dinâmico: Chuva de Meteoros Cibernéticos
+      if (q % 180 === 0 && Math.random() < 0.6) {
+        meteoros.push({ x: Math.random() * 600, y: -40, vx: (Math.random() - 0.5) * 2, vy: 3 + Math.random() * 3, r: 14 + Math.random() * 12 });
+      }
+
+      for (var i = meteoros.length - 1; i >= 0; i--) {
+        var met = meteoros[i];
+        met.x += met.vx; met.y += met.vy;
+        if (Math.hypot(met.x - nave.x, met.y - nave.y) < met.r + 14) {
+          sofrerDano(25);
+          meteoros.splice(i, 1);
+          continue;
+        }
+        if (met.y > 790) meteoros.splice(i, 1);
+      }
+
       var isInferno = (fase >= 19);
       var freqSpawn = isInferno ? (chefeOn ? 24 : 11) : (chefeOn || miniChefeOn ? 50 : Math.max(15, 40 - fase * 1.2));
       
@@ -566,14 +628,12 @@
         var formaId = Math.floor(Math.random() * 5);
         var coresMonstros = ['#ff0055', '#00f3ff', '#ffee00', '#00ff88', '#a855f7'];
         var corEscohida = coresMonstros[Math.floor(Math.random() * coresMonstros.length)];
-        
-        // Novos tipos especiais: Inimigos Kamikaze (tipo 6) e Atiradores Táticos (tipo 7)
-        var tipoEsp = Math.random() < 0.25 ? (Math.random() < 0.5 ? 6 : 7) : 1;
+        var tipoEsp = Math.random() < 0.28 ? (Math.random() < 0.5 ? 6 : 7) : 1;
 
         inimigos.push({
           x: 40 + Math.random() * 520, y: -30,
-          vx: tipoEsp === 6 ? (Math.random() - 0.5) * 4 : (Math.random() - 0.5) * (1.8 + fase * 0.1),
-          vy: tipoEsp === 6 ? (4.5 + fase * 0.2) : (2.2 + fase * 0.08),
+          vx: tipoEsp === 6 ? (Math.random() - 0.5) * 4.5 : (Math.random() - 0.5) * (1.8 + fase * 0.1),
+          vy: tipoEsp === 6 ? (5.0 + fase * 0.2) : (2.2 + fase * 0.08),
           hp: tipoEsp === 6 ? 15 : (25 + fase * 5),
           r: 20 + Math.random() * 8,
           forma: tipoEsp === 6 ? 0 : formaId, 
@@ -600,7 +660,7 @@
 
         if (chefeOn && chefe) {
           if (Math.hypot(chefe.x - t.x, chefe.y - t.y) < chefe.r + 14) {
-            chefe.hp -= t.d; chefe.hitFlash = 3;
+            chefe.hp -= t.d; chefe.hitFlash = 3; tirosAcertados++;
             criarParticulas(t.x, t.y, t.cor, 4, false);
             tiros.splice(i, 1); continue;
           }
@@ -608,7 +668,7 @@
 
         if (miniChefeOn && miniChefe) {
           if (Math.hypot(miniChefe.x - t.x, miniChefe.y - t.y) < miniChefe.r + 14) {
-            miniChefe.hp -= t.d; miniChefe.hitFlash = 3;
+            miniChefe.hp -= t.d; miniChefe.hitFlash = 3; tirosAcertados++;
             criarParticulas(t.x, t.y, t.cor, 4, false);
             tiros.splice(i, 1); continue;
           }
@@ -619,7 +679,7 @@
           var en = inimigos[j];
           var raioHit = t.tipo === 'ONDA' ? en.r + 24 : en.r + 18;
           if (Math.hypot(en.x - t.x, en.y - t.y) < raioHit) {
-            en.hp -= t.d; en.hitFlash = 3;
+            en.hp -= t.d; en.hitFlash = 3; tirosAcertados++;
             criarParticulas(t.x, t.y, t.cor, 4, false);
             if (t.tipo !== 'ONDA') {
               tiros.splice(i, 1);
@@ -657,7 +717,6 @@
         en.t++;
         if (en.hitFlash > 0) en.hitFlash--;
 
-        // Comportamento especial para Atiradores Táticos (tipo 7)
         if (en.especial === 7 && en.t % 80 === 0) {
           var angIn = Math.atan2(nave.y - en.y, nave.x - en.x);
           tChefe.push({ x: en.x, y: en.y + 10, vx: Math.cos(angIn) * 4, vy: Math.sin(angIn) * 4, cor: '#a855f7', dano: 14 });
@@ -679,7 +738,7 @@
           criarParticulas(en.x, en.y, en.cor, 16, false);
           som(180, 'sawtooth', 0.14, 0.06);
 
-          if (Math.random() < 0.24) {
+          if (Math.random() < 0.25) {
             var tiposItem = ['ARMA', 'ARMA', 'HP', 'ESCUDO', 'ULT', 'BOMBA'];
             itens.push({ x: en.x, y: en.y, vy: 2.6, tipo: tiposItem[Math.floor(Math.random() * tiposItem.length)] });
           }
@@ -710,7 +769,7 @@
         chefe.t++;
 
         if (chefe.final && chefe.hp <= chefe.maxHp * 0.5 && chefe.faseChefe === 1) {
-          chefe.faseChefe = 2; chefe.corAura = '#00ff88'; chefe.vx *= 1.4; tremor = 20; flashTela = 0.4;
+          chefe.faseChefe = 2; chefe.corAura = '#00ff88'; chefe.vx *= 1.4; tremor = 22; flashTela = 0.4;
         }
 
         var freqAtaqueChefe = isInferno ? 18 : 110; 
@@ -767,14 +826,15 @@
       if (chefeOn && chefe && chefe.hp <= 0) {
         criarParticulas(chefe.x, chefe.y, chefe.corAura, 50, true);
         som(70, 'sawtooth', 0.9, 0.2, 20);
-        pontos += 3000 * fase;
+        pontos += 4000 * fase;
         chefeOn = false; chefe = null;
         if (fase === 20) {
-          // Desbloqueia a Fase Secreta 21!
-          encerrarPartida('FASE SECRETA DESBLOQUEADA!', 'Você venceu o Papai Noel Supremo e liberou o Setor 21!', 'PROX');
-        } else if (fase >= 21) {
+          encerrarPartida('FASE SECRETA 21 DESBLOQUEADA!', 'Derrote o Deus do Natal Cibernético!', 'PROX');
+        } else if (fase === 21) {
+          encerrarPartida('BATALHA FINAL LIBERADA!', 'Enfrente o Grinch Cibernético no Setor 22!', 'PROX');
+        } else if (fase >= 22) {
           desbloquearConquista('lenda');
-          encerrarPartida('VITÓRIA SUPREMA!', 'Você completou a Fase Secreta e salvou o universo!', 'REINICIAR');
+          encerrarPartida('VITÓRIA SUPREMA!', 'Você destruiu o Grinch e salvou o multiverso!', 'REINICIAR');
         } else {
           encerrarPartida('SETOR CONCLUÍDO!', 'Chefão derrotado com sucesso.', 'PROX');
         }
@@ -788,7 +848,6 @@
       ctx.fillStyle = en.hitFlash > 0 ? '#ffffff' : en.cor;
       ctx.beginPath();
       if (en.especial === 6) {
-        // Kamikaze (Foguete pontiagudo)
         ctx.moveTo(0, en.r * 1.2); ctx.lineTo(-en.r * 0.7, -en.r); ctx.lineTo(en.r * 0.7, -en.r);
       } else if (en.forma === 0) {
         ctx.moveTo(0, en.r); ctx.lineTo(-en.r, -en.r); ctx.lineTo(en.r, -en.r);
@@ -832,7 +891,7 @@
       ctx.fillRect(-r * 0.32, -1, r * 0.25, r * 0.16);
       ctx.fillRect(r * 0.07, -1, r * 0.25, r * 0.16);
 
-      ctx.fillStyle = '#ff0033';
+      ctx.fillStyle = fase === 22 ? '#00ff00' : '#ff0033';
       ctx.beginPath();
       ctx.moveTo(-r * 0.75, -5);
       ctx.lineTo(r * 0.75, -5);
@@ -855,7 +914,10 @@
 
       var isInferno = (fase >= 19);
       var gradFundo = ctx.createRadialGradient(300, 380, 50, 300, 380, 520);
-      if (fase === 21) {
+      if (fase === 22) {
+        gradFundo.addColorStop(0, 'rgba(0, 80, 40, 1)');
+        gradFundo.addColorStop(1, 'rgba(2, 10, 4, 1)');
+      } else if (fase === 21) {
         gradFundo.addColorStop(0, 'rgba(80, 0, 100, 1)');
         gradFundo.addColorStop(1, 'rgba(10, 0, 20, 1)');
       } else if (isInferno) {
@@ -864,9 +926,6 @@
       } else if (fase % 3 === 0) {
         gradFundo.addColorStop(0, 'rgba(15, 55, 95, 1)');
         gradFundo.addColorStop(1, 'rgba(1, 2, 8, 1)');
-      } else if (fase % 2 === 0) {
-        gradFundo.addColorStop(0, 'rgba(55, 20, 80, 1)');
-        gradFundo.addColorStop(1, 'rgba(2, 2, 8, 1)');
       } else {
         gradFundo.addColorStop(0, 'rgba(15, 35, 60, 1)');
         gradFundo.addColorStop(1, 'rgba(1, 2, 6, 1)');
@@ -881,6 +940,16 @@
         ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2); ctx.fill();
       }
       ctx.globalAlpha = 1;
+
+      // Desenhar Chuva de Meteoros
+      for (var i = 0; i < meteoros.length; i++) {
+        var met = meteoros[i];
+        ctx.save();
+        ctx.shadowBlur = 15; ctx.shadowColor = '#ff5500';
+        ctx.fillStyle = '#ff5500';
+        ctx.beginPath(); ctx.arc(met.x, met.y, met.r, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
 
       for (var i = 0; i < tiros.length; i++) {
         var tr = tiros[i];
@@ -911,7 +980,7 @@
         ctx.fillStyle = 'rgba(6, 9, 20, 0.95)'; ctx.fillRect(110, 48, 380, 18);
         ctx.fillStyle = chefe.corAura; ctx.fillRect(112, 50, 376 * Math.max(0, chefe.hp / chefe.maxHp), 14);
         ctx.fillStyle = '#ffffff'; ctx.font = 'bold 11px Arial'; ctx.textAlign = 'center';
-        var txtChefe = fase === 21 ? '⚡ DEUS DO NATAL CIBERNÉTICO ⚡' : (chefe.final ? (chefe.faseChefe === 2 ? '⚡ PAPAI NOEL FÚRIA TOTAL ⚡' : 'PAPAI NOEL SUPREMO') : (chefe.nome + ' [CHEFÃO]'));
+        var txtChefe = fase === 22 ? '⚡ O GRINCH CIBERNÉTICO SUPREMO ⚡' : (fase === 21 ? '⚡ DEUS DO NATAL ⚡' : (chefe.nome + ' [CHEFÃO]'));
         ctx.fillText(txtChefe, 300, 61);
       }
 
@@ -927,7 +996,6 @@
         ctx.restore();
       }
 
-      // Nave do Jogador com Escudo Ativo Visualizado
       ctx.save();
       ctx.translate(nave.x, nave.y);
       ctx.rotate(nave.tilt);
@@ -998,9 +1066,19 @@
       estado = 'MODAL'; modo = acaoModo;
       document.getElementById('m-tit').textContent = titulo;
       document.getElementById('m-desc').textContent = desc;
+      
+      var precisao = tirosDisparados > 0 ? Math.round((tirosAcertados / tirosDisparados) * 100) : 100;
       document.getElementById('stat-abates').textContent = totalAbatesPartida;
+      document.getElementById('stat-precisao').textContent = precisao + '%';
       document.getElementById('stat-pts').textContent = pontos;
-      document.getElementById('stats-container').style.display = 'block';
+
+      // Exibe a Loja de Upgrades no modal de transição de fase
+      if (acaoModo === 'PROX') {
+        document.getElementById('shop-container').style.display = 'block';
+      } else {
+        document.getElementById('shop-container').style.display = 'none';
+      }
+
       document.getElementById('nome-modal').value = localStorage.getItem('wm_n') || '';
       document.getElementById('btn-ok').textContent = (acaoModo === 'PROX') ? 'PRÓXIMO SETOR' : 'JOGAR NOVAMENTE';
       if (acaoModo === 'PROX' && fase + 1 > maxFaseSalva) {
@@ -1091,9 +1169,9 @@
     document.getElementById('btn-play').onclick = function() {
       var n = document.getElementById('nome-inicio').value.trim() || 'Piloto';
       localStorage.setItem('wm_n', n);
-      pontos = 0; totalAbatesPartida = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
+      pontos = 0; totalAbatesPartida = 0; tirosDisparados = 0; tirosAcertados = 0;
+      nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
       document.getElementById('start-screen').classList.add('hidden');
-      document.getElementById('stats-container').style.display = 'none';
       iniciarFase(1);
       estado = 'JOGANDO';
     };
@@ -1101,9 +1179,9 @@
     document.getElementById('btn-cont').onclick = function() {
       var n = document.getElementById('nome-inicio').value.trim() || 'Piloto';
       localStorage.setItem('wm_n', n);
-      pontos = 0; totalAbatesPartida = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
+      pontos = 0; totalAbatesPartida = 0; tirosDisparados = 0; tirosAcertados = 0;
+      nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
       document.getElementById('start-screen').classList.add('hidden');
-      document.getElementById('stats-container').style.display = 'none';
       iniciarFase(maxFaseSalva);
       estado = 'JOGANDO';
     };
@@ -1111,12 +1189,12 @@
     document.getElementById('btn-ok').onclick = function() {
       salvarRanking('nome-modal');
       document.getElementById('modal').classList.add('hidden');
-      document.getElementById('stats-container').style.display = 'none';
       if (modo === 'PROX') {
         nave.hp = Math.min(100, nave.hp + 25);
         iniciarFase(fase + 1);
       } else {
-        pontos = 0; totalAbatesPartida = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0;
+        pontos = 0; totalAbatesPartida = 0; tirosDisparados = 0; tirosAcertados = 0;
+        nave.hp = 100; nave.arma = 1; nave.ult = 0;
         iniciarFase(1);
       }
       estado = 'JOGANDO';
@@ -1125,7 +1203,6 @@
     document.getElementById('btn-menu').onclick = function() {
       salvarRanking('nome-modal');
       document.getElementById('modal').classList.add('hidden');
-      document.getElementById('stats-container').style.display = 'none';
       document.getElementById('start-screen').classList.remove('hidden');
       estado = 'INICIO';
     };
@@ -1158,7 +1235,7 @@
 
       window.enviarPontuacaoFirebase = async function(nome, faseAtual, pts) {
         const chavePiloto = nome.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
-        if (!chavePiloto) return;
+        if (!chave piloto) return;
         const pilotoRef = ref(db, 'ranking_unico/' + chavePiloto);
         const snapshot = await get(pilotoRef);
         const ptsNovos = Number(pts);
