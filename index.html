@@ -15,9 +15,9 @@
     #box {
       position: relative; width: 100%; max-width: 600px; height: 100%; max-height: 760px;
       border: 3px solid #00f3ff; border-radius: 20px; overflow: hidden;
-      background: #03050c; box-shadow: 0 0 50px rgba(0, 243, 255, 0.4), 0 0 100px rgba(255, 0, 85, 0.25);
+      background: #03050c; box-shadow: 0 0 60px rgba(0, 243, 255, 0.45), 0 0 120px rgba(255, 0, 85, 0.3);
     }
-    canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; image-rendering: high-quality; }
     #hud {
       position: absolute; top: 12px; left: 12px; right: 12px;
       display: flex; justify-content: space-between; align-items: center; gap: 4px;
@@ -29,16 +29,16 @@
     .bar-bg {
       display: inline-block; width: 44px; height: 8px; background: #161c2e;
       border-radius: 5px; overflow: hidden; vertical-align: middle; margin-left: 2px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
     #hp-bar { display: block; width: 100%; height: 100%; background: linear-gradient(90deg, #ff0055, #00ff88); transition: width 0.15s; }
     #ult-bar { display: block; width: 0%; height: 100%; background: linear-gradient(90deg, #ff8800, #ffee00); transition: width 0.15s; }
     .hud-btn {
       pointer-events: auto; background: #112233; border: 1.5px solid #00f3ff;
       color: #fff; padding: 5px 8px; border-radius: 8px; cursor: pointer; font-size: 9.5px; font-weight: bold;
-      text-transform: uppercase; box-shadow: 0 0 8px rgba(0, 243, 255, 0.2);
+      text-transform: uppercase; box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
     }
-    #btn-pause { border-color: #ffcc00; color: #ffcc00; box-shadow: 0 0 8px rgba(255, 204, 0, 0.2); }
+    #btn-pause { border-color: #ffcc00; color: #ffcc00; box-shadow: 0 0 8px rgba(255, 204, 0, 0.3); }
     #hud-bot {
       position: absolute; bottom: 14px; left: 14px; right: 14px;
       display: flex; justify-content: space-between; align-items: center;
@@ -74,20 +74,20 @@
       justify-content: center; padding: 14px; z-index: 50;
     }
     .card {
-      background: rgba(6, 11, 25, 0.94); border: 2.5px solid #00f3ff;
+      background: rgba(6, 11, 25, 0.95); border: 2.5px solid #00f3ff;
       border-radius: 20px; padding: 18px 16px; width: 100%; max-width: 430px;
-      text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 243, 255, 0.25) inset;
+      text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 243, 255, 0.3) inset;
       max-height: 96%; overflow-y: auto; position: relative;
     }
     .card::before {
-      content: 'SYS_ACTIVE // V2.0';
+      content: 'SYS_ACTIVE // ULTRA_HD';
       position: absolute; top: 8px; right: 12px; font-size: 8px; color: #00f3ff; letter-spacing: 2px; opacity: 0.7;
     }
     .badge {
       display: inline-block; background: rgba(0, 243, 255, 0.12); border: 1.5px solid #00f3ff;
       color: #00f3ff; font-size: 10px; font-weight: 800; letter-spacing: 2px;
       padding: 5px 14px; border-radius: 14px; margin-bottom: 6px; text-transform: uppercase;
-      box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
     }
     h1 {
       font-size: 28px; font-weight: 950; letter-spacing: 2px; margin-bottom: 2px;
@@ -100,7 +100,7 @@
       user-select: text; width: 100%; padding: 10px; border-radius: 10px;
       border: 2px solid #00f3ff; background: #02040a; color: #fff;
       font-size: 13px; font-weight: bold; text-align: center; margin-bottom: 8px; outline: none;
-      box-shadow: 0 0 12px rgba(0, 243, 255, 0.25) inset;
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.3) inset;
     }
     .ship-select-box {
       display: flex; gap: 8px; margin-bottom: 10px; justify-content: center;
@@ -110,17 +110,17 @@
       border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center; transition: all 0.2s;
     }
     .ship-option.selected {
-      border-color: #ffee00; background: rgba(255, 238, 0, 0.15); box-shadow: 0 0 12px rgba(255, 238, 0, 0.3);
+      border-color: #ffee00; background: rgba(255, 238, 0, 0.15); box-shadow: 0 0 15px rgba(255, 238, 0, 0.4);
     }
     .ship-option span { display: block; font-size: 9.5px; color: #8da4c4; margin-top: 3px; font-weight: bold; }
     .btn {
       width: 100%; padding: 11px; border: none; border-radius: 10px;
       background: linear-gradient(90deg, #00f3ff, #0066ff);
       color: #03050c; font-size: 13.5px; font-weight: 900; cursor: pointer;
-      margin-bottom: 7px; box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+      margin-bottom: 7px; box-shadow: 0 0 25px rgba(0, 243, 255, 0.6);
       text-transform: uppercase; font-family: inherit; letter-spacing: 1px;
     }
-    .btn-sec { background: linear-gradient(90deg, #ff0055, #ff5500); color: #fff; box-shadow: 0 0 20px rgba(255, 0, 85, 0.45); }
+    .btn-sec { background: linear-gradient(90deg, #ff0055, #ff5500); color: #fff; box-shadow: 0 0 25px rgba(255, 0, 85, 0.55); }
     .btn-warn { background: linear-gradient(90deg, #854d0e, #ca8a04); color: #fff; box-shadow: 0 0 15px rgba(202, 138, 4, 0.4); }
     .rank-box {
       margin-top: 6px; background: rgba(2, 4, 10, 0.85);
@@ -241,7 +241,7 @@
     var intervaloFps = 1000 / 60;
 
     var nave = { x: 300, y: 650, hp: 100, t: 0, arma: 1, ult: 0, laserT: 0, escudoT: 0, tilt: 0 };
-    var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], ondas = [], estrelas = [];
+    var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], ondas = [], estrelas = [], planetas = [];
     var chefe = null, miniChefe = null, teclas = {}, alvoX = 300, alvoY = 650, tocando = false;
 
     function selecionarNave(id) {
@@ -301,6 +301,9 @@
         brilho: Math.random() * Math.PI * 2
       });
     }
+
+    planetas.push({ x: 110, y: 180, r: 42, vy: 0.25, cor1: '#1e3a8a', cor2: '#06b6d4', anel: true });
+    planetas.push({ x: 480, y: 520, r: 28, vy: 0.18, cor1: '#701a75', cor2: '#f43f5e', anel: false });
 
     function iniciarAudioContext() {
       if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -396,29 +399,18 @@
       iniciarMusica();
     }
 
-    // PALETAS DE CORES EXCLUSIVAS PARA CADA MINI-CHEFE E CHEFE POR FASE
     function obterCoresChefao(nFase) {
       var paletas = [
-        { aura: '#00f3ff', prim: '#ff0055' }, // Fase 1
-        { aura: '#ffaa00', prim: '#00ff88' }, // Fase 2
-        { aura: '#a855f7', prim: '#00f3ff' }, // Fase 3
-        { aura: '#00ff88', prim: '#ff0055' }, // Fase 4
-        { aura: '#ff0055', prim: '#ffee00' }, // Fase 5
-        { aura: '#38bdf8', prim: '#a855f7' }, // Fase 6
-        { aura: '#ffee00', prim: '#00f3ff' }, // Fase 7
-        { aura: '#f43f5e', prim: '#38bdf8' }, // Fase 8
-        { aura: '#10b981', prim: '#f59e0b' }, // Fase 9
-        { aura: '#6366f1', prim: '#ec4899' }, // Fase 10
-        { aura: '#14b8a6', prim: '#e11d48' }, // Fase 11
-        { aura: '#8b5cf6', prim: '#10b981' }, // Fase 12
-        { aura: '#f97316', prim: '#06b6d4' }, // Fase 13
-        { aura: '#e879f9', prim: '#4ade80' }, // Fase 14
-        { aura: '#38bdf8', prim: '#fb7185' }, // Fase 15
-        { aura: '#facc15', prim: '#818cf8' }, // Fase 16
-        { aura: '#34d399', prim: '#f472b6' }, // Fase 17
-        { aura: '#fb923c', prim: '#22d3ee' }, // Fase 18
-        { aura: '#ef4444', prim: '#ffffff' }, // Fase 19 (Infernal)
-        { aura: '#00ff88', prim: '#ff0055' }  // Fase 20 (Supremo)
+        { aura: '#00f3ff', prim: '#ff0055' }, { aura: '#ffaa00', prim: '#00ff88' },
+        { aura: '#a855f7', prim: '#00f3ff' }, { aura: '#00ff88', prim: '#ff0055' },
+        { aura: '#ff0055', prim: '#ffee00' }, { aura: '#38bdf8', prim: '#a855f7' },
+        { aura: '#ffee00', prim: '#00f3ff' }, { aura: '#f43f5e', prim: '#38bdf8' },
+        { aura: '#10b981', prim: '#f59e0b' }, { aura: '#6366f1', prim: '#ec4899' },
+        { aura: '#14b8a6', prim: '#e11d48' }, { aura: '#8b5cf6', prim: '#10b981' },
+        { aura: '#f97316', prim: '#06b6d4' }, { aura: '#e879f9', prim: '#4ade80' },
+        { aura: '#38bdf8', prim: '#fb7185' }, { aura: '#facc15', prim: '#818cf8' },
+        { aura: '#34d399', prim: '#f472b6' }, { aura: '#fb923c', prim: '#22d3ee' },
+        { aura: '#ef4444', prim: '#ffffff' }, { aura: '#00ff88', prim: '#ff0055' }
       ];
       return paletas[(nFase - 1) % paletas.length];
     }
@@ -590,7 +582,7 @@
         t.x += t.vx; t.y += t.vy;
 
         if (chefeOn && chefe) {
-          if (Math.hypot(chefe.x - t.x, chefe.y - t.y) < chefe.r + 12) {
+          if (Math.hypot(chefe.x - t.x, chefe.y - t.y) < chefe.r + 14) {
             chefe.hp -= t.d; chefe.hitFlash = 3;
             criarParticulas(t.x, t.y, t.cor, 4, false);
             tiros.splice(i, 1); continue;
@@ -598,7 +590,7 @@
         }
 
         if (miniChefeOn && miniChefe) {
-          if (Math.hypot(miniChefe.x - t.x, miniChefe.y - t.y) < miniChefe.r + 12) {
+          if (Math.hypot(miniChefe.x - t.x, miniChefe.y - t.y) < miniChefe.r + 14) {
             miniChefe.hp -= t.d; miniChefe.hitFlash = 3;
             criarParticulas(t.x, t.y, t.cor, 4, false);
             tiros.splice(i, 1); continue;
@@ -608,7 +600,7 @@
         var tiroRemovido = false;
         for (var j = inimigos.length - 1; j >= 0; j--) {
           var en = inimigos[j];
-          if (Math.hypot(en.x - t.x, en.y - t.y) < en.r + 14) {
+          if (Math.hypot(en.x - t.x, en.y - t.y) < en.r + 16) {
             en.hp -= t.d; en.hitFlash = 3;
             criarParticulas(t.x, t.y, t.cor, 4, false);
             tiros.splice(i, 1);
@@ -672,7 +664,7 @@
           continue;
         }
 
-        if (Math.hypot(en.x - nave.x, en.y - nave.y) < en.r + 16) {
+        if (Math.hypot(en.x - nave.x, en.y - nave.y) < en.r + 18) {
           sofrerDano(22);
           inimigos.splice(i, 1);
           continue;
@@ -761,6 +753,8 @@
     }
 
     function desenharInimigoForma(en) {
+      ctx.save();
+      ctx.shadowBlur = 12; ctx.shadowColor = en.cor;
       ctx.fillStyle = en.hitFlash > 0 ? '#ffffff' : en.cor;
       ctx.beginPath();
       if (en.forma === 0) {
@@ -781,30 +775,51 @@
       }
       ctx.closePath();
       ctx.fill();
-      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.restore();
     }
 
     function desenharJogo() {
       ctx.save();
       if (tremor > 0) ctx.translate((Math.random() - 0.5) * tremor, (Math.random() - 0.5) * tremor);
 
-      // Fundo Espacial Cyberpunk com visibilidade clara e limpa
-      ctx.fillStyle = '#03050c'; ctx.fillRect(0, 0, 600, 760);
+      // Fundo Espacial Cyberpunk de Alta Definição com Nebulosas Dinâmicas por Fase
+      var isInferno = (fase >= 19);
+      var gradFundo = ctx.createRadialGradient(300, 380, 50, 300, 380, 500);
+      if (isInferno) {
+        gradFundo.addColorStop(0, 'rgba(80, 10, 25, 1)');
+        gradFundo.addColorStop(1, 'rgba(5, 2, 8, 1)');
+      } else if (fase % 3 === 0) {
+        gradFundo.addColorStop(0, 'rgba(10, 40, 70, 1)');
+        gradFundo.addColorStop(1, 'rgba(2, 4, 12, 1)');
+      } else if (fase % 2 === 0) {
+        gradFundo.addColorStop(0, 'rgba(40, 15, 60, 1)');
+        gradFundo.addColorStop(1, 'rgba(3, 3, 10, 1)');
+      } else {
+        gradFundo.addColorStop(0, 'rgba(12, 25, 45, 1)');
+        gradFundo.addColorStop(1, 'rgba(2, 3, 8, 1)');
+      }
+      ctx.fillStyle = gradFundo; ctx.fillRect(0, 0, 600, 760);
 
       for (var i = 0; i < estrelas.length; i++) {
         var st = estrelas[i];
         st.brilho += 0.08; st.y += st.v;
         if (st.y > 760) { st.y = 0; st.x = Math.random() * 600; }
-        ctx.fillStyle = st.cor; ctx.globalAlpha = 0.5 + Math.sin(st.brilho) * 0.3;
+        ctx.fillStyle = st.cor; ctx.globalAlpha = 0.6 + Math.sin(st.brilho) * 0.4;
         ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2); ctx.fill();
       }
       ctx.globalAlpha = 1;
 
-      // Tiros
+      // Tiros com Brilho Neon Ultra Definido
       for (var i = 0; i < tiros.length; i++) {
         var tr = tiros[i];
+        ctx.save();
+        ctx.shadowBlur = 15; ctx.shadowColor = tr.cor;
         ctx.fillStyle = tr.cor;
-        ctx.fillRect(tr.x - 3, tr.y - 12, 6, 20);
+        ctx.fillRect(tr.x - 3.5, tr.y - 14, 7, 24);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(tr.x - 1.5, tr.y - 10, 3, 16);
+        ctx.restore();
       }
 
       // Inimigos Comuns
@@ -816,49 +831,61 @@
         ctx.restore();
       }
 
-      // Mini-Chefe (Visual Único por Fase)
+      // Mini-Chefe com Cores Temáticas do Setor
       if (miniChefeOn && miniChefe) {
         ctx.save();
         ctx.translate(miniChefe.x, miniChefe.y);
+        ctx.shadowBlur = 25; ctx.shadowColor = miniChefe.corAura;
         ctx.fillStyle = miniChefe.hitFlash > 0 ? '#ffffff' : miniChefe.corAura;
         ctx.beginPath(); ctx.arc(0, 0, miniChefe.r, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = miniChefe.corPrim; ctx.lineWidth = 3; ctx.stroke();
+        ctx.strokeStyle = miniChefe.corPrim; ctx.lineWidth = 4; ctx.stroke();
+        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 9px Arial'; ctx.textAlign = 'center';
+        ctx.fillText('MINI-BOSS', 0, 3);
         ctx.restore();
       }
 
-      // Chefão (Visual Único por Fase)
+      // Chefão com Cores Temáticas do Setor
       if (chefeOn && chefe) {
         ctx.save();
         ctx.translate(chefe.x, chefe.y);
+        ctx.shadowBlur = 35; ctx.shadowColor = chefe.corAura;
         ctx.fillStyle = chefe.hitFlash > 0 ? '#ffffff' : chefe.corAura;
         ctx.beginPath(); ctx.arc(0, 0, chefe.r, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = chefe.corPrim; ctx.lineWidth = 4; ctx.stroke();
+        ctx.strokeStyle = chefe.corPrim; ctx.lineWidth = 5; ctx.stroke();
         ctx.restore();
 
-        // Barra de HP do Chefe com cor temática
-        ctx.fillStyle = 'rgba(10, 15, 30, 0.9)'; ctx.fillRect(120, 50, 360, 16);
+        // Barra de HP do Chefe
+        ctx.fillStyle = 'rgba(10, 15, 30, 0.95)'; ctx.fillRect(120, 50, 360, 16);
         ctx.fillStyle = chefe.corAura; ctx.fillRect(122, 52, 356 * Math.max(0, chefe.hp / chefe.maxHp), 12);
-        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center';
-        ctx.fillText('CHEFÃO SETOR ' + fase, 300, 62);
+        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 10.5px Arial'; ctx.textAlign = 'center';
+        var nomeChefe = chefe.final ? (chefe.faseChefe === 2 ? '⚡ MEMENOEL FÚRIA TOTAL ⚡' : 'MEMENOEL SUPREMO') : ('CHEFÃO SETOR ' + fase);
+        ctx.fillText(nomeChefe, 300, 62);
       }
 
-      // Itens
+      // Itens Coletáveis
       for (var i = 0; i < itens.length; i++) {
         var it = itens[i];
+        ctx.save();
+        ctx.shadowBlur = 15; ctx.shadowColor = '#ffcc00';
         ctx.fillStyle = '#ffcc00';
-        ctx.beginPath(); ctx.arc(it.x, it.y, 14, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#000'; ctx.font = 'bold 9px Arial'; ctx.textAlign = 'center';
-        ctx.fillText(it.tipo, it.x, it.y + 3);
+        ctx.beginPath(); ctx.arc(it.x, it.y, 15, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = '#000'; ctx.font = 'bold 9.5px Arial'; ctx.textAlign = 'center';
+        ctx.fillText(it.tipo, it.x, it.y + 3.5);
+        ctx.restore();
       }
 
-      // Nave
+      // Nave do Jogador (Com Efeito de Brilho)
       ctx.save();
       ctx.translate(nave.x, nave.y);
       ctx.rotate(nave.tilt);
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = tipoNaveSelecionada === 2 ? '#ff0055' : (tipoNaveSelecionada === 3 ? '#ffee00' : '#00f3ff');
       ctx.fillStyle = tipoNaveSelecionada === 2 ? '#ff0055' : (tipoNaveSelecionada === 3 ? '#ffee00' : '#00f3ff');
       ctx.beginPath();
-      ctx.moveTo(0, -28); ctx.lineTo(-24, 18); ctx.lineTo(0, 12); ctx.lineTo(24, 18);
+      ctx.moveTo(0, -30); ctx.lineTo(-26, 20); ctx.lineTo(0, 13); ctx.lineTo(26, 20);
       ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
       ctx.restore();
 
       // Partículas
@@ -869,6 +896,10 @@
       }
       ctx.globalAlpha = 1;
 
+      if (flashTela > 0) {
+        ctx.fillStyle = 'rgba(255, 255, 255, ' + flashTela + ')';
+        ctx.fillRect(0, 0, 600, 760);
+      }
       ctx.restore();
     }
 
