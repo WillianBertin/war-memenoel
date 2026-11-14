@@ -69,82 +69,90 @@
     }
     .overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at center, rgba(10, 15, 34, 0.8) 0%, rgba(3, 5, 12, 0.98) 100%);
+      background: radial-gradient(circle at center, rgba(10, 15, 34, 0.85) 0%, rgba(3, 5, 12, 0.98) 100%);
       backdrop-filter: blur(8px); display: flex; align-items: center;
       justify-content: center; padding: 14px; z-index: 50;
     }
+    /* Estilo HUD Holográfico High-Tech */
     .card {
-      background: rgba(12, 19, 38, 0.96); border: 2.5px solid rgba(0, 243, 255, 0.8);
-      border-radius: 24px; padding: 22px 20px; width: 100%; max-width: 420px;
-      text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 243, 255, 0.15);
-      max-height: 96%; overflow-y: auto;
+      background: rgba(6, 11, 25, 0.94); border: 2.5px solid #00f3ff;
+      border-radius: 20px; padding: 20px 18px; width: 100%; max-width: 430px;
+      text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 243, 255, 0.25) inset;
+      max-height: 96%; overflow-y: auto; position: relative;
+    }
+    .card::before {
+      content: 'SYS_ACTIVE // V2.0';
+      position: absolute; top: 8px; right: 12px; font-size: 8px; color: #00f3ff; letter-spacing: 2px; opacity: 0.7;
     }
     .badge {
-      display: inline-block; background: rgba(255, 0, 85, 0.25); border: 1.5px solid #ff0055;
-      color: #ff9ec2; font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
-      padding: 5px 14px; border-radius: 16px; margin-bottom: 8px; text-transform: uppercase;
-      box-shadow: 0 0 10px rgba(255, 0, 85, 0.25);
+      display: inline-block; background: rgba(0, 243, 255, 0.12); border: 1.5px solid #00f3ff;
+      color: #00f3ff; font-size: 10px; font-weight: 800; letter-spacing: 2px;
+      padding: 5px 14px; border-radius: 14px; margin-bottom: 6px; text-transform: uppercase;
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
     }
     h1 {
-      font-size: 34px; font-weight: 950; letter-spacing: 2px; margin-bottom: 4px;
-      background: linear-gradient(90deg, #ff0055 10%, #ffee00 50%, #00f3ff 90%);
+      font-size: 32px; font-weight: 950; letter-spacing: 2.5px; margin-bottom: 2px;
+      background: linear-gradient(90deg, #00f3ff 10%, #ffee00 50%, #ff0055 90%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 25px rgba(0, 243, 255, 0.35);
-      filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.6));
+      text-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+      filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.8));
     }
-    .sub { color: #b1c7ec; font-size: 12px; margin-bottom: 12px; line-height: 1.4; font-weight: 500; }
+    .sub { color: #8da4c4; font-size: 11.5px; margin-bottom: 12px; line-height: 1.35; font-weight: 500; }
     input {
-      user-select: text; width: 100%; padding: 12px; border-radius: 12px;
-      border: 2px solid #00f3ff; background: #050814; color: #fff;
-      font-size: 14px; font-weight: bold; text-align: center; margin-bottom: 10px; outline: none;
-      box-shadow: 0 0 10px rgba(0, 243, 255, 0.2) inset, 0 0 5px rgba(0, 243, 255, 0.1);
+      user-select: text; width: 100%; padding: 11px; border-radius: 10px;
+      border: 2px solid #00f3ff; background: #02040a; color: #fff;
+      font-size: 13.5px; font-weight: bold; text-align: center; margin-bottom: 10px; outline: none;
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.25) inset;
       transition: all 0.3s;
     }
-    input:focus { border-color: #ff0055; box-shadow: 0 0 15px rgba(255, 0, 85, 0.3) inset, 0 0 8px rgba(255, 0, 85, 0.2); }
+    input:focus { border-color: #ffee00; box-shadow: 0 0 15px rgba(255, 238, 0, 0.3) inset, 0 0 10px rgba(255, 238, 0, 0.3); }
     .btn {
-      width: 100%; padding: 12px; border: none; border-radius: 12px;
-      background: linear-gradient(90deg, #ff0055, #ff5500);
-      color: #fff; font-size: 14px; font-weight: bold; cursor: pointer;
-      margin-bottom: 8px; box-shadow: 0 6px 20px rgba(255, 0, 85, 0.5);
-      text-transform: uppercase; font-family: inherit; letter-spacing: 0.5px;
+      width: 100%; padding: 12px; border: none; border-radius: 10px;
+      background: linear-gradient(90deg, #00f3ff, #0066ff);
+      color: #03050c; font-size: 14px; font-weight: 900; cursor: pointer;
+      margin-bottom: 8px; box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+      text-transform: uppercase; font-family: inherit; letter-spacing: 1px;
       transition: transform 0.2s, box-shadow 0.2s;
     }
+    .btn:hover { box-shadow: 0 0 25px rgba(0, 243, 255, 0.8); }
     .btn:active { transform: scale(0.98); }
     .btn-sec {
-      background: linear-gradient(90deg, #0055ff, #00d4ff);
-      box-shadow: 0 6px 20px rgba(0, 212, 255, 0.45);
+      background: linear-gradient(90deg, #ff0055, #ff5500);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(255, 0, 85, 0.45);
     }
     .btn-warn {
       background: linear-gradient(90deg, #854d0e, #ca8a04);
-      box-shadow: 0 6px 20px rgba(202, 138, 4, 0.4);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(202, 138, 4, 0.4);
     }
     .rank-box {
-      margin-top: 10px; background: rgba(6, 9, 22, 0.95);
-      border: 1.5px solid rgba(255, 204, 0, 0.5); border-radius: 14px;
-      padding: 10px 12px; text-align: left;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 8px rgba(255, 204, 0, 0.1);
+      margin-top: 8px; background: rgba(2, 4, 10, 0.85);
+      border: 1.5px solid rgba(0, 243, 255, 0.4); border-radius: 12px;
+      padding: 8px 10px; text-align: left;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 8px rgba(0, 243, 255, 0.1) inset;
     }
     .rank-box h4 {
-      color: #ffcc00; font-size: 11px; text-transform: uppercase;
-      margin-bottom: 7px; text-align: center; letter-spacing: 1.5px; font-weight: 800;
+      color: #00f3ff; font-size: 10.5px; text-transform: uppercase;
+      margin-bottom: 6px; text-align: center; letter-spacing: 1.5px; font-weight: 800;
     }
     .rk-row {
-      display: flex; justify-content: space-between; align-items: center; font-size: 11px;
-      padding: 5px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex; justify-content: space-between; align-items: center; font-size: 10.5px;
+      padding: 4px 0; border-bottom: 1px solid rgba(0, 243, 255, 0.1);
       font-weight: 600;
     }
     .rk-row:last-child { border-bottom: none; }
     .conq-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 4px;
     }
     .conq-item {
-      background: rgba(255, 255, 255, 0.04); border: 1.5px solid rgba(255, 255, 255, 0.12);
-      border-radius: 8px; padding: 6px 8px; font-size: 10px; color: #7e8da8;
+      background: rgba(255, 255, 255, 0.03); border: 1.5px solid rgba(0, 243, 255, 0.15);
+      border-radius: 8px; padding: 5px 6px; font-size: 9.5px; color: #7e8da8;
       font-weight: bold; transition: all 0.3s;
     }
     .conq-item.ativa {
-      border-color: #00ff88; background: rgba(0, 255, 136, 0.12); color: #fff;
-      box-shadow: 0 0 8px rgba(0, 255, 136, 0.15);
+      border-color: #ffee00; background: rgba(255, 238, 0, 0.1); color: #fff;
+      box-shadow: 0 0 8px rgba(255, 238, 0, 0.2);
     }
     .hidden { display: none !important; }
   </style>
@@ -169,35 +177,35 @@
 
     <div id="start-screen" class="overlay">
       <div class="card">
-        <div class="badge">🎅 ULTRA REMASTERED • SETORES 1 AO 20 🎮</div>
+        <div class="badge">🌐 PILOTO ID // SECTOR 1 TO 20 🚀</div>
         
-        <svg width="68" height="68" viewBox="0 0 100 100" style="margin-bottom: 4px; filter: drop-shadow(0 0 10px rgba(255, 0, 85, 0.4));">
-          <circle cx="50" cy="56" r="32" fill="#e2e8f0" stroke="#ff0055" stroke-width="2"/>
+        <svg width="60" height="60" viewBox="0 0 100 100" style="margin-bottom: 2px; filter: drop-shadow(0 0 12px rgba(0, 243, 255, 0.6));">
+          <circle cx="50" cy="56" r="32" fill="#e2e8f0" stroke="#00f3ff" stroke-width="2"/>
           <circle cx="50" cy="46" r="24" fill="#ffd0b0"/>
-          <path d="M26 34 L74 34 L60 6 Z" fill="#e60026"/>
+          <path d="M26 34 L74 34 L60 6 Z" fill="#00f3ff"/>
           <rect x="24" y="30" width="52" height="9" rx="4.5" fill="#ffffff"/>
           <circle cx="62" cy="7" r="7" fill="#ffffff"/>
-          <rect x="23" y="39.5" width="54" height="11.5" rx="5.5" fill="#090a0f" stroke="#00f3ff" stroke-width="2"/>
-          <path d="M26 44 L74 44" stroke="#ff0055" stroke-width="2.5" stroke-linecap="round"/>
-          <rect x="33" y="44" width="12" height="3.5" rx="1.5" fill="#00f3ff" opacity="0.8"/>
-          <rect x="55" y="44" width="12" height="3.5" rx="1.5" fill="#00f3ff" opacity="0.8"/>
-          <path d="M30 68 L50 82 L70 68 Z" fill="#e60026" stroke="#00f3ff" stroke-width="1.5"/>
-          <rect x="42" y="70" width="16" height="5" rx="2" fill="#ffaa00"/>
-          <circle cx="50" cy="53" r="4.5" fill="#ff0033"/>
+          <rect x="23" y="39.5" width="54" height="11.5" rx="5.5" fill="#090a0f" stroke="#ffee00" stroke-width="2"/>
+          <path d="M26 44 L74 44" stroke="#00f3ff" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="33" y="44" width="12" height="3.5" rx="1.5" fill="#ffee00" opacity="0.9"/>
+          <rect x="55" y="44" width="12" height="3.5" rx="1.5" fill="#ffee00" opacity="0.9"/>
+          <path d="M30 68 L50 82 L70 68 Z" fill="#00f3ff" stroke="#ffee00" stroke-width="1.5"/>
+          <rect x="42" y="70" width="16" height="5" rx="2" fill="#ff0055"/>
+          <circle cx="50" cy="53" r="4.5" fill="#00f3ff"/>
         </svg>
 
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Enfrente a armada espacial e chefões épicos em cada setor!</p>
-        <input type="text" id="nome-inicio" placeholder="Digite seu apelido de piloto" maxlength="14">
-        <button id="btn-play" type="button" class="btn">🚀 DECOLAR AGORA</button>
-        <button id="btn-cont" type="button" class="btn btn-sec hidden">CONTINUAR FASE <span id="max-lvl">1</span></button>
+        <p class="sub">Sistema de combate tático espacial ativado contra a armada inimiga!</p>
+        <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
+        <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
+        <button id="btn-cont" type="button" class="btn btn-sec hidden">RETORNAR AO SETOR <span id="max-lvl">1</span></button>
         
         <div class="rank-box">
-          <h4>Top 5 Melhores Pilotos</h4>
+          <h4>Ranking de Pilotos</h4>
           <div id="rank-inicio"></div>
         </div>
-        <div class="rank-box" style="border-color: rgba(0, 243, 255, 0.45);">
-          <h4 style="color: #00f3ff;">Conquistas (<span id="conq-count">0</span>/6)</h4>
+        <div class="rank-box" style="border-color: rgba(255, 238, 0, 0.4);">
+          <h4 style="color: #ffee00;">Conquistas (<span id="conq-count">0</span>/6)</h4>
           <div id="conq-lista" class="conq-grid"></div>
         </div>
       </div>
@@ -205,29 +213,29 @@
 
     <div id="pause-screen" class="overlay hidden">
       <div class="card" style="border-color: #ffcc00; box-shadow: 0 0 35px rgba(255, 204, 0, 0.15);">
-        <div class="badge" style="background: rgba(255, 204, 0, 0.15); border-color: #ffcc00; color: #ffe680;">SISTEMA EM ESPERA</div>
-        <h2 style="color:#ffcc00; margin-bottom:8px; font-size:24px; font-weight: 900; letter-spacing: 1px;">JOGO PAUSADO</h2>
-        <p class="sub">Respire fundo, piloto. A galáxia aguarda o seu retorno!</p>
-        <button id="btn-resume" type="button" class="btn btn-sec">CONTINUAR MISSÃO</button>
+        <div class="badge" style="background: rgba(255, 204, 0, 0.15); border-color: #ffcc00; color: #ffe680;">TELEMETRIA PAUSADA</div>
+        <h2 style="color:#ffcc00; margin-bottom:8px; font-size:22px; font-weight: 900; letter-spacing: 1px;">SISTEMA EM ESPERA</h2>
+        <p class="sub">Respire fundo, piloto. A frota aguarda sua retomada!</p>
+        <button id="btn-resume" class="btn">CONTINUAR MISSÃO</button>
         <button id="btn-restart-f1" type="button" class="btn btn-warn">REINICIAR PARA FASE 1</button>
-        <button id="btn-pause-menu" type="button" class="btn" style="background: #112233; border: 1.5px solid #00f3ff; box-shadow: none;">SAIR PARA O MENU</button>
+        <button id="btn-pause-menu" type="button" class="btn btn-sec">SAIR PARA O MENU</button>
       </div>
     </div>
 
     <div id="modal" class="overlay hidden">
       <div class="card">
-        <h2 id="m-tit" style="color:#ffcc00; margin-bottom:8px; font-size:24px; font-weight: 900; letter-spacing: 1.5px;">FASE VENCIDA!</h2>
-        <p id="m-desc" class="sub">Confira sua posição no ranking:</p>
-        <div id="stats-container" style="background: rgba(0, 243, 255, 0.08); border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 12px; padding: 10px; margin-bottom: 12px; font-size: 11.5px; display: none;">
+        <h2 id="m-tit" style="color:#00f3ff; margin-bottom:8px; font-size:22px; font-weight: 900; letter-spacing: 1.5px;">SETOR CONCLUÍDO</h2>
+        <p id="m-desc" class="sub">Relatório de telemetria e classificação:</p>
+        <div id="stats-container" style="background: rgba(0, 243, 255, 0.08); border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 10px; padding: 8px; margin-bottom: 10px; font-size: 11px; display: none;">
           <div>Inimigos Destruídos: <strong id="stat-abates" style="color: #00f3ff;">0</strong></div>
-          <div>Pontuação Final: <strong id="stat-pts" style="color: #ffcc00;">0</strong></div>
+          <div>Pontuação Final: <strong id="stat-pts" style="color: #ffee00;">0</strong></div>
         </div>
-        <input type="text" id="nome-modal" placeholder="Seu apelido de piloto" maxlength="14">
-        <button id="btn-ok" type="button" class="btn">CONTINUAR MISSAO</button>
+        <input type="text" id="nome-modal" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
+        <button id="btn-ok" type="button" class="btn">PRÓXIMO SETOR</button>
         <button id="btn-restart-f1-modal" type="button" class="btn btn-warn">VOLTAR PARA A FASE 1</button>
         <button id="btn-menu" type="button" class="btn btn-sec">TELA INICIAL</button>
         <div class="rank-box">
-          <h4>Top 5 Melhores Pilotos</h4>
+          <h4>Ranking de Pilotos</h4>
           <div id="rank-modal"></div>
         </div>
       </div>
@@ -408,7 +416,6 @@
       alertaChefeT = 130;
       var isInferno = (fase >= 19);
       
-      // Vida do boss balanceada por fase
       var vidaMax = isInferno ? (fase === 20 ? 11500 : 8800) : (180 + fase * 30);
       var velBase = isInferno ? 4.4 : 1.4;
 
@@ -416,7 +423,7 @@
         x: 300, y: -110, alvoY: 145, vx: velBase,
         hp: vidaMax, hpVisual: vidaMax, maxHp: vidaMax, t: 0, r: 45,
         final: (fase === 20), inferno: isInferno, superChefe: false,
-        faseChefe: 1, modoCor: 'FOGO', corAura: '#ff0055', hitFlash: 0
+        faseChefe: 1, modoCor: 'FOGO', corAura: '#00f3ff', hitFlash: 0
       };
       tremor = isInferno ? 28 : 10;
       som(140, 'sawtooth', 0.75, 0.16, 45);
@@ -563,7 +570,6 @@
         });
       }
 
-      // COLISÃO DOS TIROS DA NAVE COM OS INIMIGOS E COM O BOSS
       for (var i = tiros.length - 1; i >= 0; i--) {
         var t = tiros[i];
         if (t.tipo === 'MISSIL') {
@@ -578,7 +584,6 @@
         }
         t.x += t.vx; t.y += t.vy;
 
-        // Verifica colisão do tiro com o CHEFÃO se ele estiver na tela
         if (chefeOn && chefe) {
           var raioAcertoChefe = t.tipo === 'ONDA' ? chefe.r + 25 : chefe.r + 10;
           if (Math.hypot(chefe.x - t.x, chefe.y - t.y) < raioAcertoChefe) {
@@ -660,7 +665,6 @@
         }
         chefe.t++;
 
-        // Chefe de 2 fases apenas na Fase 20
         if (chefe.final && chefe.hp <= chefe.maxHp * 0.5 && chefe.faseChefe === 1) {
           chefe.faseChefe = 2;
           chefe.corAura = '#00ff88';
@@ -670,9 +674,8 @@
           som(220, 'sawtooth', 0.5, 0.2, 80);
         }
 
-        // ATAQUES SIMPLIFICADOS E RANDÔMICOS PARA OS SETORES 1 A 18
         var freqAtaqueChefe = isInferno ? 18 : 110; 
-        if (chefe.t % freqAtaqueDisparoRand(freqAtaqueChefe) === 0) {
+        if (chefe.t % (freqAtaqueChefe + Math.floor(Math.random() * 35)) === 0) {
           if (isInferno || chefe.faseChefe === 2) {
             var qtd = chefe.faseChefe === 2 ? 10 : 6;
             for (var k = 0; k < qtd; k++) {
@@ -680,21 +683,12 @@
               tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * 5.5, vy: Math.sin(ang) * 5.5, cor: '#ff0055', dano: 25 });
             }
           } else {
-            // Apenas 1 ou 2 tiros lentos e randômicos para chefes de 1 a 18 (fáceis de desviar)
             var angMirado = Math.atan2(nave.y - chefe.y, nave.x - chefe.x) + (Math.random() - 0.5) * 0.4;
             tChefe.push({ x: chefe.x, y: chefe.y + 26, vx: Math.cos(angMirado) * 3.2, vy: Math.sin(angMirado) * 3.2, cor: '#00f3ff', dano: 12 });
           }
           som(140, 'square', 0.12, 0.06);
         }
       }
-
-      function chefeAtaqueRand(base) {
-        return base + Math.floor(Math.random() * 40);
-      }
-      // Atalho interno para cadencia randômica
-      window.freqAtaqueDisparoRand = function(base) {
-        return base + Math.floor(Math.random() * 35);
-      };
 
       for (var i = tChefe.length - 1; i >= 0; i--) {
         var tc = tChefe[i];
