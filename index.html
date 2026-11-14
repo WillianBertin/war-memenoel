@@ -17,7 +17,7 @@
       border: 3px solid #00f3ff; border-radius: 20px; overflow: hidden;
       background: #03050c; box-shadow: 0 0 60px rgba(0, 243, 255, 0.45), 0 0 120px rgba(255, 0, 85, 0.3);
     }
-    canvas { display: block; width: 100%; height: 100%; touch-action: none; image-rendering: high-quality; }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; }
     #hud {
       position: absolute; top: 12px; left: 12px; right: 12px;
       display: flex; justify-content: space-between; align-items: center; gap: 4px;
@@ -69,12 +69,12 @@
     }
     .overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at center, rgba(10, 15, 34, 0.85) 0%, rgba(3, 5, 12, 0.98) 100%);
+      background: radial-gradient(circle at center, rgba(10, 15, 34, 0.88) 0%, rgba(3, 5, 12, 0.98) 100%);
       backdrop-filter: blur(8px); display: flex; align-items: center;
       justify-content: center; padding: 14px; z-index: 50;
     }
     .card {
-      background: rgba(6, 11, 25, 0.95); border: 2.5px solid #00f3ff;
+      background: rgba(6, 11, 25, 0.96); border: 2.5px solid #00f3ff;
       border-radius: 20px; padding: 18px 16px; width: 100%; max-width: 430px;
       text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 243, 255, 0.3) inset;
       max-height: 96%; overflow-y: auto; position: relative;
@@ -123,9 +123,9 @@
     .btn-sec { background: linear-gradient(90deg, #ff0055, #ff5500); color: #fff; box-shadow: 0 0 25px rgba(255, 0, 85, 0.55); }
     .btn-warn { background: linear-gradient(90deg, #854d0e, #ca8a04); color: #fff; box-shadow: 0 0 15px rgba(202, 138, 4, 0.4); }
     .rank-box {
-      margin-top: 6px; background: rgba(2, 4, 10, 0.85);
+      margin-top: 6px; background: rgba(2, 4, 10, 0.9);
       border: 1.5px solid rgba(0, 243, 255, 0.4); border-radius: 12px;
-      padding: 6px 10px; text-align: left;
+      padding: 6px 10px; text-align: left; box-shadow: 0 0 10px rgba(0, 243, 255, 0.1) inset;
     }
     .rank-box h4 {
       color: #00f3ff; font-size: 10px; text-transform: uppercase;
@@ -241,7 +241,7 @@
     var intervaloFps = 1000 / 60;
 
     var nave = { x: 300, y: 650, hp: 100, t: 0, arma: 1, ult: 0, laserT: 0, escudoT: 0, tilt: 0 };
-    var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], ondas = [], estrelas = [], planetas = [];
+    var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], ondas = [], estrelas = [];
     var chefe = null, miniChefe = null, teclas = {}, alvoX = 300, alvoY = 650, tocando = false;
 
     function selecionarNave(id) {
@@ -301,9 +301,6 @@
         brilho: Math.random() * Math.PI * 2
       });
     }
-
-    planetas.push({ x: 110, y: 180, r: 42, vy: 0.25, cor1: '#1e3a8a', cor2: '#06b6d4', anel: true });
-    planetas.push({ x: 480, y: 520, r: 28, vy: 0.18, cor1: '#701a75', cor2: '#f43f5e', anel: false });
 
     function iniciarAudioContext() {
       if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -783,7 +780,6 @@
       ctx.save();
       if (tremor > 0) ctx.translate((Math.random() - 0.5) * tremor, (Math.random() - 0.5) * tremor);
 
-      // Fundo Espacial Cyberpunk de Alta Definição com Nebulosas Dinâmicas por Fase
       var isInferno = (fase >= 19);
       var gradFundo = ctx.createRadialGradient(300, 380, 50, 300, 380, 500);
       if (isInferno) {
@@ -810,7 +806,6 @@
       }
       ctx.globalAlpha = 1;
 
-      // Tiros com Brilho Neon Ultra Definido
       for (var i = 0; i < tiros.length; i++) {
         var tr = tiros[i];
         ctx.save();
@@ -822,7 +817,6 @@
         ctx.restore();
       }
 
-      // Inimigos Comuns
       for (var i = 0; i < inimigos.length; i++) {
         var en = inimigos[i];
         ctx.save();
@@ -831,7 +825,6 @@
         ctx.restore();
       }
 
-      // Mini-Chefe com Cores Temáticas do Setor
       if (miniChefeOn && miniChefe) {
         ctx.save();
         ctx.translate(miniChefe.x, miniChefe.y);
@@ -844,7 +837,6 @@
         ctx.restore();
       }
 
-      // Chefão com Cores Temáticas do Setor
       if (chefeOn && chefe) {
         ctx.save();
         ctx.translate(chefe.x, chefe.y);
@@ -854,7 +846,6 @@
         ctx.strokeStyle = chefe.corPrim; ctx.lineWidth = 5; ctx.stroke();
         ctx.restore();
 
-        // Barra de HP do Chefe
         ctx.fillStyle = 'rgba(10, 15, 30, 0.95)'; ctx.fillRect(120, 50, 360, 16);
         ctx.fillStyle = chefe.corAura; ctx.fillRect(122, 52, 356 * Math.max(0, chefe.hp / chefe.maxHp), 12);
         ctx.fillStyle = '#ffffff'; ctx.font = 'bold 10.5px Arial'; ctx.textAlign = 'center';
@@ -862,7 +853,6 @@
         ctx.fillText(nomeChefe, 300, 62);
       }
 
-      // Itens Coletáveis
       for (var i = 0; i < itens.length; i++) {
         var it = itens[i];
         ctx.save();
@@ -875,7 +865,6 @@
         ctx.restore();
       }
 
-      // Nave do Jogador (Com Efeito de Brilho)
       ctx.save();
       ctx.translate(nave.x, nave.y);
       ctx.rotate(nave.tilt);
@@ -888,7 +877,6 @@
       ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
       ctx.restore();
 
-      // Partículas
       for (var i = 0; i < parts.length; i++) {
         var p = parts[i];
         ctx.fillStyle = p.cor; ctx.globalAlpha = p.vida / 44;
@@ -978,12 +966,36 @@
         var n = (el && el.value.trim()) ? el.value.trim() : (localStorage.getItem('wm_n') || 'Piloto');
         localStorage.setItem('wm_n', n);
         if (fase > maxFaseSalva) { maxFaseSalva = fase; localStorage.setItem('wm_maxf', maxFaseSalva); }
+        
+        // Salva também no ranking local para garantir exibição imediata
+        var localRank = JSON.parse(localStorage.getItem('wm_local_rank') || '[]');
+        var existente = localRank.find(function(p) { return p.nome.toLowerCase() === n.toLowerCase(); });
+        if (existente) {
+          if (pontos > existente.pts) { existente.pts = pontos; existente.fase = fase; }
+        } else {
+          localRank.push({ nome: n, pts: pontos, fase: fase });
+        }
+        localRank.sort(function(a, b) { return b.pts - a.pts; });
+        localRank = localRank.slice(0, 5);
+        localStorage.setItem('wm_local_rank', JSON.stringify(localRank));
+        window.rankingGlobal = localRank;
+        window.desenharRankingNaTela(localRank);
+
         if (pontos > 0 && typeof window.enviarPontuacaoFirebase === 'function') {
           window.enviarPontuacaoFirebase(n, fase, pontos);
         }
         atualizarListasRanking();
       } catch (e) {}
     }
+
+    // Carrega ranking local ao iniciar
+    try {
+      var rLocal = JSON.parse(localStorage.getItem('wm_local_rank') || '[]');
+      if (rLocal.length > 0) {
+        window.rankingGlobal = rLocal;
+        window.desenharRankingNaTela(rLocal);
+      }
+    } catch(e) {}
 
     document.getElementById('btn-pause').onclick = alternarPausa;
     document.getElementById('btn-resume').onclick = alternarPausa;
