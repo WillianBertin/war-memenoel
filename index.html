@@ -80,7 +80,7 @@
       max-height: 96%; overflow-y: auto; position: relative;
     }
     .card::before {
-      content: 'ULTRA_4D_ENGINE // V4.0';
+      content: 'ULTRA_4D_ENGINE // V5.0';
       position: absolute; top: 8px; right: 12px; font-size: 8px; color: #ff0055; letter-spacing: 2px; opacity: 0.7;
     }
     .badge {
@@ -149,7 +149,7 @@
   <div id="box">
     <canvas id="c" width="600" height="760"></canvas>
     <div id="hud">
-      <div>FASE <span id="lvl" style="color:#ffcc00;">1</span>/20</div>
+      <div>FASE <span id="lvl" style="color:#ffcc00;">1</span>/21</div>
       <div>ARMA <span id="wpn-lvl" style="color:#ffaa00;">NV.1</span></div>
       <div>PTS <span id="pts" style="color:#00f3ff;">0</span></div>
       <div>HP <span class="bar-bg"><span id="hp-bar"></span></span></div>
@@ -170,20 +170,20 @@
         <div class="ship-select-box">
           <div class="ship-option selected" data-ship="1" onclick="selecionarNave(1)">
             <strong style="color:#00f3ff; font-size:11px;">Interceptor V-1</strong>
-            <span>Até 6 Upgrades (Leque)</span>
+            <span>Até 6 Upgrades</span>
           </div>
           <div class="ship-option" data-ship="2" onclick="selecionarNave(2)">
             <strong style="color:#ff0055; font-size:11px;">Destruidor Plasma</strong>
-            <span>Até 6 Upgrades (Pesado)</span>
+            <span>Tiro Pesado</span>
           </div>
           <div class="ship-option" data-ship="3" onclick="selecionarNave(3)">
             <strong style="color:#ffee00; font-size:11px;">Artilharia Quantum</strong>
-            <span>Até 6 Upgrades (Mísseis)</span>
+            <span>Mísseis & Leque</span>
           </div>
         </div>
 
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Gráficos 3D/4D, Fases dinâmicas, Mini-Chefes e o Papai Noel Chefão!</p>
+        <p class="sub">Modo 4D, Fases estendidas, Kamikazes, Atiradores e Fase Secreta 21!</p>
         <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
         <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">RETORNAR AO SETOR <span id="max-lvl">1</span></button>
@@ -407,7 +407,8 @@
         { aura: '#f97316', prim: '#06b6d4' }, { aura: '#e879f9', prim: '#ff0055' },
         { aura: '#38bdf8', prim: '#fb7185' }, { aura: '#facc15', prim: '#ff0055' },
         { aura: '#34d399', prim: '#f472b6' }, { aura: '#fb923c', prim: '#ff0055' },
-        { aura: '#ef4444', prim: '#ffffff' }, { aura: '#00ff88', prim: '#ff0055' }
+        { aura: '#ef4444', prim: '#ffffff' }, { aura: '#00ff88', prim: '#ff0055' },
+        { aura: '#ff00ff', prim: '#00ffff' } // Fase 21 (Secreta)
       ];
       return paletas[(nFase - 1) % paletas.length];
     }
@@ -420,7 +421,7 @@
       miniChefe = {
         x: 300, y: -80, alvoY: 180, vx: 2.2 + (fase * 0.05),
         hp: vidaMini, maxHp: vidaMini, r: 40, hitFlash: 0,
-        corAura: cores.prim, corPrim: cores.aura, nome: 'MINI-NOEL S' + fase
+        corAura: cores.prim, corPrim: cores.aura, nome: fase === 21 ? 'GUARDIÃO SECRETO' : 'MINI-NOEL S' + fase
       };
       som(180, 'sawtooth', 0.5, 0.12, 60);
     }
@@ -430,16 +431,16 @@
       chefeOn = true;
       alertaChefeT = 130;
       var isInferno = (fase >= 19);
-      var vidaMax = isInferno ? (fase === 20 ? 11500 : 8800) : (240 + fase * 40);
-      var velBase = isInferno ? 4.4 : 1.5;
+      var vidaMax = isInferno ? (fase >= 21 ? 14500 : 11500) : (240 + fase * 40);
+      var velBase = isInferno ? 4.8 : 1.5;
       var cores = obterCoresChefao(fase);
 
       chefe = {
         x: 300, y: -110, alvoY: 145, vx: velBase,
         hp: vidaMax, hpVisual: vidaMax, maxHp: vidaMax, t: 0, r: 52,
-        final: (fase === 20), inferno: isInferno, faseChefe: 1,
+        final: (fase >= 20), inferno: isInferno, faseChefe: 1,
         modoCor: 'FOGO', corAura: cores.aura, corPrim: cores.prim, hitFlash: 0,
-        nome: fase === 20 ? 'PAPAI NOEL SUPREMO' : (isInferno ? 'PAPAI NOEL INFERNAL' : 'PAPAI NOEL S' + fase)
+        nome: fase === 21 ? 'DEUS DO NATAL CIBERNÉTICO' : (fase === 20 ? 'PAPAI NOEL SUPREMO' : (isInferno ? 'PAPAI NOEL INFERNAL' : 'PAPAI NOEL S' + fase))
       };
       tremor = isInferno ? 28 : 10;
       som(140, 'sawtooth', 0.75, 0.16, 45);
@@ -525,64 +526,35 @@
       nave.y += (alvoY - nave.y) * 0.22;
 
       nave.t++;
-      // SISTEMA DE 6 EVOLUÇÕES DE TIRO COMPLETAS POR NAVE
-      var danoBase = 15 + (nave.arma * 9);
+      var danoBase = 18 + (nave.arma * 9);
       var cadencia = Math.max(4, 13 - nave.arma * 1.5);
       if (nave.t % Math.floor(cadencia) === 0) {
         som(600 + nave.arma * 60, 'triangle', 0.06, 0.035);
         
         if (tipoNaveSelecionada === 1) {
-          // Interceptor V-1: Evolui de 1 tiro até 6 tiros em leque massivo
           if (nave.arma === 1) {
             tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-          } else if (nave.arma === 2) {
+          } else if (nave.arma <= 3) {
             tiros.push({ x: nave.x - 12, y: nave.y - 20, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
             tiros.push({ x: nave.x + 12, y: nave.y - 20, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-          } else if (nave.arma === 3) {
-            tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -16, d: danoBase, cor: '#ffcc00', tipo: 'LASER' });
-            tiros.push({ x: nave.x - 18, y: nave.y - 18, vx: -1.5, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 18, y: nave.y - 18, vx: 1.5, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-          } else if (nave.arma === 4) {
-            tiros.push({ x: nave.x - 10, y: nave.y - 22, vx: -0.5, vy: -16, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 10, y: nave.y - 22, vx: 0.5, vy: -16, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
-            tiros.push({ x: nave.x - 22, y: nave.y - 14, vx: -3.0, vy: -14, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 22, y: nave.y - 14, vx: 3.0, vy: -14, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-          } else if (nave.arma === 5) {
-            tiros.push({ x: nave.x, y: nave.y - 28, vx: 0, vy: -17, d: danoBase * 1.4, cor: '#ffee00', tipo: 'ONDA' });
-            tiros.push({ x: nave.x - 15, y: nave.y - 20, vx: -1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 15, y: nave.y - 20, vx: 1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x - 30, y: nave.y - 12, vx: -4.0, vy: -13, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 30, y: nave.y - 12, vx: 4.0, vy: -13, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
           } else {
-            // Nv.6 (Supremo): 6 tiros devastadores simultâneos
-            tiros.push({ x: nave.x - 8, y: nave.y - 28, vx: 0, vy: -18, d: danoBase * 1.8, cor: '#00ff88', tipo: 'ONDA' });
-            tiros.push({ x: nave.x + 8, y: nave.y - 28, vx: 0, vy: -18, d: danoBase * 1.8, cor: '#00ff88', tipo: 'ONDA' });
-            tiros.push({ x: nave.x - 20, y: nave.y - 20, vx: -2.0, vy: -16, d: danoBase * 1.2, cor: '#ffee00', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 20, y: nave.y - 20, vx: 2.0, vy: -16, d: danoBase * 1.2, cor: '#ffee00', tipo: 'LASER' });
-            tiros.push({ x: nave.x - 38, y: nave.y - 12, vx: -5.0, vy: -14, d: danoBase, cor: '#ff0055', tipo: 'PLASMA' });
-            tiros.push({ x: nave.x + 38, y: nave.y - 12, vx: 5.0, vy: -14, d: danoBase, cor: '#ff0055', tipo: 'PLASMA' });
+            tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -16, d: danoBase * 1.3, cor: '#ffcc00', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 18, y: nave.y - 18, vx: -1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 18, y: nave.y - 18, vx: 1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
           }
         } else if (tipoNaveSelecionada === 2) {
-          // Destruidor Plasma: Tiros pesados que escalam até bolas de plasma gigantes de Nv.6
-          var qtdPlasma = Math.min(5, nave.arma);
-          for (var p = 0; p < qtdPlasma; p++) {
-            var offX = (p - (qtdPlasma - 1) / 2) * 12;
-            tiros.push({ x: nave.x + offX, y: nave.y - 26, vx: offX * 0.2, vy: -14, d: danoBase * 1.3, cor: '#ff0055', tipo: 'PLASMA' });
-          }
-          if (nave.arma >= 6) {
-            tiros.push({ x: nave.x, y: nave.y - 32, vx: 0, vy: -17, d: danoBase * 2.5, cor: '#ffffff', tipo: 'ONDA' });
+          tiros.push({ x: nave.x - 10, y: nave.y - 26, vx: 0, vy: -14, d: danoBase * 1.5, cor: '#ff0055', tipo: 'PLASMA' });
+          tiros.push({ x: nave.x + 10, y: nave.y - 26, vx: 0, vy: -14, d: danoBase * 1.5, cor: '#ff0055', tipo: 'PLASMA' });
+          if (nave.arma >= 4) {
+            tiros.push({ x: nave.x, y: nave.y - 30, vx: 0, vy: -16, d: danoBase * 2, cor: '#ffffff', tipo: 'PLASMA' });
           }
         } else {
-          // Artilharia Quantum: Leque + Mísseis teleguiados que multiplicam a cada nível
           tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -15, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
           tiros.push({ x: nave.x - 16, y: nave.y - 18, vx: -2.5, vy: -14, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
           tiros.push({ x: nave.x + 16, y: nave.y - 18, vx: 2.5, vy: -14, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
-          var qtdMisseis = Math.max(1, Math.floor(nave.arma / 2));
-          if (nave.t % (Math.max(4, 10 - nave.arma)) === 0) {
-            for (var m = 0; m < qtdMisseis; m++) {
-              var mX = nave.x + (m - (qtdMisseis - 1) / 2) * 22;
-              tiros.push({ x: mX, y: nave.y - 10, vx: (m - (qtdMisseis - 1) / 2) * 2, vy: -11, d: danoBase * 1.6, cor: '#00ff88', tipo: 'MISSIL' });
-            }
+          if (nave.arma >= 3 && nave.t % (cadencia * 2) === 0) {
+            tiros.push({ x: nave.x - 26, y: nave.y - 10, vx: -3, vy: -10, d: danoBase * 2, cor: '#00ff88', tipo: 'MISSIL' });
+            tiros.push({ x: nave.x + 26, y: nave.y - 10, vx: 3, vy: -10, d: danoBase * 2, cor: '#00ff88', tipo: 'MISSIL' });
           }
         }
       }
@@ -595,13 +567,19 @@
         var coresMonstros = ['#ff0055', '#00f3ff', '#ffee00', '#00ff88', '#a855f7'];
         var corEscohida = coresMonstros[Math.floor(Math.random() * coresMonstros.length)];
         
+        // Novos tipos especiais: Inimigos Kamikaze (tipo 6) e Atiradores Táticos (tipo 7)
+        var tipoEsp = Math.random() < 0.25 ? (Math.random() < 0.5 ? 6 : 7) : 1;
+
         inimigos.push({
           x: 40 + Math.random() * 520, y: -30,
-          vx: (Math.random() - 0.5) * (1.8 + fase * 0.1),
-          vy: (2.2 + fase * 0.08),
-          hp: 25 + fase * 5,
+          vx: tipoEsp === 6 ? (Math.random() - 0.5) * 4 : (Math.random() - 0.5) * (1.8 + fase * 0.1),
+          vy: tipoEsp === 6 ? (4.5 + fase * 0.2) : (2.2 + fase * 0.08),
+          hp: tipoEsp === 6 ? 15 : (25 + fase * 5),
           r: 20 + Math.random() * 8,
-          forma: formaId, cor: corEscohida, t: 0, hitFlash: 0
+          forma: tipoEsp === 6 ? 0 : formaId, 
+          cor: tipoEsp === 6 ? '#ff5500' : (tipoEsp === 7 ? '#a855f7' : corEscohida), 
+          especial: tipoEsp,
+          t: 0, hitFlash: 0
         });
       }
 
@@ -678,6 +656,13 @@
         var en = inimigos[i];
         en.t++;
         if (en.hitFlash > 0) en.hitFlash--;
+
+        // Comportamento especial para Atiradores Táticos (tipo 7)
+        if (en.especial === 7 && en.t % 80 === 0) {
+          var angIn = Math.atan2(nave.y - en.y, nave.x - en.x);
+          tChefe.push({ x: en.x, y: en.y + 10, vx: Math.cos(angIn) * 4, vy: Math.sin(angIn) * 4, cor: '#a855f7', dano: 14 });
+        }
+
         en.x += en.vx; en.y += en.vy;
         if (en.x < 25) { en.x = 25; en.vx = Math.abs(en.vx); }
         if (en.x > 575) { en.x = 575; en.vx = -Math.abs(en.vx); }
@@ -784,9 +769,12 @@
         som(70, 'sawtooth', 0.9, 0.2, 20);
         pontos += 3000 * fase;
         chefeOn = false; chefe = null;
-        if (fase >= 20) {
+        if (fase === 20) {
+          // Desbloqueia a Fase Secreta 21!
+          encerrarPartida('FASE SECRETA DESBLOQUEADA!', 'Você venceu o Papai Noel Supremo e liberou o Setor 21!', 'PROX');
+        } else if (fase >= 21) {
           desbloquearConquista('lenda');
-          encerrarPartida('VITÓRIA SUPREMA!', 'Você completou todos os 20 setores!', 'REINICIAR');
+          encerrarPartida('VITÓRIA SUPREMA!', 'Você completou a Fase Secreta e salvou o universo!', 'REINICIAR');
         } else {
           encerrarPartida('SETOR CONCLUÍDO!', 'Chefão derrotado com sucesso.', 'PROX');
         }
@@ -799,7 +787,10 @@
       ctx.shadowBlur = 18; ctx.shadowColor = en.cor;
       ctx.fillStyle = en.hitFlash > 0 ? '#ffffff' : en.cor;
       ctx.beginPath();
-      if (en.forma === 0) {
+      if (en.especial === 6) {
+        // Kamikaze (Foguete pontiagudo)
+        ctx.moveTo(0, en.r * 1.2); ctx.lineTo(-en.r * 0.7, -en.r); ctx.lineTo(en.r * 0.7, -en.r);
+      } else if (en.forma === 0) {
         ctx.moveTo(0, en.r); ctx.lineTo(-en.r, -en.r); ctx.lineTo(en.r, -en.r);
       } else if (en.forma === 1) {
         for (var h = 0; h < 6; h++) {
@@ -864,7 +855,10 @@
 
       var isInferno = (fase >= 19);
       var gradFundo = ctx.createRadialGradient(300, 380, 50, 300, 380, 520);
-      if (isInferno) {
+      if (fase === 21) {
+        gradFundo.addColorStop(0, 'rgba(80, 0, 100, 1)');
+        gradFundo.addColorStop(1, 'rgba(10, 0, 20, 1)');
+      } else if (isInferno) {
         gradFundo.addColorStop(0, 'rgba(100, 15, 35, 1)');
         gradFundo.addColorStop(1, 'rgba(4, 1, 6, 1)');
       } else if (fase % 3 === 0) {
@@ -917,7 +911,7 @@
         ctx.fillStyle = 'rgba(6, 9, 20, 0.95)'; ctx.fillRect(110, 48, 380, 18);
         ctx.fillStyle = chefe.corAura; ctx.fillRect(112, 50, 376 * Math.max(0, chefe.hp / chefe.maxHp), 14);
         ctx.fillStyle = '#ffffff'; ctx.font = 'bold 11px Arial'; ctx.textAlign = 'center';
-        var txtChefe = chefe.final ? (chefe.faseChefe === 2 ? '⚡ PAPAI NOEL FÚRIA TOTAL ⚡' : 'PAPAI NOEL SUPREMO') : (chefe.nome + ' [CHEFÃO]');
+        var txtChefe = fase === 21 ? '⚡ DEUS DO NATAL CIBERNÉTICO ⚡' : (chefe.final ? (chefe.faseChefe === 2 ? '⚡ PAPAI NOEL FÚRIA TOTAL ⚡' : 'PAPAI NOEL SUPREMO') : (chefe.nome + ' [CHEFÃO]'));
         ctx.fillText(txtChefe, 300, 61);
       }
 
@@ -933,6 +927,7 @@
         ctx.restore();
       }
 
+      // Nave do Jogador com Escudo Ativo Visualizado
       ctx.save();
       ctx.translate(nave.x, nave.y);
       ctx.rotate(nave.tilt);
@@ -949,6 +944,12 @@
       ctx.moveTo(0, -32); ctx.lineTo(-28, 22); ctx.lineTo(0, 14); ctx.lineTo(28, 22);
       ctx.closePath(); ctx.fill();
       ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+
+      if (nave.escudoT > 0) {
+        ctx.strokeStyle = '#00ff88'; ctx.lineWidth = 3.5;
+        ctx.shadowColor = '#00ff88'; ctx.shadowBlur = 18;
+        ctx.beginPath(); ctx.arc(0, 0, 42, 0, Math.PI * 2); ctx.stroke();
+      }
       ctx.restore();
 
       for (var i = 0; i < parts.length; i++) {
