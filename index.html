@@ -171,23 +171,16 @@
       <div class="card">
         <div class="badge">🎅 ULTRA REMASTERED • SETORES 1 AO 20 🎮</div>
         
-        <!-- Ilustração do Papai Noel Ciberpunk de Combate espacial -->
         <svg width="68" height="68" viewBox="0 0 100 100" style="margin-bottom: 4px; filter: drop-shadow(0 0 10px rgba(255, 0, 85, 0.4));">
           <circle cx="50" cy="56" r="32" fill="#e2e8f0" stroke="#ff0055" stroke-width="2"/>
           <circle cx="50" cy="46" r="24" fill="#ffd0b0"/>
-          
-          <!-- Gorro Noel Futurista -->
           <path d="M26 34 L74 34 L60 6 Z" fill="#e60026"/>
           <rect x="24" y="30" width="52" height="9" rx="4.5" fill="#ffffff"/>
           <circle cx="62" cy="7" r="7" fill="#ffffff"/>
-          
-          <!-- Cyber Óculos de Combate -->
           <rect x="23" y="39.5" width="54" height="11.5" rx="5.5" fill="#090a0f" stroke="#00f3ff" stroke-width="2"/>
           <path d="M26 44 L74 44" stroke="#ff0055" stroke-width="2.5" stroke-linecap="round"/>
           <rect x="33" y="44" width="12" height="3.5" rx="1.5" fill="#00f3ff" opacity="0.8"/>
           <rect x="55" y="44" width="12" height="3.5" rx="1.5" fill="#00f3ff" opacity="0.8"/>
-          
-          <!-- Detalhes Tecnológicos da Armadura -->
           <path d="M30 68 L50 82 L70 68 Z" fill="#e60026" stroke="#00f3ff" stroke-width="1.5"/>
           <rect x="42" y="70" width="16" height="5" rx="2" fill="#ffaa00"/>
           <circle cx="50" cy="53" r="4.5" fill="#ff0033"/>
@@ -225,6 +218,10 @@
       <div class="card">
         <h2 id="m-tit" style="color:#ffcc00; margin-bottom:8px; font-size:24px; font-weight: 900; letter-spacing: 1.5px;">FASE VENCIDA!</h2>
         <p id="m-desc" class="sub">Confira sua posição no ranking:</p>
+        <div id="stats-container" style="background: rgba(0, 243, 255, 0.08); border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 12px; padding: 10px; margin-bottom: 12px; font-size: 11.5px; display: none;">
+          <div>Inimigos Destruídos: <strong id="stat-abates" style="color: #00f3ff;">0</strong></div>
+          <div>Pontuação Final: <strong id="stat-pts" style="color: #ffcc00;">0</strong></div>
+        </div>
         <input type="text" id="nome-modal" placeholder="Seu apelido de piloto" maxlength="14">
         <button id="btn-ok" type="button" class="btn">CONTINUAR MISSAO</button>
         <button id="btn-restart-f1-modal" type="button" class="btn btn-warn">VOLTAR PARA A FASE 1</button>
@@ -240,7 +237,7 @@
   <script>
     var c = document.getElementById('c'), ctx = c.getContext('2d');
     var estado = 'INICIO', modo = 'PROX', fase = 1, maxFaseSalva = 1, pontos = 0, combo = 1, comboT = 0;
-    var q = 0, abates = 0, metaAbates = 15, chefeOn = false, tremor = 0, flashTela = 0, mudo = false, ac = null;
+    var q = 0, abates = 0, totalAbatesPartida = 0, metaAbates = 15, chefeOn = false, tremor = 0, flashTela = 0, mudo = false, ac = null;
     var alertaChefeT = 0, bgmTimer = null, bgmPasso = 0;
     
     var ultimoTempo = 0;
@@ -378,6 +375,7 @@
 
     function reiniciarParaFase1() {
       pontos = 0;
+      totalAbatesPartida = 0;
       nave.hp = 100;
       nave.arma = 1;
       nave.ult = 0;
@@ -417,7 +415,7 @@
         x: 300, y: -110, alvoY: 145, vx: velBase,
         hp: vidaMax, hpVisual: vidaMax, maxHp: vidaMax, t: 0,
         final: (fase === 20), inferno: isInferno, superChefe: false,
-        modoCor: 'FOGO', corAura: '#ff0055', angEspiral: 0, hitFlash: 0
+        faseChefe: 1, modoCor: 'FOGO', corAura: '#ff0055', angEspiral: 0, hitFlash: 0
       };
       tremor = isInferno ? 28 : 12;
       som(140, 'sawtooth', 0.75, 0.16, 45);
@@ -458,6 +456,12 @@
       flashTela = 0.5;
       criarParticulas(nave.x, nave.y, '#ff0055', 18, true);
       som(90, 'square', 0.28, 0.14, 30);
+      
+      // Alerta sonoro de vida crítica (< 25%)
+      if (nave.hp > 0 && nave.hp < 25) {
+        som(300, 'sine', 0.15, 0.1, 150);
+      }
+
       if (nave.hp <= 0) {
         nave.hp = 0;
         atualizarHUD();
@@ -611,6 +615,7 @@
           desbloquearConquista('sangue');
           var ptsBase = en.tipo === 5 ? 65 : (en.tipo === 3 ? 50 : (en.tipo === 4 ? 40 : (en.tipo === 2 ? 35 : 15)));
           pontos += ptsBase * combo;
+          totalAbatesPartida++;
           combo = Math.min(10, combo + 1);
           if (combo >= 10) desbloquearConquista('combo');
           comboT = 135;
@@ -619,8 +624,9 @@
           criarParticulas(en.x, en.y, en.tipo === 3 ? '#ffee00' : (en.tipo === 5 ? '#a855f7' : '#ffaa00'), 16, en.tipo !== 1);
           som(180, 'sawtooth', 0.14, 0.06);
 
-          if (en.tipo === 3 || Math.random() < (isInferno ? 0.12 : 0.18)) {
-            var tiposItem = ['ARMA', 'ARMA', 'HP', 'ESCUDO', 'ULT'];
+          // Chance de dropar itens incluindo a nova BOMBA INTELIGENTE ('BOMBA')
+          if (Math.random() < (isInferno ? 0.15 : 0.20)) {
+            var tiposItem = ['ARMA', 'ARMA', 'HP', 'ESCUDO', 'ULT', 'BOMBA'];
             itens.push({ x: en.x, y: en.y, vy: 2.6, tipo: tiposItem[Math.floor(Math.random() * tiposItem.length)] });
           }
           inimigos.splice(i, 1);
@@ -650,31 +656,39 @@
         }
         chefe.t++;
 
+        // Mecânica de Chefe de 2 Fases na Fase 20 (Fúria quando HP < 50%)
+        if (chefe.final && chefe.hp <= chefe.maxHp * 0.5 && chefe.faseChefe === 1) {
+          chefe.faseChefe = 2;
+          chefe.corAura = '#00ff88';
+          chefe.vx *= 1.4;
+          tremor = 20;
+          flashTela = 0.4;
+          som(220, 'sawtooth', 0.5, 0.2, 80);
+        }
+
         var durCiclo = chefe.inferno ? 130 : 200;
         var ciclo = Math.floor(chefe.t / durCiclo) % 3;
-        if (ciclo === 0) { chefe.modoCor = 'FOGO'; chefe.corAura = '#ff0055'; }
-        else if (ciclo === 1) { chefe.modoCor = 'RAIO'; chefe.corAura = '#00f3ff'; }
-        else { chefe.modoCor = 'CAOS'; chefe.corAura = '#d946ef'; }
+        if (ciclo === 0) { chefe.modoCor = 'FOGO'; if(chefe.faseChefe !== 2) chefe.corAura = '#ff0055'; }
+        else if (ciclo === 1) { chefe.modoCor = 'RAIO'; if(chefe.faseChefe !== 2) chefe.corAura = '#00f3ff'; }
+        else { chefe.modoCor = 'CAOS'; if(chefe.faseChefe !== 2) chefe.corAura = '#d946ef'; }
 
-        var intFogo = chefe.inferno ? 18 : 65;
-        var intRaio = chefe.inferno ? 11 : 45;
-        var intCaos = chefe.inferno ? 5 : 25;
+        var intFogo = chefe.faseChefe === 2 ? 10 : (chefe.inferno ? 18 : 65);
+        var intRaio = chefe.faseChefe === 2 ? 8 : (chefe.inferno ? 11 : 45);
+        var intCaos = chefe.faseChefe === 2 ? 4 : (chefe.inferno ? 5 : 25);
 
         if (chefe.modoCor === 'FOGO' && chefe.t % intFogo === 0) {
-          var qtd = chefe.inferno ? 9 : 3;
-          var velF = chefe.inferno ? 6.6 : 3.6;
+          var qtd = chefe.faseChefe === 2 ? 12 : (chefe.inferno ? 9 : 3);
+          var velF = chefe.faseChefe === 2 ? 7.2 : 3.6;
           for (var k = 0; k < qtd; k++) {
-            var ang = (Math.PI / 2) + ((k - (qtd - 1) / 2) * (chefe.inferno ? 0.20 : 0.22));
-            tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * velF, vy: Math.sin(ang) * velF, cor: '#ff0055', dano: chefe.inferno ? 46 : 14 });
+            var ang = (Math.PI / 2) + ((k - (qtd - 1) / 2) * 0.22);
+            tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * velF, vy: Math.sin(ang) * velF, cor: chefe.faseChefe === 2 ? '#00ff88' : '#ff0055', dano: chefe.faseChefe === 2 ? 35 : 14 });
           }
           som(140, 'square', 0.16, 0.08);
         } else if (chefe.modoCor === 'RAIO' && chefe.t % intRaio === 0) {
           var angMirado = Math.atan2(nave.y - chefe.y, nave.x - chefe.x);
-          var velR = chefe.inferno ? 8.8 : 4.5;
-          tChefe.push({ x: chefe.x - 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: chefe.inferno ? 48 : 16 });
-          if (chefe.inferno) {
-            tChefe.push({ x: chefe.x + 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: 48 });
-          }
+          var velR = chefe.faseChefe === 2 ? 9.0 : 4.5;
+          tChefe.push({ x: chefe.x - 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: 18 });
+          tChefe.push({ x: chefe.x + 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: 18 });
           som(420, 'sawtooth', 0.12, 0.07);
         }
       }
@@ -698,6 +712,14 @@
           else if (it.tipo === 'HP') { nave.hp = Math.min(100, nave.hp + 35); }
           else if (it.tipo === 'ESCUDO') { nave.escudoT = 240; }
           else if (it.tipo === 'ULT') { nave.ult = 100; }
+          else if (it.tipo === 'BOMBA') {
+            // Efeito da Bomba Inteligente: Destroi todos os inimigos e tiros inimigos da tela!
+            inimigos = [];
+            tChefe = [];
+            tremor = 25;
+            flashTela = 0.8;
+            som(100, 'sawtooth', 0.6, 0.25, 20);
+          }
           som(520, 'sine', 0.2, 0.1, 880);
           itens.splice(i, 1);
           atualizarHUD();
@@ -848,15 +870,17 @@
 
         for (var i = 0; i < itens.length; i++) {
           var it = itens[i];
-          var corItem = it.tipo === 'ARMA' ? '#ffcc00' : (it.tipo === 'HP' ? '#00ff88' : (it.tipo === 'ULT' ? '#ff0055' : '#00f3ff'));
+          var corItem = it.tipo === 'ARMA' ? '#ffcc00' : (it.tipo === 'HP' ? '#00ff88' : (it.tipo === 'ULT' ? '#ff0055' : (it.tipo === 'BOMBA' ? '#ffffff' : '#00f3ff')));
           ctx.save();
           ctx.shadowBlur = 18;
           ctx.shadowColor = corItem;
           ctx.fillStyle = corItem;
           ctx.beginPath(); ctx.arc(it.x, it.y, 17, 0, Math.PI * 2); ctx.fill();
-          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.stroke();
-          ctx.fillStyle = '#040610'; ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center';
-          ctx.fillText(it.tipo, it.x, it.y + 3.5);
+          ctx.strokeStyle = it.tipo === 'BOMBA' ? '#ff0055' : '#ffffff'; 
+          ctx.lineWidth = 2.5; ctx.stroke();
+          ctx.fillStyle = it.tipo === 'BOMBA' ? '#ff0055' : '#040610'; 
+          ctx.font = 'bold 9px Arial'; ctx.textAlign = 'center';
+          ctx.fillText(it.tipo === 'BOMBA' ? 'BOOM' : it.tipo, it.x, it.y + 3.5);
           ctx.restore();
         }
 
@@ -919,7 +943,7 @@
             ctx.moveTo(0, en.r); ctx.lineTo(-en.r, -en.r); ctx.lineTo(0, -en.r * 0.4); ctx.lineTo(en.r, -en.r);
             ctx.closePath(); ctx.fill();
             ctx.fillStyle = '#fed7aa';
-            ctx.beginPath(); rx = 0, ry = -2, r = 4, 0, Math.PI * 2; ctx.fill();
+            ctx.beginPath(); ctx.arc(0, -2, 4, 0, Math.PI * 2); ctx.fill();
           }
           ctx.restore();
         }
@@ -973,7 +997,7 @@
           ctx.fillStyle = '#ffffff';
           ctx.font = 'bold 10.5px Arial';
           ctx.textAlign = 'center';
-          var nomeChefe = chefe.final ? 'MEMENOEL SUPREMO' : (chefe.inferno ? 'MEMENOEL INFERNAL' : 'MEMENOEL S' + fase);
+          var nomeChefe = chefe.final ? (chefe.faseChefe === 2 ? '⚡ MEMENOEL FÚRIA TOTAL ⚡' : 'MEMENOEL SUPREMO (F1)') : (chefe.inferno ? 'MEMENOEL INFERNAL' : 'MEMENOEL S' + fase);
           ctx.fillText(nomeChefe + ' • PODER ' + chefe.modoCor, 300, 62);
         }
 
@@ -1093,6 +1117,12 @@
       modo = acaoModo;
       document.getElementById('m-tit').textContent = titulo;
       document.getElementById('m-desc').textContent = desc;
+      
+      // Exibe estatísticas detalhadas no Game Over
+      document.getElementById('stat-abates').textContent = totalAbatesPartida;
+      document.getElementById('stat-pts').textContent = pontos;
+      document.getElementById('stats-container').style.display = 'block';
+
       document.getElementById('nome-modal').value = localStorage.getItem('wm_n') || '';
       document.getElementById('btn-ok').textContent = (acaoModo === 'PROX') ? 'PRÓXIMO SETOR' : 'JOGAR NOVAMENTE';
       if (acaoModo === 'PROX' && fase + 1 > maxFaseSalva) {
@@ -1172,8 +1202,9 @@
     document.getElementById('btn-play').onclick = function() {
       var n = document.getElementById('nome-inicio').value.trim() || 'Piloto';
       localStorage.setItem('wm_n', n);
-      pontos = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
+      pontos = 0; totalAbatesPartida = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
       document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('stats-container').style.display = 'none';
       iniciarFase(1);
       estado = 'JOGANDO';
     };
@@ -1181,8 +1212,9 @@
     document.getElementById('btn-cont').onclick = function() {
       var n = document.getElementById('nome-inicio').value.trim() || 'Piloto';
       localStorage.setItem('wm_n', n);
-      pontos = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
+      pontos = 0; totalAbatesPartida = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
       document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('stats-container').style.display = 'none';
       iniciarFase(maxFaseSalva);
       estado = 'JOGANDO';
     };
@@ -1190,11 +1222,12 @@
     document.getElementById('btn-ok').onclick = function() {
       salvarRanking('nome-modal');
       document.getElementById('modal').classList.add('hidden');
+      document.getElementById('stats-container').style.display = 'none';
       if (modo === 'PROX') {
         nave.hp = Math.min(100, nave.hp + 25);
         iniciarFase(fase + 1);
       } else {
-        pontos = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0;
+        pontos = 0; totalAbatesPartida = 0; nave.hp = 100; nave.arma = 1; nave.ult = 0;
         iniciarFase(1);
       }
       estado = 'JOGANDO';
@@ -1203,6 +1236,7 @@
     document.getElementById('btn-menu').onclick = function() {
       salvarRanking('nome-modal');
       document.getElementById('modal').classList.add('hidden');
+      document.getElementById('stats-container').style.display = 'none';
       document.getElementById('start-screen').classList.remove('hidden');
       estado = 'INICIO';
     };
