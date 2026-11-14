@@ -80,7 +80,7 @@
       max-height: 96%; overflow-y: auto; position: relative;
     }
     .card::before {
-      content: 'TRUE_3D_RENDER // V13.0';
+      content: 'TRUE_3D_RENDER // V14.0';
       position: absolute; top: 8px; right: 12px; font-size: 8px; color: #ff0055; letter-spacing: 2px; opacity: 0.7;
     }
     .badge {
@@ -174,20 +174,20 @@
         <div class="ship-select-box">
           <div class="ship-option selected" data-ship="1" onclick="selecionarNave(1)">
             <strong style="color:#00f3ff; font-size:11px;">Interceptor V-1</strong>
-            <span>6 Níveis de Tiro</span>
+            <span>6 Níveis Únicos</span>
           </div>
           <div class="ship-option" data-ship="2" onclick="selecionarNave(2)">
             <strong style="color:#ff0055; font-size:11px;">Destruidor Plasma</strong>
-            <span>6 Níveis de Tiro</span>
+            <span>6 Níveis Únicos</span>
           </div>
           <div class="ship-option" data-ship="3" onclick="selecionarNave(3)">
             <strong style="color:#ffee00; font-size:11px;">Artilharia Quantum</strong>
-            <span>6 Níveis de Tiro</span>
+            <span>6 Níveis Únicos</span>
           </div>
         </div>
 
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Gráficos 3D avançados, Asas Volumétricas e Super Laser Animado!</p>
+        <p class="sub">Gráficos 3D imersivos, Asas Volumétricas e Loja funcional!</p>
         <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
         <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">RETORNAR AO SETOR <span id="max-lvl">1</span></button>
@@ -576,51 +576,61 @@
         tirosDisparados++;
         som(600 + nave.arma * 60, 'triangle', 0.06, 0.035);
         
-        // 6 NÍVEIS DE TIRO COMPLETOS E DIFERENCIADOS PARA CADA NAVE
+        // 6 NÍVEIS DE TIRO TOTALMENTE DISTINTOS E ÚNICOS POR NAVE
         if (tipoNaveSelecionada === 1) {
+          // INTERCEPTOR V-1: Escalada precisa em leque e ondas de pulso
           if (nave.arma === 1) {
-            tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -16, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
           } else if (nave.arma === 2) {
-            tiros.push({ x: nave.x - 12, y: nave.y - 20, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 12, y: nave.y - 20, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 14, y: nave.y - 20, vx: 0, vy: -16, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 14, y: nave.y - 20, vx: 0, vy: -16, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
           } else if (nave.arma === 3) {
-            tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -16, d: danoBase, cor: '#ffcc00', tipo: 'LASER' });
-            tiros.push({ x: nave.x - 18, y: nave.y - 18, vx: -1.5, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 18, y: nave.y - 18, vx: 1.5, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x, y: nave.y - 28, vx: 0, vy: -17, d: danoBase * 1.2, cor: '#ffee00', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 20, y: nave.y - 18, vx: -1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 20, y: nave.y - 18, vx: 1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
           } else if (nave.arma === 4) {
-            tiros.push({ x: nave.x - 10, y: nave.y - 22, vx: -0.5, vy: -16, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 10, y: nave.y - 22, vx: 0.5, vy: -16, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
-            tiros.push({ x: nave.x - 22, y: nave.y - 14, vx: -3.0, vy: -14, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 22, y: nave.y - 14, vx: 3.0, vy: -14, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 12, y: nave.y - 22, vx: -1, vy: -17, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 12, y: nave.y - 22, vx: 1, vy: -17, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 28, y: nave.y - 14, vx: -3.5, vy: -14, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 28, y: nave.y - 14, vx: 3.5, vy: -14, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
           } else if (nave.arma === 5) {
-            tiros.push({ x: nave.x, y: nave.y - 28, vx: 0, vy: -17, d: danoBase * 1.4, cor: '#ffee00', tipo: 'ONDA' });
-            tiros.push({ x: nave.x - 15, y: nave.y - 20, vx: -1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 15, y: nave.y - 20, vx: 1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x - 30, y: nave.y - 12, vx: -4.0, vy: -13, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 30, y: nave.y - 12, vx: 4.0, vy: -13, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
+            tiros.push({ x: nave.x, y: nave.y - 30, vx: 0, vy: -18, d: danoBase * 1.5, cor: '#ff0055', tipo: 'ONDA' });
+            tiros.push({ x: nave.x - 18, y: nave.y - 22, vx: -2.2, vy: -16, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 18, y: nave.y - 22, vx: 2.2, vy: -16, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 36, y: nave.y - 14, vx: -4.5, vy: -13, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 36, y: nave.y - 14, vx: 4.5, vy: -13, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
           } else {
-            tiros.push({ x: nave.x - 8, y: nave.y - 28, vx: 0, vy: -18, d: danoBase * 1.8, cor: '#00ff88', tipo: 'ONDA' });
-            tiros.push({ x: nave.x + 8, y: nave.y - 28, vx: 0, vy: -18, d: danoBase * 1.8, cor: '#00ff88', tipo: 'ONDA' });
-            tiros.push({ x: nave.x - 20, y: nave.y - 20, vx: -2.0, vy: -16, d: danoBase * 1.2, cor: '#ffee00', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 20, y: nave.y - 20, vx: 2.0, vy: -16, d: danoBase * 1.2, cor: '#ffee00', tipo: 'LASER' });
-            tiros.push({ x: nave.x - 38, y: nave.y - 12, vx: -5.0, vy: -14, d: danoBase, cor: '#ff0055', tipo: 'PLASMA' });
-            tiros.push({ x: nave.x + 38, y: nave.y - 12, vx: 5.0, vy: -14, d: danoBase, cor: '#ff0055', tipo: 'PLASMA' });
+            // Nv.6 Supremo Interceptor
+            tiros.push({ x: nave.x - 10, y: nave.y - 32, vx: 0, vy: -19, d: danoBase * 2, cor: '#00ff88', tipo: 'ONDA' });
+            tiros.push({ x: nave.x + 10, y: nave.y - 32, vx: 0, vy: -19, d: danoBase * 2, cor: '#00ff88', tipo: 'ONDA' });
+            tiros.push({ x: nave.x - 24, y: nave.y - 22, vx: -2.5, vy: -17, d: danoBase * 1.3, cor: '#ffee00', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 24, y: nave.y - 22, vx: 2.5, vy: -17, d: danoBase * 1.3, cor: '#ffee00', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 44, y: nave.y - 14, vx: -5.5, vy: -14, d: danoBase * 1.2, cor: '#ff0055', tipo: 'PLASMA' });
+            tiros.push({ x: nave.x + 44, y: nave.y - 14, vx: 5.5, vy: -14, d: danoBase * 1.2, cor: '#ff0055', tipo: 'PLASMA' });
           }
         } else if (tipoNaveSelecionada === 2) {
+          // DESTRUIDOR PLASMA: Canhão pesado multiplicador progressivo (1 a 6 esferas)
           var qtdPlasma = Math.min(6, nave.arma);
           for (var p = 0; p < qtdPlasma; p++) {
-            var offX = (p - (qtdPlasma - 1) / 2) * 10;
-            tiros.push({ x: nave.x + offX, y: nave.y - 26, vx: offX * 0.15, vy: -14, d: danoBase * 1.3, cor: '#ff0055', tipo: 'PLASMA' });
+            var offX = (p - (qtdPlasma - 1) / 2) * 12;
+            tiros.push({ x: nave.x + offX, y: nave.y - 26, vx: offX * 0.12, vy: -15, d: danoBase * 1.4, cor: '#ff0055', tipo: 'PLASMA' });
+          }
+          if (nave.arma >= 6) {
+            tiros.push({ x: nave.x, y: nave.y - 34, vx: 0, vy: -18, d: danoBase * 3, cor: '#ffffff', tipo: 'ONDA' });
           }
         } else {
-          var qtdQuantum = Math.min(6, nave.arma + 1);
+          // ARTILHARIA QUANTUM: Feixes combinados com mísseis teleguiados em massa (1 a 6 lasers + mísseis)
+          var qtdQuantum = Math.min(6, nave.arma);
           for (var qNum = 0; qNum < qtdQuantum; qNum++) {
-            var qX = nave.x + (qNum - (qtdQuantum - 1) / 2) * 12;
-            tiros.push({ x: qX, y: nave.y - 25, vx: 0, vy: -15, d: danoBase * 1.2, cor: '#ffee00', tipo: 'LASER' });
+            var qX = nave.x + (qNum - (qtdQuantum - 1) / 2) * 14;
+            tiros.push({ x: qX, y: nave.y - 25, vx: (qNum - (qtdQuantum - 1) / 2) * 0.5, vy: -16, d: danoBase * 1.3, cor: '#ffee00', tipo: 'LASER' });
           }
-          if (nave.arma >= 3 && nave.t % (cadencia * 2) === 0) {
-            tiros.push({ x: nave.x - 28, y: nave.y - 10, vx: -3, vy: -10, d: danoBase * 2, cor: '#00ff88', tipo: 'MISSIL' });
-            tiros.push({ x: nave.x + 28, y: nave.y - 10, vx: 3, vy: -10, d: danoBase * 2, cor: '#00ff88', tipo: 'MISSIL' });
+          if (nave.arma >= 2 && nave.t % (Math.max(3, 10 - nave.arma)) === 0) {
+            var qtdM = Math.min(4, Math.floor(nave.arma / 1.2));
+            for (var m = 0; m < qtdM; m++) {
+              var mX = nave.x + (m - (qtdM - 1) / 2) * 26;
+              tiros.push({ x: mX, y: nave.y - 10, vx: (m - (qtdM - 1) / 2) * 2.5, vy: -12, d: danoBase * 1.8, cor: '#00ff88', tipo: 'MISSIL' });
+            }
           }
         }
       }
@@ -652,7 +662,7 @@
         inimigos.push({
           x: 40 + Math.random() * 520, y: -30,
           vx: tipoEsp === 6 ? (Math.random() - 0.5) * 5 : (Math.random() - 0.5) * (2.0 + fase * 0.12),
-          vy: tipoEsp === 6 ? (5.5 + fase * 0.2) : (2.5 + fase * 0.08),
+          vy: tipoEsp === 6 ? (5.0 + fase * 0.2) : (2.5 + fase * 0.08),
           hp: tipoEsp === 6 ? 15 : (25 + fase * 5),
           r: 20 + Math.random() * 8,
           forma: tipoEsp === 6 ? 0 : formaId, 
@@ -666,7 +676,6 @@
         invocarMiniChefe();
       }
 
-      // LIMPEZA DE PROJÉTEIS INIMIGOS COM OS TIROS DA NAVE
       for (var i = tiros.length - 1; i >= 0; i--) {
         var t = tiros[i];
         if (t.tipo === 'MISSIL') {
@@ -678,7 +687,6 @@
         }
         t.x += t.vx; t.y += t.vy;
 
-        // Limpar tiros inimigos ao tocar neles
         var projecilLimpo = false;
         for (var k = tChefe.length - 1; k >= 0; k--) {
           var tc = tChefe[k];
@@ -878,7 +886,7 @@
       atualizarHUD();
     }
 
-    // VISUAL 3D APORIMADO PARA OS MONSTROS
+    // MONSTROS COM RENDERIZAÇÃO 3D REAL (VOXEL-NEON ESTILIZADO)
     function desenharInimigoForma(en) {
       ctx.save();
       ctx.shadowBlur = 24; ctx.shadowColor = en.cor;
@@ -999,7 +1007,6 @@
         ctx.restore();
       }
 
-      // Desenhar Projéteis Inimigos
       for (var i = 0; i < tChefe.length; i++) {
         var tc = tChefe[i];
         ctx.save();
@@ -1045,7 +1052,6 @@
         ctx.restore();
       }
 
-      // SUPER LASER ANIMADO FINAL (ULTIMATE)
       if (nave.laserT > 0) {
         ctx.save();
         ctx.shadowBlur = 35; ctx.shadowColor = '#ffee00';
@@ -1065,13 +1071,11 @@
       ctx.translate(nave.x, nave.y);
       ctx.rotate(nave.tilt);
       
-      // Chamas Tridimensionais do Exaustor
       ctx.fillStyle = '#ff3300';
       ctx.beginPath(); ctx.moveTo(-12, 22); ctx.lineTo(0, 38 + Math.random() * 14); ctx.lineTo(12, 22); ctx.fill();
       ctx.fillStyle = '#ffff00';
       ctx.beginPath(); ctx.moveTo(-6, 22); ctx.lineTo(0, 28 + Math.random() * 8); ctx.lineTo(6, 22); ctx.fill();
 
-      // Asas Laterais Volumétricas
       ctx.shadowBlur = 30;
       ctx.shadowColor = tipoNaveSelecionada === 2 ? '#ff0055' : (tipoNaveSelecionada === 3 ? '#ffee00' : '#00f3ff');
       ctx.fillStyle = tipoNaveSelecionada === 2 ? '#bf003e' : (tipoNaveSelecionada === 3 ? '#bfa100' : '#0099bb');
@@ -1082,13 +1086,11 @@
       ctx.moveTo(12, 8); ctx.lineTo(38, 24); ctx.lineTo(18, 14);
       ctx.closePath(); ctx.fill();
 
-      // Corpo Central Blindado 3D
       ctx.fillStyle = tipoNaveSelecionada === 2 ? '#ff0055' : (tipoNaveSelecionada === 3 ? '#ffee00' : '#00f3ff');
       ctx.beginPath();
       ctx.moveTo(0, -36); ctx.lineTo(-24, 20); ctx.lineTo(0, 14); ctx.lineTo(24, 20);
       ctx.closePath(); ctx.fill();
 
-      // Reflexo Especular Superior
       ctx.fillStyle = 'rgba(255,255,255,0.7)';
       ctx.beginPath(); ctx.moveTo(0, -30); ctx.lineTo(-10, 10); ctx.lineTo(0, 4); ctx.lineTo(10, 10); ctx.closePath(); ctx.fill();
 
