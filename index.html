@@ -15,7 +15,7 @@
     #box {
       position: relative; width: 100%; max-width: 600px; height: 100%; max-height: 760px;
       border: 3px solid #ff0055; border-radius: 20px; overflow: hidden;
-      background: #03050c; box-shadow: 0 0 70px rgba(255, 0, 85, 0.45), 0 0 140px rgba(0, 243, 255, 0.3);
+      background: #03050c; box-shadow: 0 0 80px rgba(255, 0, 85, 0.5), 0 0 150px rgba(0, 243, 255, 0.35);
     }
     canvas { display: block; width: 100%; height: 100%; touch-action: none; image-rendering: -webkit-optimize-contrast; }
     #hud {
@@ -80,7 +80,7 @@
       max-height: 96%; overflow-y: auto; position: relative;
     }
     .card::before {
-      content: 'SANTA_CLAUS_BOSS // V3.1';
+      content: 'ULTRA_4D_ENGINE // V4.0';
       position: absolute; top: 8px; right: 12px; font-size: 8px; color: #ff0055; letter-spacing: 2px; opacity: 0.7;
     }
     .badge {
@@ -170,20 +170,20 @@
         <div class="ship-select-box">
           <div class="ship-option selected" data-ship="1" onclick="selecionarNave(1)">
             <strong style="color:#00f3ff; font-size:11px;">Interceptor V-1</strong>
-            <span>Tiro Padrão Preciso</span>
+            <span>Até 6 Upgrades (Leque)</span>
           </div>
           <div class="ship-option" data-ship="2" onclick="selecionarNave(2)">
             <strong style="color:#ff0055; font-size:11px;">Destruidor Plasma</strong>
-            <span>Tiro Pesado Largo</span>
+            <span>Até 6 Upgrades (Pesado)</span>
           </div>
           <div class="ship-option" data-ship="3" onclick="selecionarNave(3)">
             <strong style="color:#ffee00; font-size:11px;">Artilharia Quantum</strong>
-            <span>Tiro Triplo Leque</span>
+            <span>Até 6 Upgrades (Mísseis)</span>
           </div>
         </div>
 
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Derrote hordas, mini-chefes e o Papai Noel cibernético em cada setor!</p>
+        <p class="sub">Gráficos 3D/4D, Fases dinâmicas, Mini-Chefes e o Papai Noel Chefão!</p>
         <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
         <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">RETORNAR AO SETOR <span id="max-lvl">1</span></button>
@@ -292,11 +292,11 @@
       if (countEl) countEl.textContent = total;
     }
 
-    for (var i = 0; i < 120; i++) {
+    for (var i = 0; i < 150; i++) {
       var camada = (i % 3) + 1;
       estrelas.push({
         x: Math.random() * 600, y: Math.random() * 760,
-        v: camada * 1.25, r: camada * 0.9,
+        v: camada * 1.4, r: camada * 1.0,
         cor: camada === 3 ? '#ff0055' : (camada === 2 ? '#ffffff' : '#00f3ff'),
         brilho: Math.random() * Math.PI * 2
       });
@@ -349,13 +349,13 @@
 
     function criarParticulas(x, y, cor, qtd, ondaChoque) {
       for (var i = 0; i < qtd; i++) {
-        var ang = Math.random() * Math.PI * 2, vel = 1.4 + Math.random() * 6.0;
+        var ang = Math.random() * Math.PI * 2, vel = 1.4 + Math.random() * 6.5;
         parts.push({
           x: x, y: y, vx: Math.cos(ang) * vel, vy: Math.sin(ang) * vel,
-          vida: 28 + Math.random() * 20, maxVida: 48, cor: cor, r: 2.2 + Math.random() * 2.8
+          vida: 28 + Math.random() * 20, maxVida: 48, cor: cor, r: 2.2 + Math.random() * 3.2
         });
       }
-      if (ondaChoque) ondas.push({ x: x, y: y, r: 10, maxR: 90, cor: cor, alpha: 1 });
+      if (ondaChoque) ondas.push({ x: x, y: y, r: 10, maxR: 100, cor: cor, alpha: 1 });
     }
 
     function alternarPausa() {
@@ -525,35 +525,64 @@
       nave.y += (alvoY - nave.y) * 0.22;
 
       nave.t++;
-      var danoBase = 18 + (nave.arma * 8);
-      var cadencia = Math.max(5, 13 - nave.arma);
-      if (nave.t % cadencia === 0) {
-        som(680 + nave.arma * 50, 'triangle', 0.07, 0.035);
+      // SISTEMA DE 6 EVOLUÇÕES DE TIRO COMPLETAS POR NAVE
+      var danoBase = 15 + (nave.arma * 9);
+      var cadencia = Math.max(4, 13 - nave.arma * 1.5);
+      if (nave.t % Math.floor(cadencia) === 0) {
+        som(600 + nave.arma * 60, 'triangle', 0.06, 0.035);
         
         if (tipoNaveSelecionada === 1) {
+          // Interceptor V-1: Evolui de 1 tiro até 6 tiros em leque massivo
           if (nave.arma === 1) {
             tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-          } else if (nave.arma <= 3) {
+          } else if (nave.arma === 2) {
             tiros.push({ x: nave.x - 12, y: nave.y - 20, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
             tiros.push({ x: nave.x + 12, y: nave.y - 20, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+          } else if (nave.arma === 3) {
+            tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -16, d: danoBase, cor: '#ffcc00', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 18, y: nave.y - 18, vx: -1.5, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 18, y: nave.y - 18, vx: 1.5, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+          } else if (nave.arma === 4) {
+            tiros.push({ x: nave.x - 10, y: nave.y - 22, vx: -0.5, vy: -16, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 10, y: nave.y - 22, vx: 0.5, vy: -16, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 22, y: nave.y - 14, vx: -3.0, vy: -14, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 22, y: nave.y - 14, vx: 3.0, vy: -14, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+          } else if (nave.arma === 5) {
+            tiros.push({ x: nave.x, y: nave.y - 28, vx: 0, vy: -17, d: danoBase * 1.4, cor: '#ffee00', tipo: 'ONDA' });
+            tiros.push({ x: nave.x - 15, y: nave.y - 20, vx: -1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 15, y: nave.y - 20, vx: 1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 30, y: nave.y - 12, vx: -4.0, vy: -13, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 30, y: nave.y - 12, vx: 4.0, vy: -13, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
           } else {
-            tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -16, d: danoBase * 1.3, cor: '#ffcc00', tipo: 'LASER' });
-            tiros.push({ x: nave.x - 18, y: nave.y - 18, vx: -1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 18, y: nave.y - 18, vx: 1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            // Nv.6 (Supremo): 6 tiros devastadores simultâneos
+            tiros.push({ x: nave.x - 8, y: nave.y - 28, vx: 0, vy: -18, d: danoBase * 1.8, cor: '#00ff88', tipo: 'ONDA' });
+            tiros.push({ x: nave.x + 8, y: nave.y - 28, vx: 0, vy: -18, d: danoBase * 1.8, cor: '#00ff88', tipo: 'ONDA' });
+            tiros.push({ x: nave.x - 20, y: nave.y - 20, vx: -2.0, vy: -16, d: danoBase * 1.2, cor: '#ffee00', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 20, y: nave.y - 20, vx: 2.0, vy: -16, d: danoBase * 1.2, cor: '#ffee00', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 38, y: nave.y - 12, vx: -5.0, vy: -14, d: danoBase, cor: '#ff0055', tipo: 'PLASMA' });
+            tiros.push({ x: nave.x + 38, y: nave.y - 12, vx: 5.0, vy: -14, d: danoBase, cor: '#ff0055', tipo: 'PLASMA' });
           }
         } else if (tipoNaveSelecionada === 2) {
-          tiros.push({ x: nave.x - 10, y: nave.y - 26, vx: 0, vy: -14, d: danoBase * 1.5, cor: '#ff0055', tipo: 'PLASMA' });
-          tiros.push({ x: nave.x + 10, y: nave.y - 26, vx: 0, vy: -14, d: danoBase * 1.5, cor: '#ff0055', tipo: 'PLASMA' });
-          if (nave.arma >= 4) {
-            tiros.push({ x: nave.x, y: nave.y - 30, vx: 0, vy: -16, d: danoBase * 2, cor: '#ffffff', tipo: 'PLASMA' });
+          // Destruidor Plasma: Tiros pesados que escalam até bolas de plasma gigantes de Nv.6
+          var qtdPlasma = Math.min(5, nave.arma);
+          for (var p = 0; p < qtdPlasma; p++) {
+            var offX = (p - (qtdPlasma - 1) / 2) * 12;
+            tiros.push({ x: nave.x + offX, y: nave.y - 26, vx: offX * 0.2, vy: -14, d: danoBase * 1.3, cor: '#ff0055', tipo: 'PLASMA' });
+          }
+          if (nave.arma >= 6) {
+            tiros.push({ x: nave.x, y: nave.y - 32, vx: 0, vy: -17, d: danoBase * 2.5, cor: '#ffffff', tipo: 'ONDA' });
           }
         } else {
+          // Artilharia Quantum: Leque + Mísseis teleguiados que multiplicam a cada nível
           tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -15, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
           tiros.push({ x: nave.x - 16, y: nave.y - 18, vx: -2.5, vy: -14, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
           tiros.push({ x: nave.x + 16, y: nave.y - 18, vx: 2.5, vy: -14, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
-          if (nave.arma >= 3 && nave.t % (cadencia * 2) === 0) {
-            tiros.push({ x: nave.x - 26, y: nave.y - 10, vx: -3, vy: -10, d: danoBase * 2, cor: '#00ff88', tipo: 'MISSIL' });
-            tiros.push({ x: nave.x + 26, y: nave.y - 10, vx: 3, vy: -10, d: danoBase * 2, cor: '#00ff88', tipo: 'MISSIL' });
+          var qtdMisseis = Math.max(1, Math.floor(nave.arma / 2));
+          if (nave.t % (Math.max(4, 10 - nave.arma)) === 0) {
+            for (var m = 0; m < qtdMisseis; m++) {
+              var mX = nave.x + (m - (qtdMisseis - 1) / 2) * 22;
+              tiros.push({ x: mX, y: nave.y - 10, vx: (m - (qtdMisseis - 1) / 2) * 2, vy: -11, d: danoBase * 1.6, cor: '#00ff88', tipo: 'MISSIL' });
+            }
           }
         }
       }
@@ -610,11 +639,14 @@
         var tiroRemovido = false;
         for (var j = inimigos.length - 1; j >= 0; j--) {
           var en = inimigos[j];
-          if (Math.hypot(en.x - t.x, en.y - t.y) < en.r + 18) {
+          var raioHit = t.tipo === 'ONDA' ? en.r + 24 : en.r + 18;
+          if (Math.hypot(en.x - t.x, en.y - t.y) < raioHit) {
             en.hp -= t.d; en.hitFlash = 3;
             criarParticulas(t.x, t.y, t.cor, 4, false);
-            tiros.splice(i, 1);
-            tiroRemovido = true;
+            if (t.tipo !== 'ONDA') {
+              tiros.splice(i, 1);
+              tiroRemovido = true;
+            }
             break;
           }
         }
@@ -793,27 +825,22 @@
       ctx.save();
       ctx.translate(x, y);
 
-      // Sombra volumétrica 3D do Papai Noel Chefe
       ctx.shadowBlur = 45; ctx.shadowColor = corAura;
       ctx.fillStyle = hitFlash > 0 ? '#ffffff' : '#f8fafc';
       ctx.beginPath(); ctx.arc(0, 5, r, 0, Math.PI * 2); ctx.fill();
 
-      // Barba Volumosa
       ctx.fillStyle = hitFlash > 0 ? '#ffcccc' : '#ffffff';
       ctx.beginPath(); ctx.arc(0, 10, r * 0.78, 0, Math.PI * 2); ctx.fill();
 
-      // Rosto
       ctx.fillStyle = hitFlash > 0 ? '#ffffff' : '#ffcca8';
       ctx.beginPath(); ctx.arc(0, 2, r * 0.45, 0, Math.PI * 2); ctx.fill();
 
-      // Óculos Cibernéticos do Noel
       ctx.fillStyle = '#03050c';
       ctx.fillRect(-r * 0.4, -3, r * 0.8, r * 0.32);
       ctx.fillStyle = corAura;
       ctx.fillRect(-r * 0.32, -1, r * 0.25, r * 0.16);
       ctx.fillRect(r * 0.07, -1, r * 0.25, r * 0.16);
 
-      // Gorro Vermelho Clássico com Detalhes 3D
       ctx.fillStyle = '#ff0033';
       ctx.beginPath();
       ctx.moveTo(-r * 0.75, -5);
@@ -822,7 +849,6 @@
       ctx.closePath();
       ctx.fill();
 
-      // Pom-pom e Barra Branca do Gorro
       ctx.fillStyle = '#ffffff';
       ctx.beginPath(); ctx.arc(r * 0.2, -r * 0.95, r * 0.22, 0, Math.PI * 2); ctx.fill();
       ctx.fillRect(-r * 0.8, -10, r * 1.6, r * 0.22);
@@ -1116,7 +1142,7 @@
 
       const firebaseConfig = {
         apiKey: "AIzaSyDO2OsIRMpnTF__MHT022S2QT4bI5YTn1U",
-        authDomain: "war-memenoel." + "firebaseapp.com",
+        authDomain: "war-memenoel.firebaseapp.com",
         databaseURL: "https://war-memenoel-default-rtdb.firebaseio.com",
         projectId: "war-memenoel",
         storageBucket: "war-memenoel.firebasestorage.app",
