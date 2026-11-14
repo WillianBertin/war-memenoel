@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>War Memenoel — Ultra Edition 3D</title>
+  <title>War Memenoel — Ultra Edition 3D (Ultimate)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
@@ -80,7 +80,7 @@
       max-height: 96%; overflow-y: auto; position: relative;
     }
     .card::before {
-      content: 'TRUE_3D_BULLET_TIME // V16.0';
+      content: 'ULTIMATE_EDITION // V20.0';
       position: absolute; top: 8px; right: 12px; font-size: 8px; color: #ff0055; letter-spacing: 2px; opacity: 0.7;
     }
     .badge {
@@ -187,8 +187,20 @@
         </div>
 
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Bullet Time (Shift), Drones Orbitais, 3D Real & Loja Completa!</p>
+        <p class="sub">Hangar, Checkpoints, Gamepad, Bullet Time & 10 Atualizações Supremos!</p>
         <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
+        
+        <!-- SELETOR DE COR DO HANGAR -->
+        <div style="margin: 8px 0; font-size: 10.5px; color: #a190c2;">
+          COR DA FUSELAGEM: 
+          <input type="color" id="cor-nave" value="#00f3ff" style="width: 45px; height: 22px; vertical-align: middle; border: none; background: none; cursor: pointer;">
+        </div>
+
+        <!-- CHECKPOINT DE FASE -->
+        <div style="margin-bottom: 8px; font-size: 10.5px; color: #ffee00;">
+          CHECKPOINT ATIVO: Setor <span id="chk-fase">1</span>
+        </div>
+
         <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">RETORNAR AO SETOR <span id="max-lvl">1</span></button>
         
@@ -260,6 +272,7 @@
     var alertaChefeT = 0, bgmTimer = null, bgmPasso = 0;
     var tipoNaveSelecionada = 1;
     var bulletTimeAtivo = false, bulletTimeCooldown = 0;
+    var corCustomizadaNave = '#00f3ff';
     
     var ultimoTempo = 0;
     var intervaloFps = 1000 / 60;
@@ -351,6 +364,7 @@
       if (mudo || estado !== 'JOGANDO') return;
       try {
         iniciarAudioContext();
+        var bpmModo = (chefeOn && chefe && chefe.hp < chefe.maxHp * 0.25) ? 130 : (fase >= 19 ? 160 : 210);
         var notasNormais = [110, 110, 146.83, 130.81, 164.81, 146.83, 196, 164.81];
         var notasChefe = [98, 103.83, 98, 116.54, 98, 130.81, 116.54, 103.83];
         var escala = (chefeOn || fase >= 19) ? notasChefe : notasNormais;
@@ -550,7 +564,18 @@
     function atualizarJogo() {
       if (estado !== 'JOGANDO') return;
       
-      // Lógica do Bullet Time (Shift esquerdo)
+      // Suporte a Controle USB / Gamepad API
+      var gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+      var gp = gamepads[0];
+      if (gp) {
+        var stickX = gp.axes[0];
+        var stickY = gp.axes[1];
+        if (Math.abs(stickX) > 0.15) alvoX += stickX * 7.5;
+        if (Math.abs(stickY) > 0.15) alvoY += stickY * 7.5;
+        if (gp.buttons[0].pressed && nave.ult >= 100) ativarSuperLaser();
+        if (gp.buttons[4].pressed) bulletTimeAtivo = true; else bulletTimeAtivo = false;
+      }
+
       var multiplicadorTempo = 1;
       if (bulletTimeAtivo) {
         multiplicadorTempo = 0.5;
@@ -589,26 +614,25 @@
         tirosDisparados++;
         som(600 + nave.arma * 60, 'triangle', 0.06, 0.035);
         
-        // Disparos da Nave Principal
         if (tipoNaveSelecionada === 1) {
           if (nave.arma === 1) {
-            tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -16, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -16, d: danoBase, cor: corCustomizadaNave, tipo: 'LASER' });
           } else if (nave.arma === 2) {
-            tiros.push({ x: nave.x - 14, y: nave.y - 20, vx: 0, vy: -16, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 14, y: nave.y - 20, vx: 0, vy: -16, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 14, y: nave.y - 20, vx: 0, vy: -16, d: danoBase, cor: corCustomizadaNave, tipo: 'LASER' });
+            tiros.push({ x: nave.x + 14, y: nave.y - 20, vx: 0, vy: -16, d: danoBase, cor: corCustomizadaNave, tipo: 'LASER' });
           } else if (nave.arma === 3) {
             tiros.push({ x: nave.x, y: nave.y - 28, vx: 0, vy: -17, d: danoBase * 1.2, cor: '#ffee00', tipo: 'LASER' });
-            tiros.push({ x: nave.x - 20, y: nave.y - 18, vx: -1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 20, y: nave.y - 18, vx: 1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 20, y: nave.y - 18, vx: -1.8, vy: -15, d: danoBase, cor: corCustomizadaNave, tipo: 'LASER' });
+            tiros.push({ x: nave.x + 20, y: nave.y - 18, vx: 1.8, vy: -15, d: danoBase, cor: corCustomizadaNave, tipo: 'LASER' });
           } else if (nave.arma === 4) {
             tiros.push({ x: nave.x - 12, y: nave.y - 22, vx: -1, vy: -17, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
             tiros.push({ x: nave.x + 12, y: nave.y - 22, vx: 1, vy: -17, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
-            tiros.push({ x: nave.x - 28, y: nave.y - 14, vx: -3.5, vy: -14, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 28, y: nave.y - 14, vx: 3.5, vy: -14, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 28, y: nave.y - 14, vx: -3.5, vy: -14, d: danoBase, cor: corCustomizadaNave, tipo: 'LASER' });
+            tiros.push({ x: nave.x + 28, y: nave.y - 14, vx: 3.5, vy: -14, d: danoBase, cor: corCustomizadaNave, tipo: 'LASER' });
           } else if (nave.arma === 5) {
             tiros.push({ x: nave.x, y: nave.y - 30, vx: 0, vy: -18, d: danoBase * 1.5, cor: '#ff0055', tipo: 'ONDA' });
-            tiros.push({ x: nave.x - 18, y: nave.y - 22, vx: -2.2, vy: -16, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 18, y: nave.y - 22, vx: 2.2, vy: -16, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 18, y: nave.y - 22, vx: -2.2, vy: -16, d: danoBase, cor: corCustomizadaNave, tipo: 'LASER' });
+            tiros.push({ x: nave.x + 18, y: nave.y - 22, vx: 2.2, vy: -16, d: danoBase, cor: corCustomizadaNave, tipo: 'LASER' });
             tiros.push({ x: nave.x - 36, y: nave.y - 14, vx: -4.5, vy: -13, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
             tiros.push({ x: nave.x + 36, y: nave.y - 14, vx: 4.5, vy: -13, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
           } else {
@@ -643,7 +667,6 @@
           }
         }
 
-        // Disparo Automático dos Drones de Apoio Orbitais
         if (nave.drones > 0) {
           tiros.push({ x: nave.x - 30, y: nave.y - 10, vx: 0, vy: -15, d: danoBase * 0.5, cor: '#00ff88', tipo: 'LASER' });
           tiros.push({ x: nave.x + 30, y: nave.y - 10, vx: 0, vy: -15, d: danoBase * 0.5, cor: '#00ff88', tipo: 'LASER' });
@@ -1091,8 +1114,8 @@
       ctx.beginPath(); ctx.moveTo(-6, 22); ctx.lineTo(0, 28 + Math.random() * 8); ctx.lineTo(6, 22); ctx.fill();
 
       ctx.shadowBlur = 30;
-      ctx.shadowColor = tipoNaveSelecionada === 2 ? '#ff0055' : (tipoNaveSelecionada === 3 ? '#ffee00' : '#00f3ff');
-      ctx.fillStyle = tipoNaveSelecionada === 2 ? '#bf003e' : (tipoNaveSelecionada === 3 ? '#bfa100' : '#0099bb');
+      ctx.shadowColor = corCustomizadaNave;
+      ctx.fillStyle = corCustomizadaNave;
       ctx.beginPath();
       ctx.moveTo(-12, 8); ctx.lineTo(-38, 24); ctx.lineTo(-18, 14);
       ctx.closePath(); ctx.fill();
@@ -1100,7 +1123,7 @@
       ctx.moveTo(12, 8); ctx.lineTo(38, 24); ctx.lineTo(18, 14);
       ctx.closePath(); ctx.fill();
 
-      ctx.fillStyle = tipoNaveSelecionada === 2 ? '#ff0055' : (tipoNaveSelecionada === 3 ? '#ffee00' : '#00f3ff');
+      ctx.fillStyle = corCustomizadaNave;
       ctx.beginPath();
       ctx.moveTo(0, -36); ctx.lineTo(-24, 20); ctx.lineTo(0, 14); ctx.lineTo(24, 20);
       ctx.closePath(); ctx.fill();
@@ -1117,7 +1140,6 @@
       }
       ctx.restore();
 
-      // Desenhar Drones Orbitais
       if (nave.drones > 0) {
         var anguloDrone = q * 0.08;
         var d1X = nave.x + Math.cos(anguloDrone) * 45, d1Y = nave.y + Math.sin(anguloDrone) * 20;
@@ -1193,6 +1215,7 @@
       document.getElementById('btn-ok').textContent = (acaoModo === 'PROX') ? 'PRÓXIMO SETOR' : 'JOGAR NOVAMENTE';
       if (acaoModo === 'PROX' && fase + 1 > maxFaseSalva) {
         maxFaseSalva = fase + 1; localStorage.setItem('wm_maxf', maxFaseSalva);
+        localStorage.setItem('wm_chk', maxFaseSalva); // Checkpoint salvo
       }
       salvarRanking('nome-inicio');
       document.getElementById('modal').classList.remove('hidden');
@@ -1216,6 +1239,10 @@
         var n = localStorage.getItem('wm_n') || '';
         document.getElementById('nome-inicio').value = n;
         maxFaseSalva = parseInt(localStorage.getItem('wm_maxf') || '1', 10);
+        
+        var chkFase = parseInt(localStorage.getItem('wm_chk') || '1', 10);
+        document.getElementById('chk-fase').textContent = chkFase;
+
         if (maxFaseSalva > 1) {
           document.getElementById('max-lvl').textContent = maxFaseSalva;
           document.getElementById('btn-cont').classList.remove('hidden');
@@ -1276,6 +1303,13 @@
     document.getElementById('btn-som').onclick = function() { mudo = !mudo; this.textContent = mudo ? 'MUDO' : 'SOM'; };
     document.getElementById('btn-ult').onclick = ativarSuperLaser;
 
+    document.getElementById('cor-nave').oninput = function() {
+      corCustomizadaNave = this.value;
+      localStorage.setItem('wm_cor', corCustomizadaNave);
+    };
+    var corSalva = localStorage.getItem('wm_cor');
+    if (corSalva) { corCustomizadaNave = corSalva; document.getElementById('cor-nave').value = corSalva; }
+
     document.getElementById('btn-play').onclick = function() {
       var n = document.getElementById('nome-inicio').value.trim() || 'Piloto';
       localStorage.setItem('wm_n', n);
@@ -1292,7 +1326,8 @@
       pontos = 0; totalAbatesPartida = 0; tirosDisparados = 0; tirosAcertados = 0;
       nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
       document.getElementById('start-screen').classList.add('hidden');
-      iniciarFase(maxFaseSalva);
+      var checkpointSalvo = parseInt(localStorage.getItem('wm_chk') || maxFaseSalva, 10);
+      iniciarFase(checkpointSalvo);
       estado = 'JOGANDO';
     };
 
