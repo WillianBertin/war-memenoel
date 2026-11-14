@@ -14,31 +14,31 @@
     }
     #box {
       position: relative; width: 100%; max-width: 600px; height: 100%; max-height: 760px;
-      border: 3px solid #00f3ff; border-radius: 20px; overflow: hidden;
-      background: #03050c; box-shadow: 0 0 60px rgba(0, 243, 255, 0.45), 0 0 120px rgba(255, 0, 85, 0.3);
+      border: 3px solid #ff0055; border-radius: 20px; overflow: hidden;
+      background: #03050c; box-shadow: 0 0 70px rgba(255, 0, 85, 0.45), 0 0 140px rgba(0, 243, 255, 0.3);
     }
-    canvas { display: block; width: 100%; height: 100%; touch-action: none; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; image-rendering: -webkit-optimize-contrast; }
     #hud {
       position: absolute; top: 12px; left: 12px; right: 12px;
       display: flex; justify-content: space-between; align-items: center; gap: 4px;
-      background: rgba(8, 12, 26, 0.95); border: 2px solid rgba(0, 243, 255, 0.8);
+      background: rgba(8, 12, 26, 0.95); border: 2px solid rgba(255, 0, 85, 0.8);
       border-radius: 18px; padding: 8px 11px; font-size: 11px; font-weight: bold;
       pointer-events: none; z-index: 10; backdrop-filter: blur(8px);
-      box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+      box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
     }
     .bar-bg {
       display: inline-block; width: 44px; height: 8px; background: #161c2e;
       border-radius: 5px; overflow: hidden; vertical-align: middle; margin-left: 2px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     #hp-bar { display: block; width: 100%; height: 100%; background: linear-gradient(90deg, #ff0055, #00ff88); transition: width 0.15s; }
     #ult-bar { display: block; width: 0%; height: 100%; background: linear-gradient(90deg, #ff8800, #ffee00); transition: width 0.15s; }
     .hud-btn {
-      pointer-events: auto; background: #112233; border: 1.5px solid #00f3ff;
+      pointer-events: auto; background: #221122; border: 1.5px solid #ff0055;
       color: #fff; padding: 5px 8px; border-radius: 8px; cursor: pointer; font-size: 9.5px; font-weight: bold;
-      text-transform: uppercase; box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
+      text-transform: uppercase; box-shadow: 0 0 10px rgba(255, 0, 85, 0.4);
     }
-    #btn-pause { border-color: #ffcc00; color: #ffcc00; box-shadow: 0 0 8px rgba(255, 204, 0, 0.3); }
+    #btn-pause { border-color: #ffcc00; color: #ffcc00; box-shadow: 0 0 10px rgba(255, 204, 0, 0.4); }
     #hud-bot {
       position: absolute; bottom: 14px; left: 14px; right: 14px;
       display: flex; justify-content: space-between; align-items: center;
@@ -69,77 +69,77 @@
     }
     .overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at center, rgba(10, 15, 34, 0.88) 0%, rgba(3, 5, 12, 0.98) 100%);
+      background: radial-gradient(circle at center, rgba(15, 8, 20, 0.9) 0%, rgba(3, 2, 6, 0.98) 100%);
       backdrop-filter: blur(8px); display: flex; align-items: center;
       justify-content: center; padding: 14px; z-index: 50;
     }
     .card {
-      background: rgba(6, 11, 25, 0.96); border: 2.5px solid #00f3ff;
+      background: rgba(15, 8, 25, 0.96); border: 2.5px solid #ff0055;
       border-radius: 20px; padding: 18px 16px; width: 100%; max-width: 430px;
-      text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 243, 255, 0.3) inset;
+      text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(255, 0, 85, 0.35) inset;
       max-height: 96%; overflow-y: auto; position: relative;
     }
     .card::before {
-      content: 'SYS_ACTIVE // ULTRA_HD';
-      position: absolute; top: 8px; right: 12px; font-size: 8px; color: #00f3ff; letter-spacing: 2px; opacity: 0.7;
+      content: 'SANTA_CLAUS_BOSS // V3.1';
+      position: absolute; top: 8px; right: 12px; font-size: 8px; color: #ff0055; letter-spacing: 2px; opacity: 0.7;
     }
     .badge {
-      display: inline-block; background: rgba(0, 243, 255, 0.12); border: 1.5px solid #00f3ff;
-      color: #00f3ff; font-size: 10px; font-weight: 800; letter-spacing: 2px;
+      display: inline-block; background: rgba(255, 0, 85, 0.15); border: 1.5px solid #ff0055;
+      color: #ff85b3; font-size: 10px; font-weight: 800; letter-spacing: 2px;
       padding: 5px 14px; border-radius: 14px; margin-bottom: 6px; text-transform: uppercase;
-      box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+      box-shadow: 0 0 12px rgba(255, 0, 85, 0.35);
     }
     h1 {
       font-size: 28px; font-weight: 950; letter-spacing: 2px; margin-bottom: 2px;
-      background: linear-gradient(90deg, #00f3ff 10%, #ffee00 50%, #ff0055 90%);
+      background: linear-gradient(90deg, #ff0055 10%, #ffee00 50%, #00f3ff 90%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+      text-shadow: 0 0 25px rgba(255, 0, 85, 0.5);
     }
-    .sub { color: #8da4c4; font-size: 11px; margin-bottom: 10px; line-height: 1.35; font-weight: 500; }
+    .sub { color: #d1c2eb; font-size: 11px; margin-bottom: 10px; line-height: 1.35; font-weight: 500; }
     input {
       user-select: text; width: 100%; padding: 10px; border-radius: 10px;
-      border: 2px solid #00f3ff; background: #02040a; color: #fff;
+      border: 2px solid #ff0055; background: #05020a; color: #fff;
       font-size: 13px; font-weight: bold; text-align: center; margin-bottom: 8px; outline: none;
-      box-shadow: 0 0 12px rgba(0, 243, 255, 0.3) inset;
+      box-shadow: 0 0 15px rgba(255, 0, 85, 0.35) inset;
     }
     .ship-select-box {
       display: flex; gap: 8px; margin-bottom: 10px; justify-content: center;
     }
     .ship-option {
-      flex: 1; background: rgba(0, 243, 255, 0.05); border: 1.5px solid rgba(0, 243, 255, 0.3);
+      flex: 1; background: rgba(255, 0, 85, 0.05); border: 1.5px solid rgba(255, 0, 85, 0.3);
       border-radius: 10px; padding: 8px 4px; cursor: pointer; text-align: center; transition: all 0.2s;
     }
     .ship-option.selected {
-      border-color: #ffee00; background: rgba(255, 238, 0, 0.15); box-shadow: 0 0 15px rgba(255, 238, 0, 0.4);
+      border-color: #ffee00; background: rgba(255, 238, 0, 0.15); box-shadow: 0 0 18px rgba(255, 238, 0, 0.5);
     }
-    .ship-option span { display: block; font-size: 9.5px; color: #8da4c4; margin-top: 3px; font-weight: bold; }
+    .ship-option span { display: block; font-size: 9.5px; color: #c2b1eb; margin-top: 3px; font-weight: bold; }
     .btn {
       width: 100%; padding: 11px; border: none; border-radius: 10px;
-      background: linear-gradient(90deg, #00f3ff, #0066ff);
-      color: #03050c; font-size: 13.5px; font-weight: 900; cursor: pointer;
-      margin-bottom: 7px; box-shadow: 0 0 25px rgba(0, 243, 255, 0.6);
+      background: linear-gradient(90deg, #ff0055, #ff5500);
+      color: #fff; font-size: 13.5px; font-weight: 900; cursor: pointer;
+      margin-bottom: 7px; box-shadow: 0 0 30px rgba(255, 0, 85, 0.7);
       text-transform: uppercase; font-family: inherit; letter-spacing: 1px;
     }
-    .btn-sec { background: linear-gradient(90deg, #ff0055, #ff5500); color: #fff; box-shadow: 0 0 25px rgba(255, 0, 85, 0.55); }
-    .btn-warn { background: linear-gradient(90deg, #854d0e, #ca8a04); color: #fff; box-shadow: 0 0 15px rgba(202, 138, 4, 0.4); }
+    .btn-sec { background: linear-gradient(90deg, #00f3ff, #0066ff); color: #03050c; box-shadow: 0 0 30px rgba(0, 243, 255, 0.65); }
+    .btn-warn { background: linear-gradient(90deg, #854d0e, #ca8a04); color: #fff; box-shadow: 0 0 20px rgba(202, 138, 4, 0.5); }
     .rank-box {
-      margin-top: 6px; background: rgba(2, 4, 10, 0.9);
-      border: 1.5px solid rgba(0, 243, 255, 0.4); border-radius: 12px;
-      padding: 6px 10px; text-align: left; box-shadow: 0 0 10px rgba(0, 243, 255, 0.1) inset;
+      margin-top: 6px; background: rgba(10, 4, 18, 0.92);
+      border: 1.5px solid rgba(255, 0, 85, 0.5); border-radius: 12px;
+      padding: 6px 10px; text-align: left; box-shadow: 0 0 12px rgba(255, 0, 85, 0.15) inset;
     }
     .rank-box h4 {
-      color: #00f3ff; font-size: 10px; text-transform: uppercase;
+      color: #ff85b3; font-size: 10px; text-transform: uppercase;
       margin-bottom: 4px; text-align: center; letter-spacing: 1.5px; font-weight: 800;
     }
     .rk-row {
       display: flex; justify-content: space-between; align-items: center; font-size: 10px;
-      padding: 3px 0; border-bottom: 1px solid rgba(0, 243, 255, 0.1); font-weight: 600;
+      padding: 3px 0; border-bottom: 1px solid rgba(255, 0, 85, 0.12); font-weight: 600;
     }
     .rk-row:last-child { border-bottom: none; }
     .conq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 2px; }
     .conq-item {
-      background: rgba(255, 255, 255, 0.03); border: 1.5px solid rgba(0, 243, 255, 0.15);
-      border-radius: 6px; padding: 4px; font-size: 9px; color: #7e8da8; font-weight: bold;
+      background: rgba(255, 255, 255, 0.03); border: 1.5px solid rgba(255, 0, 85, 0.15);
+      border-radius: 6px; padding: 4px; font-size: 9px; color: #a190c2; font-weight: bold;
     }
     .conq-item.ativa { border-color: #ffee00; background: rgba(255, 238, 0, 0.1); color: #fff; }
     .hidden { display: none !important; }
@@ -165,7 +165,7 @@
 
     <div id="start-screen" class="overlay">
       <div class="card">
-        <div class="badge">🌐 ESCOLHA SUA NAVE DE COMBATE 🚀</div>
+        <div class="badge">🎅 A VINGANÇA DO PAPAI NOEL ESPACIAL 🚀</div>
         
         <div class="ship-select-box">
           <div class="ship-option selected" data-ship="1" onclick="selecionarNave(1)">
@@ -183,7 +183,7 @@
         </div>
 
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Fases estendidas, Mini-Chefes, Monstros variados e Chefões épicos!</p>
+        <p class="sub">Derrote hordas, mini-chefes e o Papai Noel cibernético em cada setor!</p>
         <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
         <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">RETORNAR AO SETOR <span id="max-lvl">1</span></button>
@@ -203,18 +203,18 @@
       <div class="card" style="border-color: #ffcc00; box-shadow: 0 0 35px rgba(255, 204, 0, 0.15);">
         <div class="badge" style="background: rgba(255, 204, 0, 0.15); border-color: #ffcc00; color: #ffe680;">TELEMETRIA PAUSADA</div>
         <h2 style="color:#ffcc00; margin-bottom:8px; font-size:22px; font-weight: 900;">SISTEMA EM ESPERA</h2>
-        <p class="sub">Respire fundo, piloto. A frota aguarda sua retomada!</p>
-        <button id="btn-resume" class="btn">CONTINUAR MISSÃO</button>
+        <p class="sub">Respire fundo, piloto. O Papai Noel aguarda seu retorno!</p>
+        <button id="btn-resume" class="btn btn-sec">CONTINUAR MISSÃO</button>
         <button id="btn-restart-f1" type="button" class="btn btn-warn">REINICIAR PARA FASE 1</button>
-        <button id="btn-pause-menu" type="button" class="btn btn-sec">SAIR PARA O MENU</button>
+        <button id="btn-pause-menu" type="button" class="btn">SAIR PARA O MENU</button>
       </div>
     </div>
 
     <div id="modal" class="overlay hidden">
       <div class="card">
-        <h2 id="m-tit" style="color:#00f3ff; margin-bottom:8px; font-size:22px; font-weight: 900;">SETOR CONCLUÍDO</h2>
+        <h2 id="m-tit" style="color:#ff0055; margin-bottom:8px; font-size:22px; font-weight: 900;">SETOR CONCLUÍDO</h2>
         <p id="m-desc" class="sub">Relatório de telemetria e classificação:</p>
-        <div id="stats-container" style="background: rgba(0, 243, 255, 0.08); border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 10px; padding: 8px; margin-bottom: 10px; font-size: 11px; display: none;">
+        <div id="stats-container" style="background: rgba(255, 0, 85, 0.08); border: 1px solid rgba(255, 0, 85, 0.3); border-radius: 10px; padding: 8px; margin-bottom: 10px; font-size: 11px; display: none;">
           <div>Inimigos Destruídos: <strong id="stat-abates" style="color: #00f3ff;">0</strong></div>
           <div>Pontuação Final: <strong id="stat-pts" style="color: #ffee00;">0</strong></div>
         </div>
@@ -253,7 +253,7 @@
 
     var CONQUISTAS_DEF = [
       { id: 'sangue', nome: '🩸 Primeiro Sangue' },
-      { id: 'chefe', nome: '👑 Caça-Chefes' },
+      { id: 'chefe', nome: '🎅 Caça-Noel' },
       { id: 'arma', nome: '⚡ Arsenal Nv.6' },
       { id: 'combo', nome: '🔥 Combo x10' },
       { id: 'inferno', nome: '💀 Sobreviveu F19' },
@@ -292,12 +292,12 @@
       if (countEl) countEl.textContent = total;
     }
 
-    for (var i = 0; i < 110; i++) {
+    for (var i = 0; i < 120; i++) {
       var camada = (i % 3) + 1;
       estrelas.push({
         x: Math.random() * 600, y: Math.random() * 760,
-        v: camada * 1.15, r: camada * 0.8,
-        cor: camada === 3 ? '#00f3ff' : (camada === 2 ? '#e2e8f0' : '#64748b'),
+        v: camada * 1.25, r: camada * 0.9,
+        cor: camada === 3 ? '#ff0055' : (camada === 2 ? '#ffffff' : '#00f3ff'),
         brilho: Math.random() * Math.PI * 2
       });
     }
@@ -349,13 +349,13 @@
 
     function criarParticulas(x, y, cor, qtd, ondaChoque) {
       for (var i = 0; i < qtd; i++) {
-        var ang = Math.random() * Math.PI * 2, vel = 1.4 + Math.random() * 5.5;
+        var ang = Math.random() * Math.PI * 2, vel = 1.4 + Math.random() * 6.0;
         parts.push({
           x: x, y: y, vx: Math.cos(ang) * vel, vy: Math.sin(ang) * vel,
-          vida: 24 + Math.random() * 20, maxVida: 44, cor: cor, r: 2 + Math.random() * 2.8
+          vida: 28 + Math.random() * 20, maxVida: 48, cor: cor, r: 2.2 + Math.random() * 2.8
         });
       }
-      if (ondaChoque) ondas.push({ x: x, y: y, r: 8, maxR: 75, cor: cor, alpha: 1 });
+      if (ondaChoque) ondas.push({ x: x, y: y, r: 10, maxR: 90, cor: cor, alpha: 1 });
     }
 
     function alternarPausa() {
@@ -398,15 +398,15 @@
 
     function obterCoresChefao(nFase) {
       var paletas = [
-        { aura: '#00f3ff', prim: '#ff0055' }, { aura: '#ffaa00', prim: '#00ff88' },
-        { aura: '#a855f7', prim: '#00f3ff' }, { aura: '#00ff88', prim: '#ff0055' },
-        { aura: '#ff0055', prim: '#ffee00' }, { aura: '#38bdf8', prim: '#a855f7' },
-        { aura: '#ffee00', prim: '#00f3ff' }, { aura: '#f43f5e', prim: '#38bdf8' },
-        { aura: '#10b981', prim: '#f59e0b' }, { aura: '#6366f1', prim: '#ec4899' },
-        { aura: '#14b8a6', prim: '#e11d48' }, { aura: '#8b5cf6', prim: '#10b981' },
-        { aura: '#f97316', prim: '#06b6d4' }, { aura: '#e879f9', prim: '#4ade80' },
-        { aura: '#38bdf8', prim: '#fb7185' }, { aura: '#facc15', prim: '#818cf8' },
-        { aura: '#34d399', prim: '#f472b6' }, { aura: '#fb923c', prim: '#22d3ee' },
+        { aura: '#ff0055', prim: '#00f3ff' }, { aura: '#ffaa00', prim: '#ff0055' },
+        { aura: '#a855f7', prim: '#ffee00' }, { aura: '#00ff88', prim: '#ff0055' },
+        { aura: '#ff0055', prim: '#ffee00' }, { aura: '#38bdf8', prim: '#ff0055' },
+        { aura: '#ffee00', prim: '#00f3ff' }, { aura: '#f43f5e', prim: '#ffee00' },
+        { aura: '#10b981', prim: '#ff0055' }, { aura: '#6366f1', prim: '#ec4899' },
+        { aura: '#14b8a6', prim: '#ff0055' }, { aura: '#8b5cf6', prim: '#10b981' },
+        { aura: '#f97316', prim: '#06b6d4' }, { aura: '#e879f9', prim: '#ff0055' },
+        { aura: '#38bdf8', prim: '#fb7185' }, { aura: '#facc15', prim: '#ff0055' },
+        { aura: '#34d399', prim: '#f472b6' }, { aura: '#fb923c', prim: '#ff0055' },
         { aura: '#ef4444', prim: '#ffffff' }, { aura: '#00ff88', prim: '#ff0055' }
       ];
       return paletas[(nFase - 1) % paletas.length];
@@ -415,12 +415,12 @@
     function invocarMiniChefe() {
       if (miniChefeOn || chefeOn) return;
       miniChefeOn = true;
-      var vidaMini = 160 + fase * 35;
+      var vidaMini = 180 + fase * 40;
       var cores = obterCoresChefao(fase);
       miniChefe = {
         x: 300, y: -80, alvoY: 180, vx: 2.2 + (fase * 0.05),
-        hp: vidaMini, maxHp: vidaMini, r: 35, hitFlash: 0,
-        corAura: cores.prim, corPrim: cores.aura
+        hp: vidaMini, maxHp: vidaMini, r: 40, hitFlash: 0,
+        corAura: cores.prim, corPrim: cores.aura, nome: 'MINI-NOEL S' + fase
       };
       som(180, 'sawtooth', 0.5, 0.12, 60);
     }
@@ -430,15 +430,16 @@
       chefeOn = true;
       alertaChefeT = 130;
       var isInferno = (fase >= 19);
-      var vidaMax = isInferno ? (fase === 20 ? 11500 : 8800) : (220 + fase * 35);
+      var vidaMax = isInferno ? (fase === 20 ? 11500 : 8800) : (240 + fase * 40);
       var velBase = isInferno ? 4.4 : 1.5;
       var cores = obterCoresChefao(fase);
 
       chefe = {
         x: 300, y: -110, alvoY: 145, vx: velBase,
-        hp: vidaMax, hpVisual: vidaMax, maxHp: vidaMax, t: 0, r: 45,
+        hp: vidaMax, hpVisual: vidaMax, maxHp: vidaMax, t: 0, r: 52,
         final: (fase === 20), inferno: isInferno, faseChefe: 1,
-        modoCor: 'FOGO', corAura: cores.aura, corPrim: cores.prim, hitFlash: 0
+        modoCor: 'FOGO', corAura: cores.aura, corPrim: cores.prim, hitFlash: 0,
+        nome: fase === 20 ? 'PAPAI NOEL SUPREMO' : (isInferno ? 'PAPAI NOEL INFERNAL' : 'PAPAI NOEL S' + fase)
       };
       tremor = isInferno ? 28 : 10;
       som(140, 'sawtooth', 0.75, 0.16, 45);
@@ -524,24 +525,36 @@
       nave.y += (alvoY - nave.y) * 0.22;
 
       nave.t++;
-      var cadencia = Math.max(6, 14 - nave.arma);
+      var danoBase = 18 + (nave.arma * 8);
+      var cadencia = Math.max(5, 13 - nave.arma);
       if (nave.t % cadencia === 0) {
-        som(680 + nave.arma * 40, 'triangle', 0.07, 0.035);
+        som(680 + nave.arma * 50, 'triangle', 0.07, 0.035);
         
         if (tipoNaveSelecionada === 1) {
           if (nave.arma === 1) {
-            tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -14, d: 20, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+          } else if (nave.arma <= 3) {
+            tiros.push({ x: nave.x - 12, y: nave.y - 20, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 12, y: nave.y - 20, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
           } else {
-            tiros.push({ x: nave.x - 12, y: nave.y - 20, vx: 0, vy: -14, d: 18, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 12, y: nave.y - 20, vx: 0, vy: -14, d: 18, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -16, d: danoBase * 1.3, cor: '#ffcc00', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 18, y: nave.y - 18, vx: -1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 18, y: nave.y - 18, vx: 1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
           }
         } else if (tipoNaveSelecionada === 2) {
-          tiros.push({ x: nave.x - 6, y: nave.y - 26, vx: 0, vy: -13, d: 32, cor: '#ff0055', tipo: 'PLASMA' });
-          tiros.push({ x: nave.x + 6, y: nave.y - 26, vx: 0, vy: -13, d: 32, cor: '#ff0055', tipo: 'PLASMA' });
+          tiros.push({ x: nave.x - 10, y: nave.y - 26, vx: 0, vy: -14, d: danoBase * 1.5, cor: '#ff0055', tipo: 'PLASMA' });
+          tiros.push({ x: nave.x + 10, y: nave.y - 26, vx: 0, vy: -14, d: danoBase * 1.5, cor: '#ff0055', tipo: 'PLASMA' });
+          if (nave.arma >= 4) {
+            tiros.push({ x: nave.x, y: nave.y - 30, vx: 0, vy: -16, d: danoBase * 2, cor: '#ffffff', tipo: 'PLASMA' });
+          }
         } else {
-          tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -15, d: 18, cor: '#ffee00', tipo: 'LASER' });
-          tiros.push({ x: nave.x - 14, y: nave.y - 18, vx: -2.2, vy: -14, d: 18, cor: '#ffee00', tipo: 'LASER' });
-          tiros.push({ x: nave.x + 14, y: nave.y - 18, vx: 2.2, vy: -14, d: 18, cor: '#ffee00', tipo: 'LASER' });
+          tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -15, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
+          tiros.push({ x: nave.x - 16, y: nave.y - 18, vx: -2.5, vy: -14, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
+          tiros.push({ x: nave.x + 16, y: nave.y - 18, vx: 2.5, vy: -14, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
+          if (nave.arma >= 3 && nave.t % (cadencia * 2) === 0) {
+            tiros.push({ x: nave.x - 26, y: nave.y - 10, vx: -3, vy: -10, d: danoBase * 2, cor: '#00ff88', tipo: 'MISSIL' });
+            tiros.push({ x: nave.x + 26, y: nave.y - 10, vx: 3, vy: -10, d: danoBase * 2, cor: '#00ff88', tipo: 'MISSIL' });
+          }
         }
       }
 
@@ -557,8 +570,8 @@
           x: 40 + Math.random() * 520, y: -30,
           vx: (Math.random() - 0.5) * (1.8 + fase * 0.1),
           vy: (2.2 + fase * 0.08),
-          hp: 22 + fase * 4,
-          r: 18 + Math.random() * 8,
+          hp: 25 + fase * 5,
+          r: 20 + Math.random() * 8,
           forma: formaId, cor: corEscohida, t: 0, hitFlash: 0
         });
       }
@@ -597,7 +610,7 @@
         var tiroRemovido = false;
         for (var j = inimigos.length - 1; j >= 0; j--) {
           var en = inimigos[j];
-          if (Math.hypot(en.x - t.x, en.y - t.y) < en.r + 16) {
+          if (Math.hypot(en.x - t.x, en.y - t.y) < en.r + 18) {
             en.hp -= t.d; en.hitFlash = 3;
             criarParticulas(t.x, t.y, t.cor, 4, false);
             tiros.splice(i, 1);
@@ -621,9 +634,9 @@
         }
 
         if (miniChefe.hp <= 0) {
-          criarParticulas(miniChefe.x, miniChefe.y, miniChefe.corAura, 30, true);
+          criarParticulas(miniChefe.x, miniChefe.y, miniChefe.corAura, 35, true);
           som(120, 'sawtooth', 0.6, 0.18, 30);
-          pontos += 800;
+          pontos += 1200;
           miniChefeOn = false;
           miniChefe = null;
         }
@@ -639,17 +652,17 @@
 
         if (en.hp <= 0) {
           desbloquearConquista('sangue');
-          pontos += (15 + fase * 3) * combo;
+          pontos += (20 + fase * 4) * combo;
           totalAbatesPartida++;
           combo = Math.min(10, combo + 1);
           if (combo >= 10) desbloquearConquista('combo');
           comboT = 135;
           nave.ult = Math.min(100, nave.ult + 8);
           abates++;
-          criarParticulas(en.x, en.y, en.cor, 14, false);
+          criarParticulas(en.x, en.y, en.cor, 16, false);
           som(180, 'sawtooth', 0.14, 0.06);
 
-          if (Math.random() < 0.22) {
+          if (Math.random() < 0.24) {
             var tiposItem = ['ARMA', 'ARMA', 'HP', 'ESCUDO', 'ULT', 'BOMBA'];
             itens.push({ x: en.x, y: en.y, vy: 2.6, tipo: tiposItem[Math.floor(Math.random() * tiposItem.length)] });
           }
@@ -735,9 +748,9 @@
       }
 
       if (chefeOn && chefe && chefe.hp <= 0) {
-        criarParticulas(chefe.x, chefe.y, chefe.corAura, 45, true);
+        criarParticulas(chefe.x, chefe.y, chefe.corAura, 50, true);
         som(70, 'sawtooth', 0.9, 0.2, 20);
-        pontos += 2000 * fase;
+        pontos += 3000 * fase;
         chefeOn = false; chefe = null;
         if (fase >= 20) {
           desbloquearConquista('lenda');
@@ -751,7 +764,7 @@
 
     function desenharInimigoForma(en) {
       ctx.save();
-      ctx.shadowBlur = 12; ctx.shadowColor = en.cor;
+      ctx.shadowBlur = 18; ctx.shadowColor = en.cor;
       ctx.fillStyle = en.hitFlash > 0 ? '#ffffff' : en.cor;
       ctx.beginPath();
       if (en.forma === 0) {
@@ -772,7 +785,50 @@
       }
       ctx.closePath();
       ctx.fill();
-      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.restore();
+    }
+
+    function desenharPapaiNoelChefe(x, y, r, corAura, corPrim, hitFlash, nomeChefe) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      // Sombra volumétrica 3D do Papai Noel Chefe
+      ctx.shadowBlur = 45; ctx.shadowColor = corAura;
+      ctx.fillStyle = hitFlash > 0 ? '#ffffff' : '#f8fafc';
+      ctx.beginPath(); ctx.arc(0, 5, r, 0, Math.PI * 2); ctx.fill();
+
+      // Barba Volumosa
+      ctx.fillStyle = hitFlash > 0 ? '#ffcccc' : '#ffffff';
+      ctx.beginPath(); ctx.arc(0, 10, r * 0.78, 0, Math.PI * 2); ctx.fill();
+
+      // Rosto
+      ctx.fillStyle = hitFlash > 0 ? '#ffffff' : '#ffcca8';
+      ctx.beginPath(); ctx.arc(0, 2, r * 0.45, 0, Math.PI * 2); ctx.fill();
+
+      // Óculos Cibernéticos do Noel
+      ctx.fillStyle = '#03050c';
+      ctx.fillRect(-r * 0.4, -3, r * 0.8, r * 0.32);
+      ctx.fillStyle = corAura;
+      ctx.fillRect(-r * 0.32, -1, r * 0.25, r * 0.16);
+      ctx.fillRect(r * 0.07, -1, r * 0.25, r * 0.16);
+
+      // Gorro Vermelho Clássico com Detalhes 3D
+      ctx.fillStyle = '#ff0033';
+      ctx.beginPath();
+      ctx.moveTo(-r * 0.75, -5);
+      ctx.lineTo(r * 0.75, -5);
+      ctx.lineTo(r * 0.2, -r * 0.95);
+      ctx.closePath();
+      ctx.fill();
+
+      // Pom-pom e Barra Branca do Gorro
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(r * 0.2, -r * 0.95, r * 0.22, 0, Math.PI * 2); ctx.fill();
+      ctx.fillRect(-r * 0.8, -10, r * 1.6, r * 0.22);
+
+      ctx.strokeStyle = corPrim; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.arc(0, 5, r * 1.15, 0, Math.PI * 2); ctx.stroke();
       ctx.restore();
     }
 
@@ -781,19 +837,19 @@
       if (tremor > 0) ctx.translate((Math.random() - 0.5) * tremor, (Math.random() - 0.5) * tremor);
 
       var isInferno = (fase >= 19);
-      var gradFundo = ctx.createRadialGradient(300, 380, 50, 300, 380, 500);
+      var gradFundo = ctx.createRadialGradient(300, 380, 50, 300, 380, 520);
       if (isInferno) {
-        gradFundo.addColorStop(0, 'rgba(80, 10, 25, 1)');
-        gradFundo.addColorStop(1, 'rgba(5, 2, 8, 1)');
+        gradFundo.addColorStop(0, 'rgba(100, 15, 35, 1)');
+        gradFundo.addColorStop(1, 'rgba(4, 1, 6, 1)');
       } else if (fase % 3 === 0) {
-        gradFundo.addColorStop(0, 'rgba(10, 40, 70, 1)');
-        gradFundo.addColorStop(1, 'rgba(2, 4, 12, 1)');
+        gradFundo.addColorStop(0, 'rgba(15, 55, 95, 1)');
+        gradFundo.addColorStop(1, 'rgba(1, 2, 8, 1)');
       } else if (fase % 2 === 0) {
-        gradFundo.addColorStop(0, 'rgba(40, 15, 60, 1)');
-        gradFundo.addColorStop(1, 'rgba(3, 3, 10, 1)');
+        gradFundo.addColorStop(0, 'rgba(55, 20, 80, 1)');
+        gradFundo.addColorStop(1, 'rgba(2, 2, 8, 1)');
       } else {
-        gradFundo.addColorStop(0, 'rgba(12, 25, 45, 1)');
-        gradFundo.addColorStop(1, 'rgba(2, 3, 8, 1)');
+        gradFundo.addColorStop(0, 'rgba(15, 35, 60, 1)');
+        gradFundo.addColorStop(1, 'rgba(1, 2, 6, 1)');
       }
       ctx.fillStyle = gradFundo; ctx.fillRect(0, 0, 600, 760);
 
@@ -801,7 +857,7 @@
         var st = estrelas[i];
         st.brilho += 0.08; st.y += st.v;
         if (st.y > 760) { st.y = 0; st.x = Math.random() * 600; }
-        ctx.fillStyle = st.cor; ctx.globalAlpha = 0.6 + Math.sin(st.brilho) * 0.4;
+        ctx.fillStyle = st.cor; ctx.globalAlpha = 0.5 + Math.sin(st.brilho) * 0.5;
         ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2); ctx.fill();
       }
       ctx.globalAlpha = 1;
@@ -809,11 +865,11 @@
       for (var i = 0; i < tiros.length; i++) {
         var tr = tiros[i];
         ctx.save();
-        ctx.shadowBlur = 15; ctx.shadowColor = tr.cor;
+        ctx.shadowBlur = 18; ctx.shadowColor = tr.cor;
         ctx.fillStyle = tr.cor;
-        ctx.fillRect(tr.x - 3.5, tr.y - 14, 7, 24);
+        ctx.fillRect(tr.x - 4, tr.y - 16, 8, 28);
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(tr.x - 1.5, tr.y - 10, 3, 16);
+        ctx.fillRect(tr.x - 1.5, tr.y - 11, 3, 18);
         ctx.restore();
       }
 
@@ -826,41 +882,27 @@
       }
 
       if (miniChefeOn && miniChefe) {
-        ctx.save();
-        ctx.translate(miniChefe.x, miniChefe.y);
-        ctx.shadowBlur = 25; ctx.shadowColor = miniChefe.corAura;
-        ctx.fillStyle = miniChefe.hitFlash > 0 ? '#ffffff' : miniChefe.corAura;
-        ctx.beginPath(); ctx.arc(0, 0, miniChefe.r, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = miniChefe.corPrim; ctx.lineWidth = 4; ctx.stroke();
-        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 9px Arial'; ctx.textAlign = 'center';
-        ctx.fillText('MINI-BOSS', 0, 3);
-        ctx.restore();
+        desenharPapaiNoelChefe(miniChefe.x, miniChefe.y, miniChefe.r, miniChefe.corAura, miniChefe.corPrim, miniChefe.hitFlash, miniChefe.nome);
       }
 
       if (chefeOn && chefe) {
-        ctx.save();
-        ctx.translate(chefe.x, chefe.y);
-        ctx.shadowBlur = 35; ctx.shadowColor = chefe.corAura;
-        ctx.fillStyle = chefe.hitFlash > 0 ? '#ffffff' : chefe.corAura;
-        ctx.beginPath(); ctx.arc(0, 0, chefe.r, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = chefe.corPrim; ctx.lineWidth = 5; ctx.stroke();
-        ctx.restore();
+        desenharPapaiNoelChefe(chefe.x, chefe.y, chefe.r, chefe.corAura, chefe.corPrim, chefe.hitFlash, chefe.nome);
 
-        ctx.fillStyle = 'rgba(10, 15, 30, 0.95)'; ctx.fillRect(120, 50, 360, 16);
-        ctx.fillStyle = chefe.corAura; ctx.fillRect(122, 52, 356 * Math.max(0, chefe.hp / chefe.maxHp), 12);
-        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 10.5px Arial'; ctx.textAlign = 'center';
-        var nomeChefe = chefe.final ? (chefe.faseChefe === 2 ? '⚡ MEMENOEL FÚRIA TOTAL ⚡' : 'MEMENOEL SUPREMO') : ('CHEFÃO SETOR ' + fase);
-        ctx.fillText(nomeChefe, 300, 62);
+        ctx.fillStyle = 'rgba(6, 9, 20, 0.95)'; ctx.fillRect(110, 48, 380, 18);
+        ctx.fillStyle = chefe.corAura; ctx.fillRect(112, 50, 376 * Math.max(0, chefe.hp / chefe.maxHp), 14);
+        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 11px Arial'; ctx.textAlign = 'center';
+        var txtChefe = chefe.final ? (chefe.faseChefe === 2 ? '⚡ PAPAI NOEL FÚRIA TOTAL ⚡' : 'PAPAI NOEL SUPREMO') : (chefe.nome + ' [CHEFÃO]');
+        ctx.fillText(txtChefe, 300, 61);
       }
 
       for (var i = 0; i < itens.length; i++) {
         var it = itens[i];
         ctx.save();
-        ctx.shadowBlur = 15; ctx.shadowColor = '#ffcc00';
+        ctx.shadowBlur = 20; ctx.shadowColor = '#ffcc00';
         ctx.fillStyle = '#ffcc00';
-        ctx.beginPath(); ctx.arc(it.x, it.y, 15, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
-        ctx.fillStyle = '#000'; ctx.font = 'bold 9.5px Arial'; ctx.textAlign = 'center';
+        ctx.beginPath(); ctx.arc(it.x, it.y, 16, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.stroke();
+        ctx.fillStyle = '#000'; ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center';
         ctx.fillText(it.tipo, it.x, it.y + 3.5);
         ctx.restore();
       }
@@ -868,18 +910,24 @@
       ctx.save();
       ctx.translate(nave.x, nave.y);
       ctx.rotate(nave.tilt);
-      ctx.shadowBlur = 20;
+      
+      ctx.fillStyle = '#ff5500';
+      ctx.beginPath(); ctx.moveTo(-10, 20); ctx.lineTo(0, 32 + Math.random() * 12); ctx.lineTo(10, 20); ctx.fill();
+      ctx.fillStyle = '#ffee00';
+      ctx.beginPath(); ctx.moveTo(-5, 20); ctx.lineTo(0, 25 + Math.random() * 8); ctx.lineTo(5, 20); ctx.fill();
+
+      ctx.shadowBlur = 25;
       ctx.shadowColor = tipoNaveSelecionada === 2 ? '#ff0055' : (tipoNaveSelecionada === 3 ? '#ffee00' : '#00f3ff');
       ctx.fillStyle = tipoNaveSelecionada === 2 ? '#ff0055' : (tipoNaveSelecionada === 3 ? '#ffee00' : '#00f3ff');
       ctx.beginPath();
-      ctx.moveTo(0, -30); ctx.lineTo(-26, 20); ctx.lineTo(0, 13); ctx.lineTo(26, 20);
+      ctx.moveTo(0, -32); ctx.lineTo(-28, 22); ctx.lineTo(0, 14); ctx.lineTo(28, 22);
       ctx.closePath(); ctx.fill();
-      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
       ctx.restore();
 
       for (var i = 0; i < parts.length; i++) {
         var p = parts[i];
-        ctx.fillStyle = p.cor; ctx.globalAlpha = p.vida / 44;
+        ctx.fillStyle = p.cor; ctx.globalAlpha = p.vida / 48;
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
       }
       ctx.globalAlpha = 1;
@@ -940,7 +988,9 @@
       var html = lista.length === 0 ? '<div class="rk-row"><span>Nenhum recorde ainda.</span></div>' : '';
       for (var idx = 0; idx < lista.length; idx++) {
         var item = lista[idx];
-        html += '<div class="rk-row"><span>#' + (idx + 1) + ' ' + item.nome + ' (F' + (item.fase || 1) + ')</span><span style="color:#00f3ff;">' + (item.pts || 0) + ' pts</span></div>';
+        var medalhas = ['🥇', '🥈', '🥉', '🎖️', '🎖️'];
+        var icone = medalhas[idx] || '#' + (idx + 1);
+        html += '<div class="rk-row"><span>' + icone + ' ' + item.nome + ' (Setor ' + (item.fase || 1) + ')</span><span style="color:#00f3ff;">' + (item.pts || 0) + ' pts</span></div>';
       }
       document.getElementById('rank-inicio').innerHTML = html;
       document.getElementById('rank-modal').innerHTML = html;
@@ -955,7 +1005,11 @@
           document.getElementById('max-lvl').textContent = maxFaseSalva;
           document.getElementById('btn-cont').classList.remove('hidden');
         }
-        window.desenharRankingNaTela(window.rankingGlobal);
+        var localRank = JSON.parse(localStorage.getItem('wm_local_rank') || '[]');
+        if (localRank.length > 0) {
+          window.rankingGlobal = localRank;
+          window.desenharRankingNaTela(localRank);
+        }
         renderizarConquistas();
       } catch (e) {}
     }
@@ -967,7 +1021,6 @@
         localStorage.setItem('wm_n', n);
         if (fase > maxFaseSalva) { maxFaseSalva = fase; localStorage.setItem('wm_maxf', maxFaseSalva); }
         
-        // Salva também no ranking local para garantir exibição imediata
         var localRank = JSON.parse(localStorage.getItem('wm_local_rank') || '[]');
         var existente = localRank.find(function(p) { return p.nome.toLowerCase() === n.toLowerCase(); });
         if (existente) {
@@ -988,7 +1041,6 @@
       } catch (e) {}
     }
 
-    // Carrega ranking local ao iniciar
     try {
       var rLocal = JSON.parse(localStorage.getItem('wm_local_rank') || '[]');
       if (rLocal.length > 0) {
@@ -1053,6 +1105,63 @@
 
     atualizarListasRanking();
     requestAnimationFrame(loop);
+  </script>
+
+  <!-- FIREBASE REALTIME RANKING SYNC -->
+  <script type="module">
+    try {
+      const base = "https://www.gstatic." + "com/firebasejs/10.8.0/";
+      const { initializeApp } = await import(base + "firebase-app.js");
+      const { getDatabase, ref, get, set, query, orderByChild, limitToLast, onValue } = await import(base + "firebase-database.js");
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDO2OsIRMpnTF__MHT022S2QT4bI5YTn1U",
+        authDomain: "war-memenoel." + "firebaseapp.com",
+        databaseURL: "https://war-memenoel-default-rtdb.firebaseio.com",
+        projectId: "war-memenoel",
+        storageBucket: "war-memenoel.firebasestorage.app",
+        messagingSenderId: "225210728615",
+        appId: "1:225210728615:web:bfe42ca37d738d4eed5b82",
+        measurementId: "G-RX38KL6JNQ"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      const rankingRef = ref(db, 'ranking_unico');
+
+      window.enviarPontuacaoFirebase = async function(nome, faseAtual, pts) {
+        const chavePiloto = nome.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+        if (!chavePiloto) return;
+        const pilotoRef = ref(db, 'ranking_unico/' + chavePiloto);
+        const snapshot = await get(pilotoRef);
+        const ptsNovos = Number(pts);
+        if (!snapshot.exists() || ptsNovos > (snapshot.val().pts || 0)) {
+          await set(pilotoRef, {
+            nome: nome.trim(),
+            fase: Number(faseAtual),
+            pts: ptsNovos,
+            data: Date.now()
+          });
+        }
+      };
+
+      const top5Query = query(rankingRef, orderByChild('pts'), limitToLast(5));
+      onValue(top5Query, (snapshot) => {
+        const lista = [];
+        snapshot.forEach((child) => {
+          lista.push(child.val());
+        });
+        lista.sort((a, b) => b.pts - a.pts);
+        if (lista.length > 0) {
+          window.rankingGlobal = lista;
+          if (typeof window.desenharRankingNaTela === 'function') {
+            window.desenharRankingNaTela(lista);
+          }
+        }
+      });
+    } catch (err) {
+      console.warn("Modo offline / Firebase indisponível:", err);
+    }
   </script>
 </body>
 </html>
