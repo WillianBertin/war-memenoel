@@ -80,7 +80,7 @@
       max-height: 96%; overflow-y: auto; position: relative;
     }
     .card::before {
-      content: 'TRUE_3D_RENDER // V14.0';
+      content: 'TRUE_3D_BULLET_TIME // V16.0';
       position: absolute; top: 8px; right: 12px; font-size: 8px; color: #ff0055; letter-spacing: 2px; opacity: 0.7;
     }
     .badge {
@@ -187,7 +187,7 @@
         </div>
 
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Gráficos 3D imersivos, Asas Volumétricas e Loja funcional!</p>
+        <p class="sub">Bullet Time (Shift), Drones Orbitais, 3D Real & Loja Completa!</p>
         <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
         <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">RETORNAR AO SETOR <span id="max-lvl">1</span></button>
@@ -259,11 +259,12 @@
     var chefeOn = false, miniChefeOn = false, tremor = 0, flashTela = 0, mudo = false, ac = null;
     var alertaChefeT = 0, bgmTimer = null, bgmPasso = 0;
     var tipoNaveSelecionada = 1;
+    var bulletTimeAtivo = false, bulletTimeCooldown = 0;
     
     var ultimoTempo = 0;
     var intervaloFps = 1000 / 60;
 
-    var nave = { x: 300, y: 650, hp: 100, t: 0, arma: 1, ult: 0, laserT: 0, escudoT: 0, tilt: 0 };
+    var nave = { x: 300, y: 650, hp: 100, t: 0, arma: 1, ult: 0, laserT: 0, escudoT: 0, tilt: 0, drones: 2 };
     var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], ondas = [], estrelas = [], meteoros = [];
     var chefe = null, miniChefe = null, teclas = {}, alvoX = 300, alvoY = 650, tocando = false;
 
@@ -548,13 +549,24 @@
 
     function atualizarJogo() {
       if (estado !== 'JOGANDO') return;
-      q++;
+      
+      // Lógica do Bullet Time (Shift esquerdo)
+      var multiplicadorTempo = 1;
+      if (bulletTimeAtivo) {
+        multiplicadorTempo = 0.5;
+        if (bulletTimeCooldown > 0) bulletTimeCooldown -= 0.5;
+        else bulletTimeAtivo = false;
+      } else {
+        if (bulletTimeCooldown < 120) bulletTimeCooldown += 0.2;
+      }
+
+      q += multiplicadorTempo;
       if (tremor > 0) tremor--;
       if (flashTela > 0) flashTela = Math.max(0, flashTela - 0.05);
-      if (alertaChefeT > 0) alertaChefeT--;
-      if (nave.escudoT > 0) nave.escudoT--;
-      if (nave.laserT > 0) nave.laserT--;
-      if (comboT > 0) { comboT--; if (comboT === 0) combo = 1; }
+      if (alertaChefeT > 0) alertaChefeT -= multiplicadorTempo;
+      if (nave.escudoT > 0) nave.escudoT -= multiplicadorTempo;
+      if (nave.laserT > 0) nave.laserT -= multiplicadorTempo;
+      if (comboT > 0) { comboT -= multiplicadorTempo; if (comboT <= 0) combo = 1; }
 
       var vel = 6.8;
       if (teclas['ArrowLeft'] || teclas['KeyA']) alvoX -= vel;
@@ -569,16 +581,16 @@
       nave.x += dx * 0.22;
       nave.y += (alvoY - nave.y) * 0.22;
 
-      nave.t++;
+      nave.t += multiplicadorTempo;
       var danoBase = 18 + (nave.arma * 9);
       var cadencia = Math.max(4, 13 - nave.arma * 1.5);
-      if (nave.t % Math.floor(cadencia) === 0) {
+      
+      if (Math.floor(nave.t) % Math.max(2, Math.floor(cadencia)) === 0) {
         tirosDisparados++;
         som(600 + nave.arma * 60, 'triangle', 0.06, 0.035);
         
-        // 6 NÍVEIS DE TIRO TOTALMENTE DISTINTOS E ÚNICOS POR NAVE
+        // Disparos da Nave Principal
         if (tipoNaveSelecionada === 1) {
-          // INTERCEPTOR V-1: Escalada precisa em leque e ondas de pulso
           if (nave.arma === 1) {
             tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -16, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
           } else if (nave.arma === 2) {
@@ -600,7 +612,6 @@
             tiros.push({ x: nave.x - 36, y: nave.y - 14, vx: -4.5, vy: -13, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
             tiros.push({ x: nave.x + 36, y: nave.y - 14, vx: 4.5, vy: -13, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
           } else {
-            // Nv.6 Supremo Interceptor
             tiros.push({ x: nave.x - 10, y: nave.y - 32, vx: 0, vy: -19, d: danoBase * 2, cor: '#00ff88', tipo: 'ONDA' });
             tiros.push({ x: nave.x + 10, y: nave.y - 32, vx: 0, vy: -19, d: danoBase * 2, cor: '#00ff88', tipo: 'ONDA' });
             tiros.push({ x: nave.x - 24, y: nave.y - 22, vx: -2.5, vy: -17, d: danoBase * 1.3, cor: '#ffee00', tipo: 'LASER' });
@@ -609,7 +620,6 @@
             tiros.push({ x: nave.x + 44, y: nave.y - 14, vx: 5.5, vy: -14, d: danoBase * 1.2, cor: '#ff0055', tipo: 'PLASMA' });
           }
         } else if (tipoNaveSelecionada === 2) {
-          // DESTRUIDOR PLASMA: Canhão pesado multiplicador progressivo (1 a 6 esferas)
           var qtdPlasma = Math.min(6, nave.arma);
           for (var p = 0; p < qtdPlasma; p++) {
             var offX = (p - (qtdPlasma - 1) / 2) * 12;
@@ -619,13 +629,12 @@
             tiros.push({ x: nave.x, y: nave.y - 34, vx: 0, vy: -18, d: danoBase * 3, cor: '#ffffff', tipo: 'ONDA' });
           }
         } else {
-          // ARTILHARIA QUANTUM: Feixes combinados com mísseis teleguiados em massa (1 a 6 lasers + mísseis)
           var qtdQuantum = Math.min(6, nave.arma);
           for (var qNum = 0; qNum < qtdQuantum; qNum++) {
             var qX = nave.x + (qNum - (qtdQuantum - 1) / 2) * 14;
             tiros.push({ x: qX, y: nave.y - 25, vx: (qNum - (qtdQuantum - 1) / 2) * 0.5, vy: -16, d: danoBase * 1.3, cor: '#ffee00', tipo: 'LASER' });
           }
-          if (nave.arma >= 2 && nave.t % (Math.max(3, 10 - nave.arma)) === 0) {
+          if (nave.arma >= 2 && Math.floor(nave.t) % (Math.max(3, 10 - nave.arma)) === 0) {
             var qtdM = Math.min(4, Math.floor(nave.arma / 1.2));
             for (var m = 0; m < qtdM; m++) {
               var mX = nave.x + (m - (qtdM - 1) / 2) * 26;
@@ -633,15 +642,21 @@
             }
           }
         }
+
+        // Disparo Automático dos Drones de Apoio Orbitais
+        if (nave.drones > 0) {
+          tiros.push({ x: nave.x - 30, y: nave.y - 10, vx: 0, vy: -15, d: danoBase * 0.5, cor: '#00ff88', tipo: 'LASER' });
+          tiros.push({ x: nave.x + 30, y: nave.y - 10, vx: 0, vy: -15, d: danoBase * 0.5, cor: '#00ff88', tipo: 'LASER' });
+        }
       }
 
-      if (q % 180 === 0 && Math.random() < 0.6) {
-        meteoros.push({ x: Math.random() * 600, y: -40, vx: (Math.random() - 0.5) * 2, vy: 3 + Math.random() * 3, r: 14 + Math.random() * 12 });
+      if (Math.floor(q) % 180 === 0 && Math.random() < 0.6) {
+        meteoros.push({ x: Math.random() * 600, y: -40, vx: (Math.random() - 0.5) * 2, vy: (3 + Math.random() * 3) * multiplicadorTempo, r: 14 + Math.random() * 12 });
       }
 
       for (var i = meteoros.length - 1; i >= 0; i--) {
         var met = meteoros[i];
-        met.x += met.vx; met.y += met.vy;
+        met.x += met.vx * multiplicadorTempo; met.y += met.vy * multiplicadorTempo;
         if (Math.hypot(met.x - nave.x, met.y - nave.y) < met.r + 14) {
           sofrerDano(25);
           meteoros.splice(i, 1);
@@ -653,7 +668,7 @@
       var isInferno = (fase >= 19);
       var freqSpawn = isInferno ? (chefeOn ? 22 : 10) : (chefeOn || miniChefeOn ? 45 : Math.max(14, 38 - fase * 1.2));
       
-      if (q % Math.floor(freqSpawn) === 0 && !chefeOn) {
+      if (Math.floor(q) % Math.max(5, Math.floor(freqSpawn)) === 0 && !chefeOn) {
         var formaId = Math.floor(Math.random() * 5);
         var coresMonstros = ['#ff0055', '#00f3ff', '#ffee00', '#00ff88', '#a855f7'];
         var corEscohida = coresMonstros[Math.floor(Math.random() * coresMonstros.length)];
@@ -662,7 +677,7 @@
         inimigos.push({
           x: 40 + Math.random() * 520, y: -30,
           vx: tipoEsp === 6 ? (Math.random() - 0.5) * 5 : (Math.random() - 0.5) * (2.0 + fase * 0.12),
-          vy: tipoEsp === 6 ? (5.0 + fase * 0.2) : (2.5 + fase * 0.08),
+          vy: (tipoEsp === 6 ? (5.0 + fase * 0.2) : (2.5 + fase * 0.08)) * multiplicadorTempo,
           hp: tipoEsp === 6 ? 15 : (25 + fase * 5),
           r: 20 + Math.random() * 8,
           forma: tipoEsp === 6 ? 0 : formaId, 
@@ -685,7 +700,7 @@
             t.vx += Math.cos(ang) * 0.85; t.vy += Math.sin(ang) * 0.85;
           }
         }
-        t.x += t.vx; t.y += t.vy;
+        t.x += t.vx * multiplicadorTempo; t.y += t.vy * multiplicadorTempo;
 
         var projecilLimpo = false;
         for (var k = tChefe.length - 1; k >= 0; k--) {
@@ -739,12 +754,12 @@
 
       if (miniChefeOn && miniChefe) {
         if (miniChefe.hitFlash > 0) miniChefe.hitFlash--;
-        miniChefe.x += miniChefe.vx;
-        if (miniChefe.y < miniChefe.alvoY) miniChefe.y += 2;
+        miniChefe.x += miniChefe.vx * multiplicadorTempo;
+        if (miniChefe.y < miniChefe.alvoY) miniChefe.y += 2 * multiplicadorTempo;
         if (miniChefe.x < 70 || miniChefe.x > 530) miniChefe.vx *= -1;
 
-        if (q % 55 === 0) {
-          tChefe.push({ x: miniChefe.x, y: miniChefe.y + 20, vx: 0, vy: 5.2, cor: miniChefe.corAura, dano: 18 });
+        if (Math.floor(q) % 55 === 0) {
+          tChefe.push({ x: miniChefe.x, y: miniChefe.y + 20, vx: 0, vy: 5.2 * multiplicadorTempo, cor: miniChefe.corAura, dano: 18 });
         }
 
         if (miniChefe.hp <= 0) {
@@ -758,15 +773,15 @@
 
       for (var i = inimigos.length - 1; i >= 0; i--) {
         var en = inimigos[i];
-        en.t++;
+        en.t += multiplicadorTempo;
         if (en.hitFlash > 0) en.hitFlash--;
 
-        if (en.especial === 7 && en.t % 65 === 0) {
+        if (en.especial === 7 && Math.floor(en.t) % 65 === 0) {
           var angIn = Math.atan2(nave.y - en.y, nave.x - en.x);
-          tChefe.push({ x: en.x, y: en.y + 10, vx: Math.cos(angIn) * 4.8, vy: Math.sin(angIn) * 4.8, cor: '#a855f7', dano: 16 });
+          tChefe.push({ x: en.x, y: en.y + 10, vx: Math.cos(angIn) * 4.8 * multiplicadorTempo, vy: Math.sin(angIn) * 4.8 * multiplicadorTempo, cor: '#a855f7', dano: 16 });
         }
 
-        en.x += en.vx; en.y += en.vy;
+        en.x += en.vx * multiplicadorTempo; en.y += en.vy * multiplicadorTempo;
         if (en.x < 25) { en.x = 25; en.vx = Math.abs(en.vx); }
         if (en.x > 575) { en.x = 575; en.vx = -Math.abs(en.vx); }
 
@@ -805,28 +820,28 @@
       if (chefeOn && chefe) {
         if (chefe.hitFlash > 0) chefe.hitFlash--;
         chefe.hpVisual += (chefe.hp - chefe.hpVisual) * 0.15;
-        if (chefe.y < chefe.alvoY) chefe.y += 2.2;
+        if (chefe.y < chefe.alvoY) chefe.y += 2.2 * multiplicadorTempo;
         else {
-          chefe.x += chefe.vx;
+          chefe.x += chefe.vx * multiplicadorTempo;
           if (chefe.x < 85 || chefe.x > 515) chefe.vx *= -1;
         }
-        chefe.t++;
+        chefe.t += multiplicadorTempo;
 
         if (chefe.final && chefe.hp <= chefe.maxHp * 0.5 && chefe.faseChefe === 1) {
           chefe.faseChefe = 2; chefe.corAura = '#00ff88'; chefe.vx *= 1.4; tremor = 22; flashTela = 0.4;
         }
 
         var freqAtaqueChefe = isInferno ? 15 : 90; 
-        if (chefe.t % (freqAtaqueChefe + Math.floor(Math.random() * 25)) === 0) {
+        if (Math.floor(chefe.t) % (freqAtaqueChefe + Math.floor(Math.random() * 25)) === 0) {
           if (isInferno || chefe.faseChefe === 2) {
             var qtd = chefe.faseChefe === 2 ? 12 : 8;
             for (var k = 0; k < qtd; k++) {
               var ang = (Math.PI / 2) + ((k - (qtd - 1) / 2) * 0.2);
-              tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * 6.0, vy: Math.sin(ang) * 6.0, cor: chefe.corPrim, dano: 25 });
+              tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * 6.0 * multiplicadorTempo, vy: Math.sin(ang) * 6.0 * multiplicadorTempo, cor: chefe.corPrim, dano: 25 });
             }
           } else {
             var angMirado = Math.atan2(nave.y - chefe.y, nave.x - chefe.x) + (Math.random() - 0.5) * 0.4;
-            tChefe.push({ x: chefe.x, y: chefe.y + 26, vx: Math.cos(angMirado) * 3.8, vy: Math.sin(angMirado) * 3.8, cor: chefe.corAura, dano: 12 });
+            tChefe.push({ x: chefe.x, y: chefe.y + 26, vx: Math.cos(angMirado) * 3.8 * multiplicadorTempo, vy: Math.sin(angMirado) * 3.8 * multiplicadorTempo, cor: chefe.corAura, dano: 12 });
           }
           som(140, 'square', 0.12, 0.06);
         }
@@ -834,7 +849,7 @@
 
       for (var i = tChefe.length - 1; i >= 0; i--) {
         var tc = tChefe[i];
-        tc.x += tc.vx; tc.y += tc.vy;
+        tc.x += tc.vx * multiplicadorTempo; tc.y += tc.vy * multiplicadorTempo;
         if (Math.hypot(tc.x - nave.x, tc.y - nave.y) < 20) {
           sofrerDano(tc.d || 15);
           tChefe.splice(i, 1); continue;
@@ -844,7 +859,7 @@
 
       for (var i = itens.length - 1; i >= 0; i--) {
         var it = itens[i];
-        it.y += it.vy;
+        it.y += it.vy * multiplicadorTempo;
         if (Math.hypot(it.x - nave.x, it.y - nave.y) < 28) {
           if (it.tipo === 'ARMA') { nave.arma = Math.min(6, nave.arma + 1); if (nave.arma >= 6) desbloquearConquista('arma'); }
           else if (it.tipo === 'HP') { nave.hp = Math.min(100, nave.hp + 35); }
@@ -886,7 +901,6 @@
       atualizarHUD();
     }
 
-    // MONSTROS COM RENDERIZAÇÃO 3D REAL (VOXEL-NEON ESTILIZADO)
     function desenharInimigoForma(en) {
       ctx.save();
       ctx.shadowBlur = 24; ctx.shadowColor = en.cor;
@@ -1066,7 +1080,7 @@
         ctx.restore();
       }
 
-      // NAVE 3D AVANÇADA COM ASAS VOLUMÉTRICAS DUPLAS E MOTOR DE PLASMA
+      // NAVE 3D COM DRONES ORBITAIS
       ctx.save();
       ctx.translate(nave.x, nave.y);
       ctx.rotate(nave.tilt);
@@ -1103,6 +1117,16 @@
       }
       ctx.restore();
 
+      // Desenhar Drones Orbitais
+      if (nave.drones > 0) {
+        var anguloDrone = q * 0.08;
+        var d1X = nave.x + Math.cos(anguloDrone) * 45, d1Y = nave.y + Math.sin(anguloDrone) * 20;
+        var d2X = nave.x + Math.cos(anguloDrone + Math.PI) * 45, d2Y = nave.y + Math.sin(anguloDrone + Math.PI) * 20;
+        ctx.fillStyle = '#00ff88'; ctx.shadowColor = '#00ff88'; ctx.shadowBlur = 12;
+        ctx.beginPath(); ctx.arc(d1X, d1Y, 6, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(d2X, d2Y, 6, 0, Math.PI * 2); ctx.fill();
+      }
+
       for (var i = 0; i < parts.length; i++) {
         var p = parts[i];
         ctx.fillStyle = p.cor; ctx.globalAlpha = p.vida / 48;
@@ -1131,9 +1155,13 @@
     window.addEventListener('keydown', function(e) {
       teclas[e.code] = true;
       if (e.code === 'Space') ativarSuperLaser();
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') { bulletTimeAtivo = true; }
       if (e.code === 'KeyP' || e.code === 'Escape') alternarPausa();
     });
-    window.addEventListener('keyup', function(e) { teclas[e.code] = false; });
+    window.addEventListener('keyup', function(e) { 
+      teclas[e.code] = false;
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') { bulletTimeAtivo = false; }
+    });
 
     function moverPonteiro(clientX, clientY) {
       var rect = c.getBoundingClientRect();
