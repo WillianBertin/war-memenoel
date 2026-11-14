@@ -408,16 +408,17 @@
       alertaChefeT = 130;
       var isInferno = (fase >= 19);
       
-      var vidaMax = isInferno ? (fase === 20 ? 11500 : 8800) : (250 + fase * 35);
-      var velBase = isInferno ? 4.4 : 1.6;
+      // Vida do boss balanceada por fase
+      var vidaMax = isInferno ? (fase === 20 ? 11500 : 8800) : (180 + fase * 30);
+      var velBase = isInferno ? 4.4 : 1.4;
 
       chefe = {
         x: 300, y: -110, alvoY: 145, vx: velBase,
-        hp: vidaMax, hpVisual: vidaMax, maxHp: vidaMax, t: 0,
+        hp: vidaMax, hpVisual: vidaMax, maxHp: vidaMax, t: 0, r: 45,
         final: (fase === 20), inferno: isInferno, superChefe: false,
-        faseChefe: 1, modoCor: 'FOGO', corAura: '#ff0055', angEspiral: 0, hitFlash: 0
+        faseChefe: 1, modoCor: 'FOGO', corAura: '#ff0055', hitFlash: 0
       };
-      tremor = isInferno ? 28 : 12;
+      tremor = isInferno ? 28 : 10;
       som(140, 'sawtooth', 0.75, 0.16, 45);
     }
 
@@ -457,7 +458,6 @@
       criarParticulas(nave.x, nave.y, '#ff0055', 18, true);
       som(90, 'square', 0.28, 0.14, 30);
       
-      // Alerta sonoro de vida crítica (< 25%)
       if (nave.hp > 0 && nave.hp < 25) {
         som(300, 'sine', 0.15, 0.1, 150);
       }
@@ -563,6 +563,7 @@
         });
       }
 
+      // COLISÃO DOS TIROS DA NAVE COM OS INIMIGOS E COM O BOSS
       for (var i = tiros.length - 1; i >= 0; i--) {
         var t = tiros[i];
         if (t.tipo === 'MISSIL') {
@@ -576,6 +577,21 @@
           }
         }
         t.x += t.vx; t.y += t.vy;
+
+        // Verifica colisão do tiro com o CHEFÃO se ele estiver na tela
+        if (chefeOn && chefe) {
+          var raioAcertoChefe = t.tipo === 'ONDA' ? chefe.r + 25 : chefe.r + 10;
+          if (Math.hypot(chefe.x - t.x, chefe.y - t.y) < raioAcertoChefe) {
+            chefe.hp -= t.d;
+            chefe.hitFlash = 3;
+            criarParticulas(t.x, t.y, t.cor, 4, false);
+            if (t.tipo !== 'ONDA') {
+              tiros.splice(i, 1);
+              continue;
+            }
+          }
+        }
+
         if (t.y < -30 || t.x < -30 || t.x > 630) tiros.splice(i, 1);
       }
 
@@ -600,17 +616,6 @@
           en.hitFlash = 2;
         }
 
-        for (var j = tiros.length - 1; j >= 0; j--) {
-          var tr = tiros[j];
-          var raioAcerto = tr.tipo === 'ONDA' ? en.r + 22 : en.r + 8;
-          if (Math.hypot(en.x - tr.x, en.y - tr.y) < raioAcerto) {
-            en.hp -= tr.d;
-            en.hitFlash = 3;
-            criarParticulas(tr.x, tr.y, tr.cor, 4, false);
-            if (tr.tipo !== 'ONDA') { tiros.splice(j, 1); break; }
-          }
-        }
-
         if (en.hp <= 0) {
           desbloquearConquista('sangue');
           var ptsBase = en.tipo === 5 ? 65 : (en.tipo === 3 ? 50 : (en.tipo === 4 ? 40 : (en.tipo === 2 ? 35 : 15)));
@@ -624,7 +629,6 @@
           criarParticulas(en.x, en.y, en.tipo === 3 ? '#ffee00' : (en.tipo === 5 ? '#a855f7' : '#ffaa00'), 16, en.tipo !== 1);
           som(180, 'sawtooth', 0.14, 0.06);
 
-          // Chance de dropar itens incluindo a nova BOMBA INTELIGENTE ('BOMBA')
           if (Math.random() < (isInferno ? 0.15 : 0.20)) {
             var tiposItem = ['ARMA', 'ARMA', 'HP', 'ESCUDO', 'ULT', 'BOMBA'];
             itens.push({ x: en.x, y: en.y, vy: 2.6, tipo: tiposItem[Math.floor(Math.random() * tiposItem.length)] });
@@ -656,7 +660,7 @@
         }
         chefe.t++;
 
-        // Mecânica de Chefe de 2 Fases na Fase 20 (Fúria quando HP < 50%)
+        // Chefe de 2 fases apenas na Fase 20
         if (chefe.final && chefe.hp <= chefe.maxHp * 0.5 && chefe.faseChefe === 1) {
           chefe.faseChefe = 2;
           chefe.corAura = '#00ff88';
@@ -666,32 +670,31 @@
           som(220, 'sawtooth', 0.5, 0.2, 80);
         }
 
-        var durCiclo = chefe.inferno ? 130 : 200;
-        var ciclo = Math.floor(chefe.t / durCiclo) % 3;
-        if (ciclo === 0) { chefe.modoCor = 'FOGO'; if(chefe.faseChefe !== 2) chefe.corAura = '#ff0055'; }
-        else if (ciclo === 1) { chefe.modoCor = 'RAIO'; if(chefe.faseChefe !== 2) chefe.corAura = '#00f3ff'; }
-        else { chefe.modoCor = 'CAOS'; if(chefe.faseChefe !== 2) chefe.corAura = '#d946ef'; }
-
-        var intFogo = chefe.faseChefe === 2 ? 10 : (chefe.inferno ? 18 : 65);
-        var intRaio = chefe.faseChefe === 2 ? 8 : (chefe.inferno ? 11 : 45);
-        var intCaos = chefe.faseChefe === 2 ? 4 : (chefe.inferno ? 5 : 25);
-
-        if (chefe.modoCor === 'FOGO' && chefe.t % intFogo === 0) {
-          var qtd = chefe.faseChefe === 2 ? 12 : (chefe.inferno ? 9 : 3);
-          var velF = chefe.faseChefe === 2 ? 7.2 : 3.6;
-          for (var k = 0; k < qtd; k++) {
-            var ang = (Math.PI / 2) + ((k - (qtd - 1) / 2) * 0.22);
-            tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * velF, vy: Math.sin(ang) * velF, cor: chefe.faseChefe === 2 ? '#00ff88' : '#ff0055', dano: chefe.faseChefe === 2 ? 35 : 14 });
+        // ATAQUES SIMPLIFICADOS E RANDÔMICOS PARA OS SETORES 1 A 18
+        var freqAtaqueChefe = isInferno ? 18 : 110; 
+        if (chefe.t % freqAtaqueDisparoRand(freqAtaqueChefe) === 0) {
+          if (isInferno || chefe.faseChefe === 2) {
+            var qtd = chefe.faseChefe === 2 ? 10 : 6;
+            for (var k = 0; k < qtd; k++) {
+              var ang = (Math.PI / 2) + ((k - (qtd - 1) / 2) * 0.22);
+              tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * 5.5, vy: Math.sin(ang) * 5.5, cor: '#ff0055', dano: 25 });
+            }
+          } else {
+            // Apenas 1 ou 2 tiros lentos e randômicos para chefes de 1 a 18 (fáceis de desviar)
+            var angMirado = Math.atan2(nave.y - chefe.y, nave.x - chefe.x) + (Math.random() - 0.5) * 0.4;
+            tChefe.push({ x: chefe.x, y: chefe.y + 26, vx: Math.cos(angMirado) * 3.2, vy: Math.sin(angMirado) * 3.2, cor: '#00f3ff', dano: 12 });
           }
-          som(140, 'square', 0.16, 0.08);
-        } else if (chefe.modoCor === 'RAIO' && chefe.t % intRaio === 0) {
-          var angMirado = Math.atan2(nave.y - chefe.y, nave.x - chefe.x);
-          var velR = chefe.faseChefe === 2 ? 9.0 : 4.5;
-          tChefe.push({ x: chefe.x - 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: 18 });
-          tChefe.push({ x: chefe.x + 42, y: chefe.y + 26, vx: Math.cos(angMirado) * velR, vy: Math.sin(angMirado) * velR, cor: '#00f3ff', dano: 18 });
-          som(420, 'sawtooth', 0.12, 0.07);
+          som(140, 'square', 0.12, 0.06);
         }
       }
+
+      function chefeAtaqueRand(base) {
+        return base + Math.floor(Math.random() * 40);
+      }
+      // Atalho interno para cadencia randômica
+      window.freqAtaqueDisparoRand = function(base) {
+        return base + Math.floor(Math.random() * 35);
+      };
 
       for (var i = tChefe.length - 1; i >= 0; i--) {
         var tc = tChefe[i];
@@ -713,7 +716,6 @@
           else if (it.tipo === 'ESCUDO') { nave.escudoT = 240; }
           else if (it.tipo === 'ULT') { nave.ult = 100; }
           else if (it.tipo === 'BOMBA') {
-            // Efeito da Bomba Inteligente: Destroi todos os inimigos e tiros inimigos da tela!
             inimigos = [];
             tChefe = [];
             tremor = 25;
@@ -1118,7 +1120,6 @@
       document.getElementById('m-tit').textContent = titulo;
       document.getElementById('m-desc').textContent = desc;
       
-      // Exibe estatísticas detalhadas no Game Over
       document.getElementById('stat-abates').textContent = totalAbatesPartida;
       document.getElementById('stat-pts').textContent = pontos;
       document.getElementById('stats-container').style.display = 'block';
