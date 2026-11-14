@@ -80,7 +80,7 @@
       max-height: 96%; overflow-y: auto; position: relative;
     }
     .card::before {
-      content: 'ULTRA_ROGUE_ENGINE // V10.0';
+      content: 'TRUE_3D_SYSTEM // V11.0';
       position: absolute; top: 8px; right: 12px; font-size: 8px; color: #ff0055; letter-spacing: 2px; opacity: 0.7;
     }
     .badge {
@@ -174,20 +174,20 @@
         <div class="ship-select-box">
           <div class="ship-option selected" data-ship="1" onclick="selecionarNave(1)">
             <strong style="color:#00f3ff; font-size:11px;">Interceptor V-1</strong>
-            <span>6 Upgrades</span>
+            <span>6 Níveis de Tiro</span>
           </div>
           <div class="ship-option" data-ship="2" onclick="selecionarNave(2)">
             <strong style="color:#ff0055; font-size:11px;">Destruidor Plasma</strong>
-            <span>Tiro Pesado</span>
+            <span>6 Níveis de Tiro</span>
           </div>
           <div class="ship-option" data-ship="3" onclick="selecionarNave(3)">
             <strong style="color:#ffee00; font-size:11px;">Artilharia Quantum</strong>
-            <span>Mísseis & Leque</span>
+            <span>6 Níveis de Tiro</span>
           </div>
         </div>
 
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Loja de Upgrades, Conquistas Ativas, Chefes e Grinch Final!</p>
+        <p class="sub">Gráficos 3D imersivos, Monstros Voxel e Upgrades funcionais!</p>
         <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
         <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">RETORNAR AO SETOR <span id="max-lvl">1</span></button>
@@ -219,7 +219,7 @@
         <h2 id="m-tit" style="color:#ff0055; margin-bottom:8px; font-size:22px; font-weight: 900;">SETOR CONCLUÍDO</h2>
         <p id="m-desc" class="sub">Relatório de telemetria e classificação:</p>
         
-        <!-- LOJA DE MELHORIAS ENTRE AS FASES -->
+        <!-- LOJA DE MELHORIAS FUNCIONAL -->
         <div id="shop-container" style="display:none; margin-bottom: 10px;">
           <h4 style="color: #00f3ff; font-size:10.5px; text-transform: uppercase; margin-bottom:6px;">🛒 LOJA DE UPGRADES DO SETOR</h4>
           <div class="shop-box">
@@ -295,7 +295,7 @@
         var toast = document.getElementById('toast-conquista');
         toast.textContent = 'CONQUISTA: ' + info.nome;
         toast.style.opacity = '1';
-        pontos += 500; // Recompensa ativa de pontos por conquista!
+        pontos += 500;
         som(980, 'sine', 0.35, 0.12, 1320);
         setTimeout(function() { toast.style.opacity = '0'; }, 2800);
       }
@@ -351,7 +351,6 @@
       if (mudo || estado !== 'JOGANDO') return;
       try {
         iniciarAudioContext();
-        var bpmSpeed = fase >= 19 ? 160 : 210;
         var notasNormais = [110, 110, 146.83, 130.81, 164.81, 146.83, 196, 164.81];
         var notasChefe = [98, 103.83, 98, 116.54, 98, 130.81, 116.54, 103.83];
         var escala = (chefeOn || fase >= 19) ? notasChefe : notasNormais;
@@ -381,7 +380,7 @@
           vida: 28 + Math.random() * 20, maxVida: 48, cor: cor, r: 2.2 + Math.random() * 3.2
         });
       }
-      if (ondaChoque) ondas.push({ x: x, y: y, r: 10, maxR: 110, cor: cor, alpha: 1 });
+      if (ondaChoque) ondas.push({ x: x, y: y, r: 10, maxR: 100, cor: cor, alpha: 1 });
     }
 
     function alternarPausa() {
@@ -436,7 +435,7 @@
         { aura: '#38bdf8', prim: '#fb7185' }, { aura: '#facc15', prim: '#ff0055' },
         { aura: '#34d399', prim: '#f472b6' }, { aura: '#fb923c', prim: '#ff0055' },
         { aura: '#ef4444', prim: '#ffffff' }, { aura: '#00ff88', prim: '#ff0055' },
-        { aura: '#00ff00', prim: '#ff0000' } // Fase 22 (Grinch Final)
+        { aura: '#00ff00', prim: '#ff0000' }
       ];
       return paletas[(nFase - 1) % paletas.length];
     }
@@ -510,9 +509,7 @@
       criarParticulas(nave.x, nave.y, '#ff0055', 18, true);
       som(90, 'square', 0.28, 0.14, 30);
       
-      if (nave.hp > 0 && nave.hp < 25) {
-        som(300, 'sine', 0.15, 0.1, 150); // Alerta sonoro de HP crítico
-      }
+      if (nave.hp > 0 && nave.hp < 25) som(300, 'sine', 0.15, 0.1, 150);
 
       if (nave.hp <= 0) {
         nave.hp = 0;
@@ -571,6 +568,8 @@
       nave.y += (alvoY - nave.y) * 0.22;
 
       nave.t++;
+      
+      // SISTEMA DE 6 UPGRADES DISTINTOS PARA AS 3 NAVES
       var danoBase = 18 + (nave.arma * 9);
       var cadencia = Math.max(4, 13 - nave.arma * 1.5);
       if (nave.t % Math.floor(cadencia) === 0) {
@@ -578,34 +577,56 @@
         som(600 + nave.arma * 60, 'triangle', 0.06, 0.035);
         
         if (tipoNaveSelecionada === 1) {
+          // INTERCEPTOR V-1 (6 Níveis de Tiro Progressivo)
           if (nave.arma === 1) {
             tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-          } else if (nave.arma <= 3) {
+          } else if (nave.arma === 2) {
             tiros.push({ x: nave.x - 12, y: nave.y - 20, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
             tiros.push({ x: nave.x + 12, y: nave.y - 20, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+          } else if (nave.arma === 3) {
+            tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -16, d: danoBase, cor: '#ffcc00', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 18, y: nave.y - 18, vx: -1.5, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 18, y: nave.y - 18, vx: 1.5, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+          } else if (nave.arma === 4) {
+            tiros.push({ x: nave.x - 10, y: nave.y - 22, vx: -0.5, vy: -16, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 10, y: nave.y - 22, vx: 0.5, vy: -16, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 22, y: nave.y - 14, vx: -3.0, vy: -14, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 22, y: nave.y - 14, vx: 3.0, vy: -14, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+          } else if (nave.arma === 5) {
+            tiros.push({ x: nave.x, y: nave.y - 28, vx: 0, vy: -17, d: danoBase * 1.4, cor: '#ffee00', tipo: 'ONDA' });
+            tiros.push({ x: nave.x - 15, y: nave.y - 20, vx: -1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 15, y: nave.y - 20, vx: 1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 30, y: nave.y - 12, vx: -4.0, vy: -13, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 30, y: nave.y - 12, vx: 4.0, vy: -13, d: danoBase, cor: '#ff0055', tipo: 'LASER' });
           } else {
-            tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -16, d: danoBase * 1.3, cor: '#ffcc00', tipo: 'LASER' });
-            tiros.push({ x: nave.x - 18, y: nave.y - 18, vx: -1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
-            tiros.push({ x: nave.x + 18, y: nave.y - 18, vx: 1.8, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 8, y: nave.y - 28, vx: 0, vy: -18, d: danoBase * 1.8, cor: '#00ff88', tipo: 'ONDA' });
+            tiros.push({ x: nave.x + 8, y: nave.y - 28, vx: 0, vy: -18, d: danoBase * 1.8, cor: '#00ff88', tipo: 'ONDA' });
+            tiros.push({ x: nave.x - 20, y: nave.y - 20, vx: -2.0, vy: -16, d: danoBase * 1.2, cor: '#ffee00', tipo: 'LASER' });
+            tiros.push({ x: nave.x + 20, y: nave.y - 20, vx: 2.0, vy: -16, d: danoBase * 1.2, cor: '#ffee00', tipo: 'LASER' });
+            tiros.push({ x: nave.x - 38, y: nave.y - 12, vx: -5.0, vy: -14, d: danoBase, cor: '#ff0055', tipo: 'PLASMA' });
+            tiros.push({ x: nave.x + 38, y: nave.y - 12, vx: 5.0, vy: -14, d: danoBase, cor: '#ff0055', tipo: 'PLASMA' });
           }
         } else if (tipoNaveSelecionada === 2) {
-          tiros.push({ x: nave.x - 10, y: nave.y - 26, vx: 0, vy: -14, d: danoBase * 1.5, cor: '#ff0055', tipo: 'PLASMA' });
-          tiros.push({ x: nave.x + 10, y: nave.y - 26, vx: 0, vy: -14, d: danoBase * 1.5, cor: '#ff0055', tipo: 'PLASMA' });
-          if (nave.arma >= 4) {
-            tiros.push({ x: nave.x, y: nave.y - 30, vx: 0, vy: -16, d: danoBase * 2, cor: '#ffffff', tipo: 'PLASMA' });
+          // DESTRUIDOR PLASMA (6 Níveis de Fogo Pesado)
+          var qtdPlasma = Math.min(6, nave.arma);
+          for (var p = 0; p < qtdPlasma; p++) {
+            var offX = (p - (qtdPlasma - 1) / 2) * 10;
+            tiros.push({ x: nave.x + offX, y: nave.y - 26, vx: offX * 0.15, vy: -14, d: danoBase * 1.3, cor: '#ff0055', tipo: 'PLASMA' });
           }
         } else {
-          tiros.push({ x: nave.x, y: nave.y - 26, vx: 0, vy: -15, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
-          tiros.push({ x: nave.x - 16, y: nave.y - 18, vx: -2.5, vy: -14, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
-          tiros.push({ x: nave.x + 16, y: nave.y - 18, vx: 2.5, vy: -14, d: danoBase, cor: '#ffee00', tipo: 'LASER' });
+          // ARTILHARIA QUANTUM (6 Níveis de Mísseis e Lasers Concentrados)
+          var qtdQuantum = Math.min(6, nave.arma + 1);
+          for (var qNum = 0; qNum < qtdQuantum; qNum++) {
+            var qX = nave.x + (qNum - (qtdQuantum - 1) / 2) * 12;
+            tiros.push({ x: qX, y: nave.y - 25, vx: 0, vy: -15, d: danoBase * 1.2, cor: '#ffee00', tipo: 'LASER' });
+          }
           if (nave.arma >= 3 && nave.t % (cadencia * 2) === 0) {
-            tiros.push({ x: nave.x - 26, y: nave.y - 10, vx: -3, vy: -10, d: danoBase * 2, cor: '#00ff88', tipo: 'MISSIL' });
-            tiros.push({ x: nave.x + 26, y: nave.y - 10, vx: 3, vy: -10, d: danoBase * 2, cor: '#00ff88', tipo: 'MISSIL' });
+            tiros.push({ x: nave.x - 28, y: nave.y - 10, vx: -3, vy: -10, d: danoBase * 2, cor: '#00ff88', tipo: 'MISSIL' });
+            tiros.push({ x: nave.x + 28, y: nave.y - 10, vx: 3, vy: -10, d: danoBase * 2, cor: '#00ff88', tipo: 'MISSIL' });
           }
         }
       }
 
-      // Efeito de Clima Dinâmico: Chuva de Meteoros Cibernéticos
       if (q % 180 === 0 && Math.random() < 0.6) {
         meteoros.push({ x: Math.random() * 600, y: -40, vx: (Math.random() - 0.5) * 2, vy: 3 + Math.random() * 3, r: 14 + Math.random() * 12 });
       }
@@ -842,13 +863,14 @@
       atualizarHUD();
     }
 
+    // VISUAL 3D / VOXEL APORIMADO PARA OS MONSTROS
     function desenharInimigoForma(en) {
       ctx.save();
-      ctx.shadowBlur = 18; ctx.shadowColor = en.cor;
+      ctx.shadowBlur = 22; ctx.shadowColor = en.cor;
       ctx.fillStyle = en.hitFlash > 0 ? '#ffffff' : en.cor;
       ctx.beginPath();
       if (en.especial === 6) {
-        ctx.moveTo(0, en.r * 1.2); ctx.lineTo(-en.r * 0.7, -en.r); ctx.lineTo(en.r * 0.7, -en.r);
+        ctx.moveTo(0, en.r * 1.3); ctx.lineTo(-en.r * 0.8, -en.r); ctx.lineTo(en.r * 0.8, -en.r);
       } else if (en.forma === 0) {
         ctx.moveTo(0, en.r); ctx.lineTo(-en.r, -en.r); ctx.lineTo(en.r, -en.r);
       } else if (en.forma === 1) {
@@ -860,13 +882,16 @@
       } else if (en.forma === 2) {
         ctx.moveTo(0, en.r); ctx.lineTo(-en.r * 0.8, 0); ctx.lineTo(0, -en.r); ctx.lineTo(en.r * 0.8, 0);
       } else if (en.forma === 3) {
-        ctx.rect(-en.r * 0.3, -en.r, en.r * 0.6, en.r * 2);
-        ctx.rect(-en.r, -en.r * 0.3, en.r * 2, en.r * 0.6);
+        ctx.rect(-en.r * 0.35, -en.r, en.r * 0.7, en.r * 2);
+        ctx.rect(-en.r, -en.r * 0.35, en.r * 2, en.r * 0.7);
       } else {
         ctx.arc(0, 0, en.r, 0, Math.PI * 2);
       }
       ctx.closePath();
       ctx.fill();
+      // Efeito de destaque tridimensional (Voxel style)
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.beginPath(); ctx.arc(-en.r * 0.3, -en.r * 0.3, en.r * 0.35, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.stroke();
       ctx.restore();
     }
@@ -875,7 +900,7 @@
       ctx.save();
       ctx.translate(x, y);
 
-      ctx.shadowBlur = 45; ctx.shadowColor = corAura;
+      ctx.shadowBlur = 50; ctx.shadowColor = corAura;
       ctx.fillStyle = hitFlash > 0 ? '#ffffff' : '#f8fafc';
       ctx.beginPath(); ctx.arc(0, 5, r, 0, Math.PI * 2); ctx.fill();
 
@@ -941,7 +966,6 @@
       }
       ctx.globalAlpha = 1;
 
-      // Desenhar Chuva de Meteoros
       for (var i = 0; i < meteoros.length; i++) {
         var met = meteoros[i];
         ctx.save();
@@ -1072,7 +1096,6 @@
       document.getElementById('stat-precisao').textContent = precisao + '%';
       document.getElementById('stat-pts').textContent = pontos;
 
-      // Exibe a Loja de Upgrades no modal de transição de fase
       if (acaoModo === 'PROX') {
         document.getElementById('shop-container').style.display = 'block';
       } else {
@@ -1235,7 +1258,7 @@
 
       window.enviarPontuacaoFirebase = async function(nome, faseAtual, pts) {
         const chavePiloto = nome.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
-        if (!chave piloto) return;
+        if (!chavePiloto) return;
         const pilotoRef = ref(db, 'ranking_unico/' + chavePiloto);
         const snapshot = await get(pilotoRef);
         const ptsNovos = Number(pts);
