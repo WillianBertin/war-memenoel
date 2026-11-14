@@ -80,7 +80,7 @@
       max-height: 96%; overflow-y: auto; position: relative;
     }
     .card::before {
-      content: 'TRUE_3D_RENDER // V12.0';
+      content: 'TRUE_3D_RENDER // V13.0';
       position: absolute; top: 8px; right: 12px; font-size: 8px; color: #ff0055; letter-spacing: 2px; opacity: 0.7;
     }
     .badge {
@@ -187,7 +187,7 @@
         </div>
 
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Gráficos 3D imersivos, Monstros Voxel e Upgrades funcionais!</p>
+        <p class="sub">Gráficos 3D avançados, Asas Volumétricas e Super Laser Animado!</p>
         <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
         <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">RETORNAR AO SETOR <span id="max-lvl">1</span></button>
@@ -219,7 +219,6 @@
         <h2 id="m-tit" style="color:#ff0055; margin-bottom:8px; font-size:22px; font-weight: 900;">SETOR CONCLUÍDO</h2>
         <p id="m-desc" class="sub">Relatório de telemetria e classificação:</p>
         
-        <!-- LOJA DE MELHORIAS FUNCIONAL -->
         <div id="shop-container" style="display:none; margin-bottom: 10px;">
           <h4 style="color: #00f3ff; font-size:10.5px; text-transform: uppercase; margin-bottom:6px;">🛒 LOJA DE UPGRADES DO SETOR</h4>
           <div class="shop-box">
@@ -518,23 +517,19 @@
       }
     }
 
-    // LOJA DE UPGRADES 100% FUNCIONAL
     function comprarLoja(tipo) {
       if (tipo === 'hp' && pontos >= 250) {
-        pontos -= 250; 
-        nave.hp = Math.min(100, nave.hp + 35);
+        pontos -= 250; nave.hp = Math.min(100, nave.hp + 35);
         som(880, 'sine', 0.2, 0.1, 1320);
       } else if (tipo === 'arma' && pontos >= 500) {
-        pontos -= 500; 
-        nave.arma = Math.min(6, nave.arma + 1);
+        pontos -= 500; nave.arma = Math.min(6, nave.arma + 1);
         if (nave.arma >= 6) desbloquearConquista('arma');
         som(880, 'sine', 0.2, 0.1, 1760);
       } else if (tipo === 'escudo' && pontos >= 400) {
-        pontos -= 400; 
-        nave.escudoT = 300;
+        pontos -= 400; nave.escudoT = 300;
         som(880, 'sine', 0.2, 0.1, 1500);
       } else {
-        som(150, 'sawtooth', 0.15, 0.1, 80); // Som de erro por falta de pontos
+        som(150, 'sawtooth', 0.15, 0.1, 80);
       }
       atualizarHUD();
       document.getElementById('stat-pts').textContent = pontos;
@@ -581,7 +576,7 @@
         tirosDisparados++;
         som(600 + nave.arma * 60, 'triangle', 0.06, 0.035);
         
-        // 6 NÍVEIS DE TIRO COMPLETOS PARA CADA UMA DAS 3 NAVES
+        // 6 NÍVEIS DE TIRO COMPLETOS E DIFERENCIADOS PARA CADA NAVE
         if (tipoNaveSelecionada === 1) {
           if (nave.arma === 1) {
             tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -15, d: danoBase, cor: '#00f3ff', tipo: 'LASER' });
@@ -646,18 +641,18 @@
       }
 
       var isInferno = (fase >= 19);
-      var freqSpawn = isInferno ? (chefeOn ? 24 : 11) : (chefeOn || miniChefeOn ? 50 : Math.max(15, 40 - fase * 1.2));
+      var freqSpawn = isInferno ? (chefeOn ? 22 : 10) : (chefeOn || miniChefeOn ? 45 : Math.max(14, 38 - fase * 1.2));
       
       if (q % Math.floor(freqSpawn) === 0 && !chefeOn) {
         var formaId = Math.floor(Math.random() * 5);
         var coresMonstros = ['#ff0055', '#00f3ff', '#ffee00', '#00ff88', '#a855f7'];
         var corEscohida = coresMonstros[Math.floor(Math.random() * coresMonstros.length)];
-        var tipoEsp = Math.random() < 0.28 ? (Math.random() < 0.5 ? 6 : 7) : 1;
+        var tipoEsp = Math.random() < 0.35 ? (Math.random() < 0.5 ? 6 : 7) : 1;
 
         inimigos.push({
           x: 40 + Math.random() * 520, y: -30,
-          vx: tipoEsp === 6 ? (Math.random() - 0.5) * 4.5 : (Math.random() - 0.5) * (1.8 + fase * 0.1),
-          vy: tipoEsp === 6 ? (5.0 + fase * 0.2) : (2.2 + fase * 0.08),
+          vx: tipoEsp === 6 ? (Math.random() - 0.5) * 5 : (Math.random() - 0.5) * (2.0 + fase * 0.12),
+          vy: tipoEsp === 6 ? (5.5 + fase * 0.2) : (2.5 + fase * 0.08),
           hp: tipoEsp === 6 ? 15 : (25 + fase * 5),
           r: 20 + Math.random() * 8,
           forma: tipoEsp === 6 ? 0 : formaId, 
@@ -671,6 +666,7 @@
         invocarMiniChefe();
       }
 
+      // LIMPEZA DE PROJÉTEIS INIMIGOS COM OS TIROS DA NAVE
       for (var i = tiros.length - 1; i >= 0; i--) {
         var t = tiros[i];
         if (t.tipo === 'MISSIL') {
@@ -681,6 +677,22 @@
           }
         }
         t.x += t.vx; t.y += t.vy;
+
+        // Limpar tiros inimigos ao tocar neles
+        var projecilLimpo = false;
+        for (var k = tChefe.length - 1; k >= 0; k--) {
+          var tc = tChefe[k];
+          if (Math.hypot(tc.x - t.x, tc.y - t.y) < 18) {
+            tChefe.splice(k, 1);
+            criarParticulas(tc.x, tc.y, '#00f3ff', 6, false);
+            projecilLimpo = true;
+            break;
+          }
+        }
+        if (projecilLimpo) {
+          tiros.splice(i, 1);
+          continue;
+        }
 
         if (chefeOn && chefe) {
           if (Math.hypot(chefe.x - t.x, chefe.y - t.y) < chefe.r + 14) {
@@ -723,8 +735,8 @@
         if (miniChefe.y < miniChefe.alvoY) miniChefe.y += 2;
         if (miniChefe.x < 70 || miniChefe.x > 530) miniChefe.vx *= -1;
 
-        if (q % 70 === 0) {
-          tChefe.push({ x: miniChefe.x, y: miniChefe.y + 20, vx: 0, vy: 4.5, cor: miniChefe.corAura, dano: 18 });
+        if (q % 55 === 0) {
+          tChefe.push({ x: miniChefe.x, y: miniChefe.y + 20, vx: 0, vy: 5.2, cor: miniChefe.corAura, dano: 18 });
         }
 
         if (miniChefe.hp <= 0) {
@@ -741,9 +753,9 @@
         en.t++;
         if (en.hitFlash > 0) en.hitFlash--;
 
-        if (en.especial === 7 && en.t % 80 === 0) {
+        if (en.especial === 7 && en.t % 65 === 0) {
           var angIn = Math.atan2(nave.y - en.y, nave.x - en.x);
-          tChefe.push({ x: en.x, y: en.y + 10, vx: Math.cos(angIn) * 4, vy: Math.sin(angIn) * 4, cor: '#a855f7', dano: 14 });
+          tChefe.push({ x: en.x, y: en.y + 10, vx: Math.cos(angIn) * 4.8, vy: Math.sin(angIn) * 4.8, cor: '#a855f7', dano: 16 });
         }
 
         en.x += en.vx; en.y += en.vy;
@@ -796,17 +808,17 @@
           chefe.faseChefe = 2; chefe.corAura = '#00ff88'; chefe.vx *= 1.4; tremor = 22; flashTela = 0.4;
         }
 
-        var freqAtaqueChefe = isInferno ? 18 : 110; 
-        if (chefe.t % (freqAtaqueChefe + Math.floor(Math.random() * 35)) === 0) {
+        var freqAtaqueChefe = isInferno ? 15 : 90; 
+        if (chefe.t % (freqAtaqueChefe + Math.floor(Math.random() * 25)) === 0) {
           if (isInferno || chefe.faseChefe === 2) {
-            var qtd = chefe.faseChefe === 2 ? 10 : 6;
+            var qtd = chefe.faseChefe === 2 ? 12 : 8;
             for (var k = 0; k < qtd; k++) {
-              var ang = (Math.PI / 2) + ((k - (qtd - 1) / 2) * 0.22);
-              tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * 5.5, vy: Math.sin(ang) * 5.5, cor: chefe.corPrim, dano: 25 });
+              var ang = (Math.PI / 2) + ((k - (qtd - 1) / 2) * 0.2);
+              tChefe.push({ x: chefe.x, y: chefe.y + 42, vx: Math.cos(ang) * 6.0, vy: Math.sin(ang) * 6.0, cor: chefe.corPrim, dano: 25 });
             }
           } else {
             var angMirado = Math.atan2(nave.y - chefe.y, nave.x - chefe.x) + (Math.random() - 0.5) * 0.4;
-            tChefe.push({ x: chefe.x, y: chefe.y + 26, vx: Math.cos(angMirado) * 3.2, vy: Math.sin(angMirado) * 3.2, cor: chefe.corAura, dano: 12 });
+            tChefe.push({ x: chefe.x, y: chefe.y + 26, vx: Math.cos(angMirado) * 3.8, vy: Math.sin(angMirado) * 3.8, cor: chefe.corAura, dano: 12 });
           }
           som(140, 'square', 0.12, 0.06);
         }
@@ -866,7 +878,7 @@
       atualizarHUD();
     }
 
-    // MONSTROS COM RENDERIZAÇÃO 3D REAL (VOXEL-NEON ESTILIZADO)
+    // VISUAL 3D APORIMADO PARA OS MONSTROS
     function desenharInimigoForma(en) {
       ctx.save();
       ctx.shadowBlur = 24; ctx.shadowColor = en.cor;
@@ -891,7 +903,6 @@
       }
       ctx.closePath();
       ctx.fill();
-      // Efeito tridimensional de iluminação especular no monstro
       ctx.fillStyle = 'rgba(255,255,255,0.6)';
       ctx.beginPath(); ctx.arc(-en.r * 0.3, -en.r * 0.3, en.r * 0.38, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.stroke();
@@ -902,7 +913,7 @@
       ctx.save();
       ctx.translate(x, y);
 
-      ctx.shadowBlur = 55; ctx.shadowColor = corAura;
+      ctx.shadowBlur = 50; ctx.shadowColor = corAura;
       ctx.fillStyle = hitFlash > 0 ? '#ffffff' : '#f8fafc';
       ctx.beginPath(); ctx.arc(0, 5, r, 0, Math.PI * 2); ctx.fill();
 
@@ -988,6 +999,18 @@
         ctx.restore();
       }
 
+      // Desenhar Projéteis Inimigos
+      for (var i = 0; i < tChefe.length; i++) {
+        var tc = tChefe[i];
+        ctx.save();
+        ctx.shadowBlur = 16; ctx.shadowColor = tc.cor || '#ff0055';
+        ctx.fillStyle = tc.cor || '#ff0055';
+        ctx.beginPath(); ctx.arc(tc.x, tc.y, 7.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.arc(tc.x, tc.y, 3, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
+
       for (var i = 0; i < inimigos.length; i++) {
         var en = inimigos[i];
         ctx.save();
@@ -1022,33 +1045,59 @@
         ctx.restore();
       }
 
-      // NAVE 3D APORIMADA COM FUSELAGEM POLIGONAL
+      // SUPER LASER ANIMADO FINAL (ULTIMATE)
+      if (nave.laserT > 0) {
+        ctx.save();
+        ctx.shadowBlur = 35; ctx.shadowColor = '#ffee00';
+        var gradLaser = ctx.createLinearGradient(nave.x - 45, 0, nave.x + 45, 0);
+        gradLaser.addColorStop(0, 'rgba(255, 0, 85, 0)');
+        gradLaser.addColorStop(0.3, 'rgba(255, 0, 85, 0.9)');
+        gradLaser.addColorStop(0.5, 'rgba(255, 255, 255, 1)');
+        gradLaser.addColorStop(0.7, 'rgba(0, 243, 255, 0.9)');
+        gradLaser.addColorStop(1, 'rgba(0, 243, 255, 0)');
+        ctx.fillStyle = gradLaser;
+        ctx.fillRect(nave.x - 45, 0, 90, nave.y);
+        ctx.restore();
+      }
+
+      // NAVE 3D AVANÇADA COM ASAS VOLUMÉTRICAS DUPLAS E MOTOR DE PLASMA
       ctx.save();
       ctx.translate(nave.x, nave.y);
       ctx.rotate(nave.tilt);
       
-      ctx.fillStyle = '#ff5500';
-      ctx.beginPath(); ctx.moveTo(-10, 22); ctx.lineTo(0, 36 + Math.random() * 12); ctx.lineTo(10, 22); ctx.fill();
-      ctx.fillStyle = '#ffee00';
-      ctx.beginPath(); ctx.moveTo(-5, 22); ctx.lineTo(0, 28 + Math.random() * 8); ctx.lineTo(5, 22); ctx.fill();
+      // Chamas Tridimensionais do Exaustor
+      ctx.fillStyle = '#ff3300';
+      ctx.beginPath(); ctx.moveTo(-12, 22); ctx.lineTo(0, 38 + Math.random() * 14); ctx.lineTo(12, 22); ctx.fill();
+      ctx.fillStyle = '#ffff00';
+      ctx.beginPath(); ctx.moveTo(-6, 22); ctx.lineTo(0, 28 + Math.random() * 8); ctx.lineTo(6, 22); ctx.fill();
 
+      // Asas Laterais Volumétricas
       ctx.shadowBlur = 30;
       ctx.shadowColor = tipoNaveSelecionada === 2 ? '#ff0055' : (tipoNaveSelecionada === 3 ? '#ffee00' : '#00f3ff');
-      ctx.fillStyle = tipoNaveSelecionada === 2 ? '#ff0055' : (tipoNaveSelecionada === 3 ? '#ffee00' : '#00f3ff');
+      ctx.fillStyle = tipoNaveSelecionada === 2 ? '#bf003e' : (tipoNaveSelecionada === 3 ? '#bfa100' : '#0099bb');
       ctx.beginPath();
-      ctx.moveTo(0, -35); ctx.lineTo(-30, 24); ctx.lineTo(0, 16); ctx.lineTo(30, 24);
+      ctx.moveTo(-12, 8); ctx.lineTo(-38, 24); ctx.lineTo(-18, 14);
+      ctx.closePath(); ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(12, 8); ctx.lineTo(38, 24); ctx.lineTo(18, 14);
       ctx.closePath(); ctx.fill();
 
-      // Brilho 3D Central na Nave
-      ctx.fillStyle = 'rgba(255,255,255,0.5)';
-      ctx.beginPath(); ctx.moveTo(0, -28); ctx.lineTo(-12, 12); ctx.lineTo(0, 6); ctx.lineTo(12, 12); ctx.closePath(); ctx.fill();
+      // Corpo Central Blindado 3D
+      ctx.fillStyle = tipoNaveSelecionada === 2 ? '#ff0055' : (tipoNaveSelecionada === 3 ? '#ffee00' : '#00f3ff');
+      ctx.beginPath();
+      ctx.moveTo(0, -36); ctx.lineTo(-24, 20); ctx.lineTo(0, 14); ctx.lineTo(24, 20);
+      ctx.closePath(); ctx.fill();
+
+      // Reflexo Especular Superior
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.beginPath(); ctx.moveTo(0, -30); ctx.lineTo(-10, 10); ctx.lineTo(0, 4); ctx.lineTo(10, 10); ctx.closePath(); ctx.fill();
 
       ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
 
       if (nave.escudoT > 0) {
         ctx.strokeStyle = '#00ff88'; ctx.lineWidth = 4;
         ctx.shadowColor = '#00ff88'; ctx.shadowBlur = 22;
-        ctx.beginPath(); ctx.arc(0, 0, 45, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(0, 0, 46, 0, Math.PI * 2); ctx.stroke();
       }
       ctx.restore();
 
