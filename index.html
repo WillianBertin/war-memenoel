@@ -170,29 +170,29 @@
     <div id="start-screen" class="overlay">
       <div class="card">
         <div class="badge">🎅 A VINGANÇA DO PAPAI NOEL ESPACIAL 🚀</div>
-        
+
         <div class="ship-select-box">
           <div class="ship-option selected" data-ship="1" onclick="selecionarNave(1)">
             <strong style="color:#00f3ff; font-size:11px;">Interceptor V-1</strong>
-            <span>6 Níveis Únicos</span>
+            <span>Ágil • Cadência Alta</span>
           </div>
           <div class="ship-option" data-ship="2" onclick="selecionarNave(2)">
             <strong style="color:#ff0055; font-size:11px;">Destruidor Plasma</strong>
-            <span>6 Níveis Únicos</span>
+            <span>Pesado • Dano Alto</span>
           </div>
           <div class="ship-option" data-ship="3" onclick="selecionarNave(3)">
             <strong style="color:#ffee00; font-size:11px;">Artilharia Quantum</strong>
-            <span>6 Níveis Únicos</span>
+            <span>Mísseis • Salvas</span>
           </div>
         </div>
 
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">Hangar, Checkpoints, Gamepad, Bullet Time & 10 Atualizações Supremos!</p>
+        <p class="sub">Hangar, Checkpoints, Gamepad, Bullet Time & 22 Setores!</p>
         <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
-        
+
         <!-- SELETOR DE COR DO HANGAR -->
         <div style="margin: 8px 0; font-size: 10.5px; color: #a190c2;">
-          COR DA FUSELAGEM: 
+          COR DA FUSELAGEM:
           <input type="color" id="cor-nave" value="#00f3ff" style="width: 45px; height: 22px; vertical-align: middle; border: none; background: none; cursor: pointer;">
         </div>
 
@@ -203,9 +203,9 @@
 
         <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
         <button id="btn-cont" type="button" class="btn btn-sec hidden">RETORNAR AO SETOR <span id="max-lvl">1</span></button>
-        
+
         <div class="rank-box">
-          <h4>Ranking por Nave</h4>
+          <h4>Ranking Global / Local</h4>
           <div id="rank-inicio"></div>
         </div>
         <div class="rank-box" style="border-color: rgba(255, 238, 0, 0.4);">
@@ -220,7 +220,7 @@
         <div class="badge" style="background: rgba(255, 204, 0, 0.15); border-color: #ffcc00; color: #ffe680;">TELEMETRIA PAUSADA</div>
         <h2 style="color:#ffcc00; margin-bottom:8px; font-size:22px; font-weight: 900;">SISTEMA EM ESPERA</h2>
         <p class="sub">Respire fundo, piloto. O Papai Noel aguarda seu retorno!</p>
-        <button id="btn-resume" class="btn btn-sec">CONTINUAR MISSÃO</button>
+        <button id="btn-resume" type="button" class="btn btn-sec">CONTINUAR MISSÃO</button>
         <button id="btn-restart-f1" type="button" class="btn btn-warn">REINICIAR PARA FASE 1</button>
         <button id="btn-pause-menu" type="button" class="btn">SAIR PARA O MENU</button>
       </div>
@@ -230,26 +230,26 @@
       <div class="card">
         <h2 id="m-tit" style="color:#ff0055; margin-bottom:8px; font-size:22px; font-weight: 900;">SETOR CONCLUÍDO</h2>
         <p id="m-desc" class="sub">Relatório de telemetria e classificação:</p>
-        
+
         <div id="shop-container" style="display:none; margin-bottom: 10px;">
           <h4 style="color: #00f3ff; font-size:10.5px; text-transform: uppercase; margin-bottom:6px;">🛒 LOJA DE UPGRADES DO SETOR</h4>
           <div class="shop-box">
             <span style="font-size:10px; text-align:left;">❤️ Reparar Casco (+35 HP)</span>
-            <button onclick="comprarLoja('hp')" class="hud-btn" style="padding:4px 8px;">250 PTS</button>
+            <button onclick="comprarLoja('hp')" type="button" class="hud-btn" style="padding:4px 8px;">250 PTS</button>
           </div>
           <div class="shop-box">
             <span style="font-size:10px; text-align:left;">⚡ Upgrade de Arma (+1 Nv)</span>
-            <button onclick="comprarLoja('arma')" class="hud-btn" style="padding:4px 8px;">500 PTS</button>
+            <button onclick="comprarLoja('arma')" type="button" class="hud-btn" style="padding:4px 8px;">500 PTS</button>
           </div>
           <div class="shop-box">
             <span style="font-size:10px; text-align:left;">🛡️ Ativar Escudo Espacial</span>
-            <button onclick="comprarLoja('escudo')" class="hud-btn" style="padding:4px 8px;">400 PTS</button>
+            <button onclick="comprarLoja('escudo')" type="button" class="hud-btn" style="padding:4px 8px;">400 PTS</button>
           </div>
         </div>
 
         <div id="stats-container" style="background: rgba(255, 0, 85, 0.08); border: 1px solid rgba(255, 0, 85, 0.3); border-radius: 10px; padding: 8px; margin-bottom: 10px; font-size: 11px;">
           <div>Inimigos Destruídos: <strong id="stat-abates" style="color: #00f3ff;">0</strong></div>
-          <div>Precisão de Disparos: <strong id="stat-precisao" style="color: #00ff88;">94%</strong></div>
+          <div>Precisão de Disparos: <strong id="stat-precisao" style="color: #00ff88;">100%</strong></div>
           <div>Pontuação Acumulada: <strong id="stat-pts" style="color: #ffee00;">0</strong></div>
         </div>
         <input type="text" id="nome-modal" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
@@ -257,7 +257,7 @@
         <button id="btn-restart-f1-modal" type="button" class="btn btn-warn">VOLTAR PARA A FASE 1</button>
         <button id="btn-menu" type="button" class="btn btn-sec">TELA INICIAL</button>
         <div class="rank-box">
-          <h4>Ranking por Nave</h4>
+          <h4>Ranking Global / Local</h4>
           <div id="rank-modal"></div>
         </div>
       </div>
@@ -271,21 +271,51 @@
     var chefeOn = false, miniChefeOn = false, tremor = 0, flashTela = 0, mudo = false, ac = null;
     var alertaChefeT = 0, bgmTimer = null, bgmPasso = 0;
     var tipoNaveSelecionada = 1;
-    var bulletTimeAtivo = false, bulletTimeCooldown = 0;
+    var bulletTimeAtivo = false, bulletTimeCooldown = 120;
     var corCustomizadaNave = '#00f3ff';
-    
+
     var ultimoTempo = 0;
     var intervaloFps = 1000 / 60;
 
-    var nave = { x: 300, y: 650, hp: 100, t: 0, arma: 1, ult: 0, laserT: 0, escudoT: 0, tilt: 0, drones: 2 };
+    var PERFIS_NAVE = {
+      1: { vel: 7.4, hpInicial: 100, multDano: 1.0, multCadencia: 0.85, drones: 2 },
+      2: { vel: 6.1, hpInicial: 130, multDano: 1.35, multCadencia: 1.05, drones: 2 },
+      3: { vel: 6.7, hpInicial: 110, multDano: 1.15, multCadencia: 0.95, drones: 2 }
+    };
+
+    var nave = { x: 300, y: 650, hp: 100, maxHp: 100, t: 0, arma: 1, ult: 0, laserT: 0, escudoT: 0, tilt: 0, drones: 2 };
     var tiros = [], tChefe = [], inimigos = [], itens = [], parts = [], ondas = [], estrelas = [], meteoros = [];
     var chefe = null, miniChefe = null, teclas = {}, alvoX = 300, alvoY = 650, tocando = false;
+
+    function resetarEstadoPartida() {
+      var perfil = PERFIS_NAVE[tipoNaveSelecionada] || PERFIS_NAVE[1];
+      pontos = 0;
+      combo = 1;
+      comboT = 0;
+      totalAbatesPartida = 0;
+      tirosDisparados = 0;
+      tirosAcertados = 0;
+      bulletTimeAtivo = false;
+      bulletTimeCooldown = 120;
+      nave.x = 300;
+      nave.y = 650;
+      alvoX = 300;
+      alvoY = 650;
+      nave.maxHp = perfil.hpInicial;
+      nave.hp = perfil.hpInicial;
+      nave.arma = 1;
+      nave.ult = 0;
+      nave.laserT = 0;
+      nave.escudoT = 0;
+      nave.drones = perfil.drones;
+    }
 
     function selecionarNave(id) {
       tipoNaveSelecionada = id;
       var opcoes = document.querySelectorAll('.ship-option');
       opcoes.forEach(function(el) { el.classList.remove('selected'); });
-      document.querySelector('.ship-option[data-ship="' + id + '"]').classList.add('selected');
+      var ativa = document.querySelector('.ship-option[data-ship="' + id + '"]');
+      if (ativa) ativa.classList.add('selected');
     }
 
     var CONQUISTAS_DEF = [
@@ -364,7 +394,6 @@
       if (mudo || estado !== 'JOGANDO') return;
       try {
         iniciarAudioContext();
-        var bpmModo = (chefeOn && chefe && chefe.hp < chefe.maxHp * 0.25) ? 130 : (fase >= 19 ? 160 : 210);
         var notasNormais = [110, 110, 146.83, 130.81, 164.81, 146.83, 196, 164.81];
         var notasChefe = [98, 103.83, 98, 116.54, 98, 130.81, 116.54, 103.83];
         var escala = (chefeOn || fase >= 19) ? notasChefe : notasNormais;
@@ -410,8 +439,7 @@
     }
 
     function reiniciarParaFase1() {
-      pontos = 0; totalAbatesPartida = 0; tirosDisparados = 0; tirosAcertados = 0;
-      nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
+      resetarEstadoPartida();
       document.getElementById('pause-screen').classList.add('hidden');
       document.getElementById('modal').classList.add('hidden');
       iniciarFase(1);
@@ -435,6 +463,7 @@
       document.getElementById('pause-screen').classList.add('hidden');
       document.getElementById('btn-pause').textContent = 'PAUSAR';
       iniciarMusica();
+      atualizarHUD();
     }
 
     function obterCoresChefao(nFase) {
@@ -490,7 +519,8 @@
     function atualizarHUD() {
       document.getElementById('pts').textContent = pontos;
       document.getElementById('wpn-lvl').textContent = 'NV.' + nave.arma;
-      document.getElementById('hp-bar').style.width = Math.max(0, nave.hp) + '%';
+      var pctHp = Math.max(0, Math.min(100, (nave.hp / (nave.maxHp || 100)) * 100));
+      document.getElementById('hp-bar').style.width = pctHp + '%';
       document.getElementById('ult-bar').style.width = Math.min(100, nave.ult) + '%';
       var tag = document.getElementById('combo-tag');
       if (combo > 1) {
@@ -522,8 +552,10 @@
       flashTela = 0.5;
       criarParticulas(nave.x, nave.y, '#ff0055', 18, true);
       som(90, 'square', 0.28, 0.14, 30);
-      
-      if (nave.hp > 0 && nave.hp < 25) som(300, 'sine', 0.15, 0.1, 150);
+
+      if (nave.hp > 0 && nave.hp < (nave.maxHp || 100) * 0.25) {
+        som(300, 'sine', 0.15, 0.1, 150);
+      }
 
       if (nave.hp <= 0) {
         nave.hp = 0;
@@ -533,8 +565,9 @@
     }
 
     function comprarLoja(tipo) {
+      var capHp = nave.maxHp || 100;
       if (tipo === 'hp' && pontos >= 250) {
-        pontos -= 250; nave.hp = Math.min(100, nave.hp + 35);
+        pontos -= 250; nave.hp = Math.min(capHp, nave.hp + 35);
         som(880, 'sine', 0.2, 0.1, 1320);
       } else if (tipo === 'arma' && pontos >= 500) {
         pontos -= 500; nave.arma = Math.min(6, nave.arma + 1);
@@ -563,26 +596,29 @@
 
     function atualizarJogo() {
       if (estado !== 'JOGANDO') return;
-      
+
+      var perfil = PERFIS_NAVE[tipoNaveSelecionada] || PERFIS_NAVE[1];
+
       // Suporte a Controle USB / Gamepad API
       var gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
       var gp = gamepads[0];
       if (gp) {
-        var stickX = gp.axes[0];
-        var stickY = gp.axes[1];
-        if (Math.abs(stickX) > 0.15) alvoX += stickX * 7.5;
-        if (Math.abs(stickY) > 0.15) alvoY += stickY * 7.5;
-        if (gp.buttons[0].pressed && nave.ult >= 100) ativarSuperLaser();
-        if (gp.buttons[4].pressed) bulletTimeAtivo = true; else bulletTimeAtivo = false;
+        var stickX = gp.axes[0] || 0;
+        var stickY = gp.axes[1] || 0;
+        if (Math.abs(stickX) > 0.15) alvoX += stickX * perfil.vel;
+        if (Math.abs(stickY) > 0.15) alvoY += stickY * perfil.vel;
+        if (gp.buttons[0] && gp.buttons[0].pressed && nave.ult >= 100) ativarSuperLaser();
+        bulletTimeAtivo = !!(gp.buttons[4] && gp.buttons[4].pressed);
       }
 
       var multiplicadorTempo = 1;
-      if (bulletTimeAtivo) {
+      if (bulletTimeAtivo && bulletTimeCooldown > 0) {
         multiplicadorTempo = 0.5;
-        if (bulletTimeCooldown > 0) bulletTimeCooldown -= 0.5;
-        else bulletTimeAtivo = false;
+        bulletTimeCooldown = Math.max(0, bulletTimeCooldown - 0.5);
+        if (bulletTimeCooldown <= 0) bulletTimeAtivo = false;
       } else {
-        if (bulletTimeCooldown < 120) bulletTimeCooldown += 0.2;
+        bulletTimeAtivo = false;
+        if (bulletTimeCooldown < 120) bulletTimeCooldown = Math.min(120, bulletTimeCooldown + 0.25);
       }
 
       q += multiplicadorTempo;
@@ -593,7 +629,7 @@
       if (nave.laserT > 0) nave.laserT -= multiplicadorTempo;
       if (comboT > 0) { comboT -= multiplicadorTempo; if (comboT <= 0) combo = 1; }
 
-      var vel = 6.8;
+      var vel = perfil.vel;
       if (teclas['ArrowLeft'] || teclas['KeyA']) alvoX -= vel;
       if (teclas['ArrowRight'] || teclas['KeyD']) alvoX += vel;
       if (teclas['ArrowUp'] || teclas['KeyW']) alvoY -= vel;
@@ -606,14 +642,35 @@
       nave.x += dx * 0.22;
       nave.y += (alvoY - nave.y) * 0.22;
 
+      // Dano contínuo do Super Laser ativo
+      if (nave.laserT > 0) {
+        var danoLaser = 6.5 * perfil.multDano * multiplicadorTempo;
+        for (var l = inimigos.length - 1; l >= 0; l--) {
+          var enL = inimigos[l];
+          if (Math.abs(enL.x - nave.x) < 52 + enL.r && enL.y < nave.y) {
+            enL.hp -= danoLaser;
+            enL.hitFlash = 2;
+            if (Math.random() < 0.25) criarParticulas(enL.x, enL.y, '#ffee00', 2, false);
+          }
+        }
+        if (miniChefeOn && miniChefe && Math.abs(miniChefe.x - nave.x) < 52 + miniChefe.r && miniChefe.y < nave.y) {
+          miniChefe.hp -= danoLaser * 1.2;
+          miniChefe.hitFlash = 2;
+        }
+        if (chefeOn && chefe && Math.abs(chefe.x - nave.x) < 52 + chefe.r && chefe.y < nave.y) {
+          chefe.hp -= danoLaser * 1.2;
+          chefe.hitFlash = 2;
+        }
+      }
+
       nave.t += multiplicadorTempo;
-      var danoBase = 18 + (nave.arma * 9);
-      var cadencia = Math.max(4, 13 - nave.arma * 1.5);
-      
+      var danoBase = (18 + (nave.arma * 9)) * perfil.multDano;
+      var cadencia = Math.max(4, (13 - nave.arma * 1.5) * perfil.multCadencia);
+
       if (Math.floor(nave.t) % Math.max(2, Math.floor(cadencia)) === 0) {
         tirosDisparados++;
         som(600 + nave.arma * 60, 'triangle', 0.06, 0.035);
-        
+
         if (tipoNaveSelecionada === 1) {
           if (nave.arma === 1) {
             tiros.push({ x: nave.x, y: nave.y - 24, vx: 0, vy: -16, d: danoBase, cor: corCustomizadaNave, tipo: 'LASER' });
@@ -690,7 +747,7 @@
 
       var isInferno = (fase >= 19);
       var freqSpawn = isInferno ? (chefeOn ? 22 : 10) : (chefeOn || miniChefeOn ? 45 : Math.max(14, 38 - fase * 1.2));
-      
+
       if (Math.floor(q) % Math.max(5, Math.floor(freqSpawn)) === 0 && !chefeOn) {
         var formaId = Math.floor(Math.random() * 5);
         var coresMonstros = ['#ff0055', '#00f3ff', '#ffee00', '#00ff88', '#a855f7'];
@@ -703,8 +760,8 @@
           vy: (tipoEsp === 6 ? (5.0 + fase * 0.2) : (2.5 + fase * 0.08)) * multiplicadorTempo,
           hp: tipoEsp === 6 ? 15 : (25 + fase * 5),
           r: 20 + Math.random() * 8,
-          forma: tipoEsp === 6 ? 0 : formaId, 
-          cor: tipoEsp === 6 ? '#ff5500' : (tipoEsp === 7 ? '#a855f7' : corEscohida), 
+          forma: tipoEsp === 6 ? 0 : formaId,
+          cor: tipoEsp === 6 ? '#ff5500' : (tipoEsp === 7 ? '#a855f7' : corEscohida),
           especial: tipoEsp,
           t: 0, hitFlash: 0
         });
@@ -854,7 +911,7 @@
           chefe.faseChefe = 2; chefe.corAura = '#00ff88'; chefe.vx *= 1.4; tremor = 22; flashTela = 0.4;
         }
 
-        var freqAtaqueChefe = isInferno ? 15 : 90; 
+        var freqAtaqueChefe = isInferno ? 15 : 90;
         if (Math.floor(chefe.t) % (freqAtaqueChefe + Math.floor(Math.random() * 25)) === 0) {
           if (isInferno || chefe.faseChefe === 2) {
             var qtd = chefe.faseChefe === 2 ? 12 : 8;
@@ -885,7 +942,7 @@
         it.y += it.vy * multiplicadorTempo;
         if (Math.hypot(it.x - nave.x, it.y - nave.y) < 28) {
           if (it.tipo === 'ARMA') { nave.arma = Math.min(6, nave.arma + 1); if (nave.arma >= 6) desbloquearConquista('arma'); }
-          else if (it.tipo === 'HP') { nave.hp = Math.min(100, nave.hp + 35); }
+          else if (it.tipo === 'HP') { nave.hp = Math.min(nave.maxHp || 100, nave.hp + 35); }
           else if (it.tipo === 'ESCUDO') { nave.escudoT = 240; }
           else if (it.tipo === 'ULT') { nave.ult = 100; }
           else if (it.tipo === 'BOMBA') { inimigos = []; tChefe = []; tremor = 25; flashTela = 0.8; }
@@ -906,6 +963,8 @@
       }
 
       if (chefeOn && chefe && chefe.hp <= 0) {
+        desbloquearConquista('chefe');
+        if (fase >= 19) desbloquearConquista('inferno');
         criarParticulas(chefe.x, chefe.y, chefe.corAura, 50, true);
         som(70, 'sawtooth', 0.9, 0.2, 20);
         pontos += 4000 * fase;
@@ -954,7 +1013,7 @@
       ctx.restore();
     }
 
-    function desenharPapaiNoelChefe(x, y, r, corAura, corPrim, hitFlash, nomeChefe) {
+    function desenharPapaiNoelChefe(x, y, r, corAura, corPrim, hitFlash) {
       ctx.save();
       ctx.translate(x, y);
 
@@ -1064,11 +1123,11 @@
       }
 
       if (miniChefeOn && miniChefe) {
-        desenharPapaiNoelChefe(miniChefe.x, miniChefe.y, miniChefe.r, miniChefe.corAura, miniChefe.corPrim, miniChefe.hitFlash, miniChefe.nome);
+        desenharPapaiNoelChefe(miniChefe.x, miniChefe.y, miniChefe.r, miniChefe.corAura, miniChefe.corPrim, miniChefe.hitFlash);
       }
 
       if (chefeOn && chefe) {
-        desenharPapaiNoelChefe(chefe.x, chefe.y, chefe.r, chefe.corAura, chefe.corPrim, chefe.hitFlash, chefe.nome);
+        desenharPapaiNoelChefe(chefe.x, chefe.y, chefe.r, chefe.corAura, chefe.corPrim, chefe.hitFlash);
 
         ctx.fillStyle = 'rgba(6, 9, 20, 0.95)'; ctx.fillRect(110, 48, 380, 18);
         ctx.fillStyle = chefe.corAura; ctx.fillRect(112, 50, 376 * Math.max(0, chefe.hp / chefe.maxHp), 14);
@@ -1107,7 +1166,7 @@
       ctx.save();
       ctx.translate(nave.x, nave.y);
       ctx.rotate(nave.tilt);
-      
+
       ctx.fillStyle = '#ff3300';
       ctx.beginPath(); ctx.moveTo(-12, 22); ctx.lineTo(0, 38 + Math.random() * 14); ctx.lineTo(12, 22); ctx.fill();
       ctx.fillStyle = '#ffff00';
@@ -1180,7 +1239,7 @@
       if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') { bulletTimeAtivo = true; }
       if (e.code === 'KeyP' || e.code === 'Escape') alternarPausa();
     });
-    window.addEventListener('keyup', function(e) { 
+    window.addEventListener('keyup', function(e) {
       teclas[e.code] = false;
       if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') { bulletTimeAtivo = false; }
     });
@@ -1199,8 +1258,8 @@
       estado = 'MODAL'; modo = acaoModo;
       document.getElementById('m-tit').textContent = titulo;
       document.getElementById('m-desc').textContent = desc;
-      
-      var precisao = tirosDisparados > 0 ? Math.round((tirosAcertados / tirosDisparados) * 100) : 100;
+
+      var precisao = tirosDisparados > 0 ? Math.min(100, Math.round((tirosAcertados / tirosDisparados) * 100)) : 100;
       document.getElementById('stat-abates').textContent = totalAbatesPartida;
       document.getElementById('stat-precisao').textContent = precisao + '%';
       document.getElementById('stat-pts').textContent = pontos;
@@ -1214,10 +1273,13 @@
       document.getElementById('nome-modal').value = localStorage.getItem('wm_n') || '';
       document.getElementById('btn-ok').textContent = (acaoModo === 'PROX') ? 'PRÓXIMO SETOR' : 'JOGAR NOVAMENTE';
       if (acaoModo === 'PROX' && fase + 1 > maxFaseSalva) {
-        maxFaseSalva = fase + 1; localStorage.setItem('wm_maxf', maxFaseSalva);
-        localStorage.setItem('wm_chk', maxFaseSalva); // Checkpoint salvo
+        maxFaseSalva = fase + 1;
+        try {
+          localStorage.setItem('wm_maxf', maxFaseSalva);
+          localStorage.setItem('wm_chk', maxFaseSalva);
+        } catch (e) {}
       }
-      salvarRanking('nome-inicio');
+      salvarRanking('nome-modal');
       document.getElementById('modal').classList.remove('hidden');
     }
 
@@ -1239,7 +1301,7 @@
         var n = localStorage.getItem('wm_n') || '';
         document.getElementById('nome-inicio').value = n;
         maxFaseSalva = parseInt(localStorage.getItem('wm_maxf') || '1', 10);
-        
+
         var chkFase = parseInt(localStorage.getItem('wm_chk') || '1', 10);
         document.getElementById('chk-fase').textContent = chkFase;
 
@@ -1262,7 +1324,7 @@
         var n = (el && el.value.trim()) ? el.value.trim() : (localStorage.getItem('wm_n') || 'Piloto');
         localStorage.setItem('wm_n', n);
         if (fase > maxFaseSalva) { maxFaseSalva = fase; localStorage.setItem('wm_maxf', maxFaseSalva); }
-        
+
         var localRank = JSON.parse(localStorage.getItem('wm_local_rank') || '[]');
         var existente = localRank.find(function(p) { return p.nome.toLowerCase() === n.toLowerCase(); });
         if (existente) {
@@ -1289,7 +1351,7 @@
         window.rankingGlobal = rLocal;
         window.desenharRankingNaTela(rLocal);
       }
-    } catch(e) {}
+    } catch (e) {}
 
     document.getElementById('btn-pause').onclick = alternarPausa;
     document.getElementById('btn-resume').onclick = alternarPausa;
@@ -1305,16 +1367,17 @@
 
     document.getElementById('cor-nave').oninput = function() {
       corCustomizadaNave = this.value;
-      localStorage.setItem('wm_cor', corCustomizadaNave);
+      try { localStorage.setItem('wm_cor', corCustomizadaNave); } catch (e) {}
     };
-    var corSalva = localStorage.getItem('wm_cor');
-    if (corSalva) { corCustomizadaNave = corSalva; document.getElementById('cor-nave').value = corSalva; }
+    try {
+      var corSalva = localStorage.getItem('wm_cor');
+      if (corSalva) { corCustomizadaNave = corSalva; document.getElementById('cor-nave').value = corSalva; }
+    } catch (e) {}
 
     document.getElementById('btn-play').onclick = function() {
       var n = document.getElementById('nome-inicio').value.trim() || 'Piloto';
-      localStorage.setItem('wm_n', n);
-      pontos = 0; totalAbatesPartida = 0; tirosDisparados = 0; tirosAcertados = 0;
-      nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
+      try { localStorage.setItem('wm_n', n); } catch (e) {}
+      resetarEstadoPartida();
       document.getElementById('start-screen').classList.add('hidden');
       iniciarFase(1);
       estado = 'JOGANDO';
@@ -1322,11 +1385,11 @@
 
     document.getElementById('btn-cont').onclick = function() {
       var n = document.getElementById('nome-inicio').value.trim() || 'Piloto';
-      localStorage.setItem('wm_n', n);
-      pontos = 0; totalAbatesPartida = 0; tirosDisparados = 0; tirosAcertados = 0;
-      nave.hp = 100; nave.arma = 1; nave.ult = 0; nave.escudoT = 0;
+      try { localStorage.setItem('wm_n', n); } catch (e) {}
+      resetarEstadoPartida();
       document.getElementById('start-screen').classList.add('hidden');
-      var checkpointSalvo = parseInt(localStorage.getItem('wm_chk') || maxFaseSalva, 10);
+      var checkpointSalvo = 1;
+      try { checkpointSalvo = parseInt(localStorage.getItem('wm_chk') || maxFaseSalva, 10) || 1; } catch (e) {}
       iniciarFase(checkpointSalvo);
       estado = 'JOGANDO';
     };
@@ -1335,11 +1398,10 @@
       salvarRanking('nome-modal');
       document.getElementById('modal').classList.add('hidden');
       if (modo === 'PROX') {
-        nave.hp = Math.min(100, nave.hp + 25);
+        nave.hp = Math.min(nave.maxHp || 100, nave.hp + 25);
         iniciarFase(fase + 1);
       } else {
-        pontos = 0; totalAbatesPartida = 0; tirosDisparados = 0; tirosAcertados = 0;
-        nave.hp = 100; nave.arma = 1; nave.ult = 0;
+        resetarEstadoPartida();
         iniciarFase(1);
       }
       estado = 'JOGANDO';
