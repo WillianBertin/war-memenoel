@@ -97,12 +97,44 @@ function renderizarPreviasNaves() {
   }
 }
 
+var CONQUISTAS_DEF = [
+  { id: 'sangue', nome: '🩸 Primeiro Sangue' }, { id: 'chefe', nome: '🎅 Caça-Noel' },
+  { id: 'arma', nome: '⚡ Arsenal Nv.6' }, { id: 'combo', nome: '🔥 Combo x10' },
+  { id: 'inferno', nome: '💀 Sobreviveu F19' }, { id: 'lenda', nome: '🏆 Grinch Destruído' }
+];
+var conquistasSalvas = {};
+try { conquistasSalvas = JSON.parse(localStorage.getItem('wm_conq') || '{}'); } catch (e) {}
+
+var creditos = 0, upgPerm = { hp: 0, bt: 0, dr: 0 };
+try {
+  creditos = parseInt(localStorage.getItem('wm_cred') || '0', 10) || 0;
+  upgPerm = Object.assign({ hp: 0, bt: 0, dr: 0 }, JSON.parse(localStorage.getItem('wm_upg') || '{}'));
+} catch (e) {}
+
+function atualizarUIUpgrades() {
+  var cEl = document.getElementById('cred-val'); if (cEl) cEl.textContent = creditos;
+  var hEl = document.getElementById('upg-hp-lv'), bEl = document.getElementById('upg-bt-lv'), dEl = document.getElementById('upg-dr-lv');
+  if (hEl) hEl.textContent = 'Nv.' + upgPerm.hp + '/5';
+  if (bEl) bEl.textContent = 'Nv.' + upgPerm.bt + '/5';
+  if (dEl) dEl.textContent = 'Nv.' + upgPerm.dr + '/5';
+}
+
+function comprarUpgradePermanente(tipo) {
+  var custos = { hp: 500, bt: 600, dr: 700 };
+  if (upgPerm[tipo] >= 5 || creditos < custos[tipo]) { som(150, 'sawtooth', 0.15, 0.1, 80); return; }
+  creditos -= custos[tipo]; upgPerm[tipo]++;
+  try { localStorage.setItem('wm_cred', creditos); localStorage.setItem('wm_upg', JSON.stringify(upgPerm)); } catch (e) {}
+  som(880, 'sine', 0.25, 0.12, 1400);
+  atualizarUIUpgrades();
+}
+
 function resetarEstadoPartida() {
   var perfil = PERFIS_NAVE[tipoNaveSelecionada] || PERFIS_NAVE[1];
   pontos = 0; combo = 1; comboT = 0; totalAbatesPartida = 0; tirosDisparados = 0; tirosAcertados = 0;
   bulletTimeAtivo = false; bulletTimeCooldown = 120;
   nave.x = 300; nave.y = 650; alvoX = 300; alvoY = 650; nave.rastro = [];
-  nave.maxHp = perfil.hpInicial; nave.hp = perfil.hpInicial;
+  nave.maxHp = perfil.hpInicial + (upgPerm.hp * 15);
+  nave.hp = nave.maxHp;
   nave.arma = 1; nave.ult = 0; nave.laserT = 0; nave.escudoT = 0; nave.dashT = 0; nave.dashCd = 0; nave.drones = perfil.drones;
   textosDano = []; raiosChefe = []; bombasChefe = [];
 }
@@ -114,14 +146,6 @@ function selecionarNave(id) {
   if (ativa) ativa.classList.add('selected');
   atualizarBarrasNave();
 }
-
-var CONQUISTAS_DEF = [
-  { id: 'sangue', nome: '🩸 Primeiro Sangue' }, { id: 'chefe', nome: '🎅 Caça-Noel' },
-  { id: 'arma', nome: '⚡ Arsenal Nv.6' }, { id: 'combo', nome: '🔥 Combo x10' },
-  { id: 'inferno', nome: '💀 Sobreviveu F19' }, { id: 'lenda', nome: '🏆 Grinch Destruído' }
-];
-var conquistasSalvas = {};
-try { conquistasSalvas = JSON.parse(localStorage.getItem('wm_conq') || '{}'); } catch (e) {}
 
 function desbloquearConquista(id) {
   if (conquistasSalvas[id]) return;
@@ -167,7 +191,9 @@ function tocarBatidaMusica() {
     iniciarAudioContext();
     var notasNormais = [110, 110, 146.83, 130.81, 164.81, 146.83, 196, 164.81];
     var notasChefe = [98, 103.83, 98, 116.54, 98, 130.81, 116.54, 103.83];
-    var escala = (chefeOn || fase >= 15) ? notasChefe : notasNormais;
+    var notasDeus = [146.83, 174.61, 220, 196, 261.63, 220, 293.66, 220];
+    var notasGrinch = [82.41, 87.31, 98, 87.31, 110, 98, 87.31, 73.42];
+    var escala = (chefeOn && fase >= 22) ? notasGrinch : ((chefeOn && fase === 21) ? notasDeus : ((chefeOn || fase >= 15) ? notasChefe : notasNormais));
     var freq = escala[bgmPasso % escala.length]; bgmPasso++;
     var osc = ac.createOscillator(), gain = ac.createGain();
     osc.type = (chefeOn || fase >= 15) ? 'sawtooth' : 'triangle';
@@ -268,7 +294,8 @@ function ativarSuperLaser() {
 
 function ativarDash() {
   if (estado !== 'JOGANDO' || nave.dashCd > 0) return;
-  nave.dashT = 22; nave.dashCd = 95;
+  nave.dashT = 22;
+  nave.dashCd = Math.max(45, 95 - (upgPerm.bt * 10));
   alvoY = Math.max(90, alvoY - 75);
   criarParticulas(nave.x, nave.y, '#ffee00', 10, true);
   som(740, 'triangle', 0.16, 0.1, 320);
@@ -318,7 +345,9 @@ function atualizarJogo() {
     multiplicadorTempo = 0.5; bulletTimeCooldown = Math.max(0, bulletTimeCooldown - 0.5);
     if (bulletTimeCooldown <= 0) bulletTimeAtivo = false;
   } else {
-    bulletTimeAtivo = false; if (bulletTimeCooldown < 120) bulletTimeCooldown = Math.min(120, bulletTimeCooldown + 0.25);
+    bulletTimeAtivo = false;
+    var recBt = 0.25 + (upgPerm.bt * 0.04);
+    if (bulletTimeCooldown < 120) bulletTimeCooldown = Math.min(120, bulletTimeCooldown + recBt);
   }
 
   q += multiplicadorTempo;
@@ -383,7 +412,11 @@ function atualizarJogo() {
         for (var m = 0; m < qtdM; m++) { var mX = nave.x + (m - (qtdM - 1) / 2) * 26; tiros.push({ x: mX, y: nave.y - 10, vx: (m - (qtdM - 1) / 2) * 2.5, vy: -12, d: danoBase * 1.8, cor: '#00ff88', tipo: 'MISSIL' }); }
       }
     }
-    if (nave.drones > 0) { tiros.push({ x: nave.x - 30, y: nave.y - 10, vx: 0, vy: -15, d: danoBase * 0.5, cor: '#00ff88', tipo: 'LASER' }); tiros.push({ x: nave.x + 30, y: nave.y - 10, vx: 0, vy: -15, d: danoBase * 0.5, cor: '#00ff88', tipo: 'LASER' }); }
+    if (nave.drones > 0) {
+      var dDrone = danoBase * (0.5 + upgPerm.dr * 0.1);
+      tiros.push({ x: nave.x - 30, y: nave.y - 10, vx: 0, vy: -15, d: dDrone, cor: '#00ff88', tipo: 'LASER' });
+      tiros.push({ x: nave.x + 30, y: nave.y - 10, vx: 0, vy: -15, d: dDrone, cor: '#00ff88', tipo: 'LASER' });
+    }
   }
 
   var isHardcore = (fase >= 15), isInferno = (fase >= 19);
@@ -465,14 +498,8 @@ function atualizarJogo() {
     else { chefe.x += chefe.vx * multiplicadorTempo; if (chefe.x < 85 || chefe.x > 515) chefe.vx *= -1; }
     chefe.t += multiplicadorTempo;
     if (chefe.final && chefe.hp <= chefe.maxHp * 0.5 && chefe.faseChefe === 1) { chefe.faseChefe = 2; chefe.corAura = '#00ff88'; chefe.vx *= 1.4; tremor = 22; flashTela = 0.4; }
-
-    // Ataques exclusivos dos Chefes Finais
-    if (chefe.tipo === 'DEUS' && Math.floor(chefe.t) % 130 === 0) {
-      raiosChefe.push({ x: nave.x, avisoT: 48, ativoT: 26 });
-    }
-    if (chefe.tipo === 'GRINCH' && Math.floor(chefe.t) % 110 === 0) {
-      bombasChefe.push({ x: chefe.x, y: chefe.y + 30, vy: 3.4 * multiplicadorTempo, timer: 55 });
-    }
+    if (chefe.tipo === 'DEUS' && Math.floor(chefe.t) % 130 === 0) raiosChefe.push({ x: nave.x, avisoT: 48, ativoT: 26 });
+    if (chefe.tipo === 'GRINCH' && Math.floor(chefe.t) % 110 === 0) bombasChefe.push({ x: chefe.x, y: chefe.y + 30, vy: 3.4 * multiplicadorTempo, timer: 55 });
 
     var freqAtaqueChefe = isInferno ? 14 : (isHardcore ? 38 : 90);
     if (Math.floor(chefe.t) % (freqAtaqueChefe + Math.floor(Math.random() * 20)) === 0) {
@@ -492,11 +519,7 @@ function atualizarJogo() {
   for (var i = raiosChefe.length - 1; i >= 0; i--) {
     var rc = raiosChefe[i];
     if (rc.avisoT > 0) rc.avisoT -= multiplicadorTempo;
-    else {
-      rc.ativoT -= multiplicadorTempo;
-      if (Math.abs(nave.x - rc.x) < 28) sofrerDano(18);
-      if (rc.ativoT <= 0) raiosChefe.splice(i, 1);
-    }
+    else { rc.ativoT -= multiplicadorTempo; if (Math.abs(nave.x - rc.x) < 28) sofrerDano(18); if (rc.ativoT <= 0) raiosChefe.splice(i, 1); }
   }
   for (var i = bombasChefe.length - 1; i >= 0; i--) {
     var bm = bombasChefe[i]; bm.y += bm.vy; bm.timer -= multiplicadorTempo;
@@ -749,6 +772,11 @@ function encerrarPartida(titulo, desc, acaoModo) {
   try { document.getElementById('nome-modal').value = localStorage.getItem('wm_n') || ''; } catch (e) {}
   document.getElementById('btn-ok').textContent = (acaoModo === 'PROX') ? 'PRÓXIMO SETOR' : 'JOGAR NOVAMENTE';
   if (acaoModo === 'PROX' && !modoInfinito && fase + 1 > maxFaseSalva) { maxFaseSalva = Math.min(22, fase + 1); try { localStorage.setItem('wm_maxf', maxFaseSalva); localStorage.setItem('wm_chk', maxFaseSalva); } catch (e) {} }
+  if (pontos > 0) {
+    creditos += Math.floor(pontos * 0.1);
+    try { localStorage.setItem('wm_cred', creditos); } catch (e) {}
+    atualizarUIUpgrades();
+  }
   salvarRanking('nome-modal'); document.getElementById('modal').classList.remove('hidden');
 }
 
@@ -838,4 +866,5 @@ document.getElementById('btn-menu').onclick = function() { salvarRanking('nome-m
 atualizarListasRanking();
 renderizarPreviasNaves();
 atualizarBarrasNave();
+atualizarUIUpgrades();
 requestAnimationFrame(loop);
