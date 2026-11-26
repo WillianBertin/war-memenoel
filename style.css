@@ -8,7 +8,7 @@ body {
 #box {
   position: relative; width: 100%; max-width: 600px; height: 100%; max-height: 760px;
   border: 3px solid #ff0055; border-radius: 20px; overflow: hidden;
-  background: #03050c; box-shadow: 0 0 80px rgba(255, 0, 85, 0.5), 0 0 150px rgba(0, 243, 255, 0.35);
+  background: #03050c; box-shadow: 0 0 40px rgba(255, 0, 85, 0.45);
 }
 canvas#c { display: block; width: 100%; height: 100%; touch-action: none; }
 #crt-overlay {
@@ -19,10 +19,10 @@ canvas#c { display: block; width: 100%; height: 100%; touch-action: none; }
 #hud {
   position: absolute; top: 10px; left: 10px; right: 10px;
   display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px;
-  background: rgba(8, 12, 26, 0.9); border: 2px solid rgba(255, 0, 85, 0.8);
+  background: rgba(8, 12, 26, 0.94); border: 2px solid rgba(255, 0, 85, 0.8);
   border-radius: 16px; padding: 7px 10px; font-size: 10.5px; font-weight: bold;
-  pointer-events: none; z-index: 20; backdrop-filter: blur(8px);
-  box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
+  pointer-events: none; z-index: 20;
+  box-shadow: 0 0 15px rgba(255, 0, 85, 0.35);
 }
 .bar-bg {
   display: inline-block; width: 40px; height: 7px; background: #161c2e;
@@ -63,8 +63,8 @@ canvas#c { display: block; width: 100%; height: 100%; touch-action: none; }
 }
 .overlay {
   position: absolute; inset: 0;
-  background: radial-gradient(circle at center, rgba(15, 8, 20, 0.9) 0%, rgba(3, 2, 6, 0.98) 100%);
-  backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 14px; z-index: 50;
+  background: radial-gradient(circle at center, rgba(15, 8, 20, 0.92) 0%, rgba(3, 2, 6, 0.98) 100%);
+  display: flex; align-items: center; justify-content: center; padding: 14px; z-index: 50;
 }
 .card {
   background: rgba(15, 8, 25, 0.96); border: 2.5px solid #ff0055; border-radius: 20px;
