@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>War Memenoel — Ultra Edition 3D (V25)</title>
+  <title>War Memenoel — Ultra Edition 3D (V26)</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff0055">
+  <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
   <div id="box">
@@ -39,8 +42,9 @@
 
         <div class="menu-tabs">
           <button class="tab-btn active" type="button" onclick="mudarAba('hangar', this)">🚀 HANGAR</button>
-          <button class="tab-btn" type="button" onclick="mudarAba('ranking', this)">🏆 RANKING</button>
-          <button class="tab-btn" type="button" onclick="mudarAba('conquistas', this)">🎖️ CONQUISTAS</button>
+          <button class="tab-btn" type="button" onclick="mudarAba('upgrades', this)">🔧 UPGRADES</button>
+          <button class="tab-btn" type="button" onclick="mudarAba('ranking', this)">🏆 RANK</button>
+          <button class="tab-btn" type="button" onclick="mudarAba('conquistas', this)">🎖️ CONQ</button>
         </div>
 
         <div id="tab-hangar" class="tab-panel">
@@ -76,6 +80,23 @@
           <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
           <button id="btn-endless" type="button" class="btn btn-sec hidden">∞ MODO INFINITO</button>
           <p class="ctrl-hint">Mouse/Toque: Mover • Espaço: Laser • Shift: Bullet Time • E: Dash • P: Pausa</p>
+        </div>
+
+        <div id="tab-upgrades" class="tab-panel hidden">
+          <div class="cred-tag">💰 CRÉDITOS: <strong id="cred-val">0</strong></div>
+          <div class="shop-box">
+            <span style="font-size:10px; text-align:left;">❤️ Casco Reforçado (+15 HP) <small id="upg-hp-lv">Nv.0/5</small></span>
+            <button onclick="comprarUpgradePermanente('hp')" type="button" class="hud-btn">500 CR</button>
+          </div>
+          <div class="shop-box">
+            <span style="font-size:10px; text-align:left;">⚡ Propulsor Dash/BT (+15%) <small id="upg-bt-lv">Nv.0/5</small></span>
+            <button onclick="comprarUpgradePermanente('bt')" type="button" class="hud-btn">600 CR</button>
+          </div>
+          <div class="shop-box">
+            <span style="font-size:10px; text-align:left;">🤖 Drones Turbinados (+20% Dano) <small id="upg-dr-lv">Nv.0/5</small></span>
+            <button onclick="comprarUpgradePermanente('dr')" type="button" class="hud-btn">700 CR</button>
+          </div>
+          <p class="ctrl-hint">Você ganha 10% da sua pontuação em créditos ao concluir cada setor ou partida.</p>
         </div>
 
         <div id="tab-ranking" class="tab-panel hidden">
