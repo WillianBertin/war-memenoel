@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>War Memenoel — Ultra Edition 3D (V24)</title>
+  <title>War Memenoel — Ultra Edition 3D (V25)</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,54 +16,80 @@
       <div>PTS <span id="pts" style="color:#00f3ff;">0</span></div>
       <div>HP <span class="bar-bg"><span id="hp-bar"></span></span></div>
       <div>ULT <span class="bar-bg"><span id="ult-bar"></span></span></div>
-      <div>BT <span class="bar-bg" style="width:32px;"><span id="bt-bar"></span></span></div>
-      <div>ESC <span class="bar-bg" style="width:32px;"><span id="sh-bar"></span></span></div>
+      <div>BT <span class="bar-bg" style="width:30px;"><span id="bt-bar"></span></span></div>
+      <div>ESC <span class="bar-bg" style="width:30px;"><span id="sh-bar"></span></span></div>
       <button id="btn-crt" class="hud-btn" type="button">CRT</button>
       <button id="btn-pause" class="hud-btn" type="button">PAUSAR</button>
       <button id="btn-som" class="hud-btn" type="button">SOM</button>
     </div>
     <div id="toast-conquista">🏆 CONQUISTA DESBLOQUEADA!</div>
     <div id="hud-bot">
-      <div id="combo-tag">COMBO x1</div>
+      <div class="bot-left">
+        <button id="btn-bt-mob" class="act-btn" type="button">⏳ BT</button>
+        <button id="btn-dash" class="act-btn" type="button">⚡ DASH</button>
+        <div id="combo-tag">COMBO x1</div>
+      </div>
       <button id="btn-ult" type="button" class="hidden">SUPER LASER (ESPACO)</button>
     </div>
 
     <div id="start-screen" class="overlay">
       <div class="card">
         <div class="badge">🎅 A VINGANÇA DO PAPAI NOEL ESPACIAL 🚀</div>
-        <div class="ship-select-box">
-          <div class="ship-option selected" data-ship="1" onclick="selecionarNave(1)">
-            <canvas class="ship-preview" id="prev-1" width="60" height="52"></canvas>
-            <strong style="color:#00f3ff; font-size:10.5px;">Interceptor V-1</strong>
-            <span>Ágil • Caça Delta</span>
-          </div>
-          <div class="ship-option" data-ship="2" onclick="selecionarNave(2)">
-            <canvas class="ship-preview" id="prev-2" width="60" height="52"></canvas>
-            <strong style="color:#ff0055; font-size:10.5px;">Destruidor Plasma</strong>
-            <span>Pesado • Blindado</span>
-          </div>
-          <div class="ship-option" data-ship="3" onclick="selecionarNave(3)">
-            <canvas class="ship-preview" id="prev-3" width="60" height="52"></canvas>
-            <strong style="color:#ffee00; font-size:10.5px;">Artilharia Quantum</strong>
-            <span>Mísseis • Cruzador</span>
-          </div>
-        </div>
         <h1>WAR MEMENOEL</h1>
-        <p class="sub">V24: Chefes Exclusivos, Seletor de Setores & Modo Infinito!</p>
-        <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
-        <div class="hangar-row">
-          <span>COR: <input type="color" id="cor-nave" value="#00f3ff"></span>
-          <span>SETOR: <select id="select-fase"></select></span>
+
+        <div class="menu-tabs">
+          <button class="tab-btn active" type="button" onclick="mudarAba('hangar', this)">🚀 HANGAR</button>
+          <button class="tab-btn" type="button" onclick="mudarAba('ranking', this)">🏆 RANKING</button>
+          <button class="tab-btn" type="button" onclick="mudarAba('conquistas', this)">🎖️ CONQUISTAS</button>
         </div>
-        <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
-        <button id="btn-endless" type="button" class="btn btn-sec hidden">∞ MODO INFINITO</button>
-        <div class="rank-box">
-          <h4>Ranking Global / Local</h4>
-          <div id="rank-inicio"></div>
+
+        <div id="tab-hangar" class="tab-panel">
+          <div class="ship-select-box">
+            <div class="ship-option selected" data-ship="1" onclick="selecionarNave(1)">
+              <canvas class="ship-preview" id="prev-1" width="60" height="52"></canvas>
+              <strong style="color:#00f3ff; font-size:10px;">Interceptor V-1</strong>
+              <span>Ágil • Delta</span>
+            </div>
+            <div class="ship-option" data-ship="2" onclick="selecionarNave(2)">
+              <canvas class="ship-preview" id="prev-2" width="60" height="52"></canvas>
+              <strong style="color:#ff0055; font-size:10px;">Destruidor Plasma</strong>
+              <span>Pesado • HP+</span>
+            </div>
+            <div class="ship-option" data-ship="3" onclick="selecionarNave(3)">
+              <canvas class="ship-preview" id="prev-3" width="60" height="52"></canvas>
+              <strong style="color:#ffee00; font-size:10px;">Artilharia Quantum</strong>
+              <span>Mísseis • Salva</span>
+            </div>
+          </div>
+
+          <div class="ship-stats">
+            <div class="st-row"><span>VELOCIDADE</span><div class="st-bar"><div id="st-vel"></div></div></div>
+            <div class="st-row"><span>BLINDAGEM</span><div class="st-bar"><div id="st-hp"></div></div></div>
+            <div class="st-row"><span>PODER DE FOGO</span><div class="st-bar"><div id="st-dmg"></div></div></div>
+          </div>
+
+          <input type="text" id="nome-inicio" placeholder="[ INSIRA SEU APELIDO ]" maxlength="14">
+          <div class="hangar-row">
+            <span>COR: <input type="color" id="cor-nave" value="#00f3ff"></span>
+            <span>SETOR: <select id="select-fase"></select></span>
+          </div>
+          <button id="btn-play" type="button" class="btn">INICIAR MISSÃO</button>
+          <button id="btn-endless" type="button" class="btn btn-sec hidden">∞ MODO INFINITO</button>
+          <p class="ctrl-hint">Mouse/Toque: Mover • Espaço: Laser • Shift: Bullet Time • E: Dash • P: Pausa</p>
         </div>
-        <div class="rank-box" style="border-color: rgba(255, 238, 0, 0.4);">
-          <h4 style="color: #ffee00;">Conquistas (<span id="conq-count">0</span>/6)</h4>
-          <div id="conq-lista" class="conq-grid"></div>
+
+        <div id="tab-ranking" class="tab-panel hidden">
+          <div class="rank-box">
+            <h4>Ranking Global / Local</h4>
+            <div id="rank-inicio"></div>
+          </div>
+        </div>
+
+        <div id="tab-conquistas" class="tab-panel hidden">
+          <div class="rank-box" style="border-color: rgba(255, 238, 0, 0.4);">
+            <h4 style="color: #ffee00;">Conquistas (<span id="conq-count">0</span>/6)</h4>
+            <div id="conq-lista" class="conq-grid"></div>
+          </div>
         </div>
       </div>
     </div>
