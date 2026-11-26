@@ -77,7 +77,7 @@ canvas#c { display: block; width: 100%; height: 100%; touch-action: none; }
   max-height: 96%; overflow-y: auto; position: relative;
 }
 .card::before {
-  content: 'EDITION // V25.0';
+  content: 'EDITION // V26.0';
   position: absolute; top: 8px; right: 12px; font-size: 8px; color: #ff0055; letter-spacing: 2px; opacity: 0.7;
 }
 .badge {
@@ -90,10 +90,10 @@ h1 {
   background: linear-gradient(90deg, #ff0055 10%, #ffee00 50%, #00f3ff 90%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
-.menu-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.menu-tabs { display: flex; gap: 4px; margin-bottom: 10px; }
 .tab-btn {
   flex: 1; background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 0, 85, 0.35);
-  color: #c2b1eb; padding: 7px 4px; border-radius: 10px; font-size: 10px; font-weight: 800; cursor: pointer;
+  color: #c2b1eb; padding: 7px 3px; border-radius: 10px; font-size: 9.5px; font-weight: 800; cursor: pointer;
 }
 .tab-btn.active { background: rgba(255, 0, 85, 0.25); border-color: #ffee00; color: #fff; }
 .ship-stats {
@@ -137,10 +137,15 @@ input[type="text"] {
 }
 .btn-sec { background: linear-gradient(90deg, #00f3ff, #0066ff); color: #03050c; }
 .btn-warn { background: linear-gradient(90deg, #854d0e, #ca8a04); color: #fff; }
+.cred-tag {
+  background: rgba(255, 238, 0, 0.12); border: 1.5px solid #ffee00; color: #ffee00;
+  border-radius: 10px; padding: 6px; margin-bottom: 8px; font-size: 11px; font-weight: 800;
+}
 .shop-box {
   background: rgba(0, 243, 255, 0.05); border: 1.5px solid rgba(0, 243, 255, 0.4);
   border-radius: 12px; padding: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
 }
+.shop-box small { color: #00f3ff; margin-left: 4px; font-weight: 800; }
 .stats-box {
   background: rgba(255, 0, 85, 0.08); border: 1px solid rgba(255, 0, 85, 0.3);
   border-radius: 10px; padding: 8px; margin-bottom: 10px; font-size: 11px;
