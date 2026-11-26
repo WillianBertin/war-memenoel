@@ -18,14 +18,14 @@ try {
   const db = getDatabase(app);
   const rankingRef = ref(db, 'ranking_unico');
 
-  window.enviarPontuacaoFirebase = async function(nome, faseAtual, pts) {
+  window.enviarPontuacaoFirebase = async function(nome, faseAtual, pts, iconeNave) {
     const chavePiloto = nome.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
     if (!chavePiloto) return;
     const pilotoRef = ref(db, 'ranking_unico/' + chavePiloto);
     const snapshot = await get(pilotoRef);
     const ptsNovos = Number(pts);
     if (!snapshot.exists() || ptsNovos > (snapshot.val().pts || 0)) {
-      await set(pilotoRef, { nome: nome.trim(), fase: Number(faseAtual), pts: ptsNovos, data: Date.now() });
+      await set(pilotoRef, { nome: nome.trim(), fase: Number(faseAtual), pts: ptsNovos, nave: iconeNave || '🚀', data: Date.now() });
     }
   };
 
